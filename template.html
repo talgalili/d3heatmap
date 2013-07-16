@@ -19,81 +19,216 @@
   shape-rendering: crispEdges;
 }
 
+.heatmap {
+  position: relative;
+  width: 850px;
+  height: 750px;
+  border: 1px solid #CCC;
+}
+.colDend {
+  position: absolute;
+  top: 0;
+  left: 250px;
+  width: 600px;
+  height: 250px;
+}
+.rowDend {
+  position: absolute;
+  left: 0;
+  top: 250px;
+  height: 500px;
+  width: 250px;
+}
+.colormap {
+  position: absolute;
+  left: 250px;
+  top: 250px;
+  width: 600px;
+  height: 500px;
+  shape-rendering: crispEdges;
+}
+
 </style>
 <body>
-  <svg id="cluster"></svg>
+  <div class="heatmap">
+    <svg class="colDend"></svg>
+    <svg class="rowDend"></svg>
+    <svg class="colormap"></svg>
+  </div>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 var id = 'cluster';
 var rotated = false;
 var width = 250,
-    height = 900;
-var zoom = 1;
+    height = 500;
+var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
+var yZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
+var colormapZooms = [
+  d3.behavior.zoom().scaleExtent([1, Infinity]),
+  d3.behavior.zoom().scaleExtent([1, Infinity])
+];
 
-var x = d3.scale.linear();
-var y = d3.scale.linear()
-  .domain([0, height])
-  .range([0, height*zoom]);
+d3.select('.colDend').call(xZoomBehavior);
+d3.select('.rowDend').call(yZoomBehavior);
 
-var cluster = d3.layout.cluster()
-    .separation(function(a, b) { return 1; })
-    .size([rotated ? width : height, (rotated ? height : width) - 160]);
+var rowDraw = dendrogram(d3.select('svg.rowDend'), rowData(), false, 250, 500, yZoomBehavior);
+var colDraw = dendrogram(d3.select('svg.colDend'), colData(), true, 600, 250, xZoomBehavior);
+var colormapDraw = colormap(d3.select('svg.colormap'), matrixData(), 600, 500, colormapZooms);
 
-var transform = "translate(40,0)";
-if (rotated) {
-  transform = "rotate(90," + width/2 + "," + width/2 + ") " + transform;
+function updateColormapZoom() {
+  var xZoom = colormapZooms[0];
+  var yZoom = colormapZooms[1];
+  xZoom.scale(xZoomBehavior.scale());
+  yZoom.scale(yZoomBehavior.scale());
+  xZoom.translate(xZoomBehavior.translate());
+  yZoom.translate(yZoomBehavior.translate());
+  colormapDraw();
 }
 
-var zoomBehavior = d3.behavior.zoom().on('zoom', draw);
-if (rotated)
-  zoomBehavior.x(y);
-else
-  zoomBehavior.y(y);
+xZoomBehavior.on('zoom', function() {
+  colDraw();
+  updateColormapZoom();
+});
+yZoomBehavior.on('zoom', function() {
+  rowDraw();
+  updateColormapZoom();
+});
 
-var svg = d3.select("svg#" + id)
-    .attr("width", width)
-    .attr("height", height)
-    .call(zoomBehavior)
-  .append("g")
-    .attr("transform", transform);
+function colormap(svg, data, width, height, zoomBehaviors) {
+  // Check for no data
+  if (data.length === 0)
+    return function() {};
+  
+  var cols = data.dim[1]
+  var rows = data.dim[0];
+  
+  var merged = data.data;
+  
+  var x = d3.scale.linear().domain([0, cols]).range([0, width]);
+  var y = d3.scale.linear().domain([0, rows]).range([0, height]);
+  var color = d3.scale.linear()
+      .domain(d3.extent(merged))
+      .range(["yellow", "green", "blue"]);
+  
+  zoomBehaviors[0].x(x);
+  zoomBehaviors[1].y(y);
+  
+  svg = svg
+      .attr("width", width)
+      .attr("height", height)
+    .append("g");
+  var rect = svg.selectAll("rect").data(merged);
+  rect.enter().append("rect");
+  rect.exit().remove();
+  rect
+      .attr("x", function(d, i) {
+        return x(i % cols);
+      })
+      .attr("y", function(d, i) {
+        return y(Math.floor(i / cols));
+      })
+      .attr("width", x(1))
+      .attr("height", y(1))
+      .attr("fill", function(d) { return color(d); })
+      .append("title").text(function(d) { return d + ""; });
+  
+  function draw() {
+    var t = [zoomBehaviors[0].translate()[0], zoomBehaviors[1].translate()[1]];
+    var s = [zoomBehaviors[0].scale(), zoomBehaviors[1].scale()];
+    svg
+        .attr("transform", "translate(" + t[0] + " " + t[1] + ") " +
+                           "scale(" + s[0] + " " + s[1] + ")");
+  }
+  draw();
+  
+  return draw;
+}
 
-var nodes = cluster.nodes(data()),
-    links = cluster.links(nodes);
+function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
 
-function draw() {
-  function elbow(d, i) {
-    return x(d.source.y) + "," + y(d.source.x) + " " +
-        x(d.source.y) + "," + y(d.target.x) + " " +
-        x(d.target.y) + "," + y(d.target.x);
+  var x = d3.scale.linear();
+  var y = d3.scale.linear()
+    .domain([0, height])
+    .range([0, height]);
+
+  var cluster = d3.layout.cluster()
+      .separation(function(a, b) { return 1; })
+      .size([rotated ? width : height, (rotated ? height : width) - 160]);
+
+  var transform = "translate(40,0)";
+  if (rotated) {
+    transform = "rotate(-90," + height/2 + "," + height/2 + ") " + transform;
   }
 
-  var link = svg.selectAll(".link")
-      .data(links)
-      .attr("points", elbow)
-    .enter().append("polyline")
-      .attr("class", "link")
-      .attr("points", elbow);
+  if (rotated)
+    zoomBehavior.x(y);
+  else
+    zoomBehavior.y(y);
 
-  var node = svg.selectAll(".node")
-      .data(nodes)
-      .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
-    .enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
+  svg = svg
+      .attr("width", width)
+      .attr("height", height)
+    .append("g")
+      .attr("transform", transform);
 
-  var leafNode = node.filter(function(d, i){ return !d.children; })
-      .append("text")
-      .attr("dx", 3)
-      .attr("dy", 3)
-      .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-      .text(function(d) { return d.name; });
+  var nodes = cluster.nodes(data),
+      links = cluster.links(nodes);
 
-  //d3.select(self.frameElement).style("height", height + "px");
+  function draw() {
+    // Constrain translation to extent
+    if (d3.event) {
+      var t = d3.event.translate;
+      var s = d3.event.scale;
+      if (rotated)
+        t[0] = Math.max(-width * (s - 1), Math.min(0, t[0]));
+      else
+        t[1] = Math.max(-height * (s - 1), Math.min(0, t[1]));
+      zoomBehavior.translate(t);
+    }
+
+    function elbow(d, i) {
+      return x(d.source.y) + "," + y(d.source.x) + " " +
+          x(d.source.y) + "," + y(d.target.x) + " " +
+          x(d.target.y) + "," + y(d.target.x);
+    }
+
+    var link = svg.selectAll(".link")
+        .data(links)
+        .attr("points", elbow)
+      .enter().append("polyline")
+        .attr("class", "link")
+        .attr("points", elbow);
+
+    var node = svg.selectAll(".node")
+        .data(nodes)
+        .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+      .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
+
+    var leafNode = node.filter(function(d, i){ return !d.children; })
+        .append("text")
+        .attr("dx", 3)
+        .attr("dy", 3)
+        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+        .text(function(d) { return d.name; });
+
+    //d3.select(self.frameElement).style("height", height + "px");
+  }
+  draw();
+  return draw;
 }
-draw();
 
-function data() {
-  return {{data}};
+function rowData() {
+  return {{rowDend}};
+}
+
+function colData() {
+  return {{colDend}};
+}
+
+function matrixData() {
+  return {{matrix}};
 }
 
 </script>

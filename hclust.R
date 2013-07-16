@@ -1,3 +1,5 @@
+library(RJSONIO)
+
 createLeafNode <- function(hclust, i) {
   list(name = hclust$labels[[i]],
        order = hclust$order[[i]])
@@ -40,11 +42,32 @@ hclustToTree <- function(hclust) {
 }
 
 render <- function(data) {
-  json <- RJSONIO::toJSON(hclustToTree(hclust(dist(data)))[[1]], pretty=T)
-  template <- paste(readLines('template.html', warn=FALSE), collapse='\n')
-  html <- sub('{{data}}', json, template, fixed = TRUE)
+  matrix <- as.matrix(data)
+  
+#   rowClust <- hclust(dist(matrix))
+#   matrix <- matrix[rowClust$order,]
+#   colClust <- hclust(dist(t(matrix)))
+#   matrix <- matrix[,colClust$order]
+  hm <- heatmap(data, keep.dendro=TRUE)
+  rowClust <- as.hclust(hm$Rowv)
+  colClust <- as.hclust(hm$Colv)
+  matrix <- matrix[hm$rowInd, hm$colInd]
+  
+  rowDend <- toJSON(hclustToTree(rowClust)[[1]], pretty=TRUE)
+  colDend <- toJSON(hclustToTree(colClust)[[1]], pretty=TRUE)
+  
+  matrix <- toJSON(list(data = as.numeric(t(matrix)),
+                        dim = dim(matrix),
+                        rows = row.names(matrix),
+                        cols = names(matrix)))
+  
+  html <- paste(readLines('template.html', warn=FALSE), collapse='\n')
+  html <- sub('{{rowDend}}', rowDend, html, fixed = TRUE)
+  html <- sub('{{colDend}}', colDend, html, fixed = TRUE)
+  html <- sub('{{matrix}}', matrix, html, fixed = TRUE)
   file <- tempfile('hclust', fileext='.html')
   writeLines(html, file)
   return(file)
 }
-browseURL(render(mtcars))
+#browseURL(render(mtcars))
+browseURL(render(exprs(esetSel)))
