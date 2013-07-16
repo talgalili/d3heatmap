@@ -1,3 +1,5 @@
+library(RJSONIO)
+
 createLeafNode <- function(hclust, i) {
   list(name = hclust$labels[[i]],
        order = hclust$order[[i]])
@@ -40,9 +42,13 @@ hclustToTree <- function(hclust) {
 }
 
 render <- function(data) {
-  json <- RJSONIO::toJSON(hclustToTree(hclust(dist(data)))[[1]], pretty=T)
-  template <- paste(readLines('template.html', warn=FALSE), collapse='\n')
-  html <- sub('{{data}}', json, template, fixed = TRUE)
+  rowDend <- toJSON(hclustToTree(hclust(dist(data)))[[1]], pretty=TRUE)
+  colDend <- toJSON(hclustToTree(hclust(dist(t(data))))[[1]], pretty=TRUE)
+  matrix <- toJSON(as.matrix(data), pretty=TRUE)
+  html <- paste(readLines('template.html', warn=FALSE), collapse='\n')
+  html <- sub('{{rowDend}}', rowDend, html, fixed = TRUE)
+  html <- sub('{{colDend}}', colDend, html, fixed = TRUE)
+  html <- sub('{{matrix}}', matrix, html, fixed = TRUE)
   file <- tempfile('hclust', fileext='.html')
   writeLines(html, file)
   return(file)
