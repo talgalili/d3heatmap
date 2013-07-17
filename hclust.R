@@ -84,4 +84,4 @@ render <- function(data) {
   return(file)
 }
 #browseURL(render(mtcars))
-browseURL(render(exprs(esetSel)))
+#browseURL(render(exprs(esetSel)))

@@ -1,0 +1,66 @@
+.node circle {
+  fill: #fff;
+    stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #AAA;
+    stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.heatmap {
+  position: relative;
+  width: 820px;
+  height: 700px;
+  border: 1px solid #CCC;
+  overflow: hidden;
+}
+.inner {
+  position: relative;
+  top: -70px;
+}
+.info {
+  position: absolute;
+  left: 20px;
+  top: 90px;
+  width: 160px;
+  height: 140px;
+  text-align: right;
+  font-size: 40px;
+  padding-top: 118px;
+}
+.colDend {
+  position: absolute;
+  top: 0;
+  left: 200px;
+  width: 600px;
+  height: 250px;
+}
+.rowDend {
+  position: absolute;
+  left: 0;
+  top: 250px;
+  height: 500px;
+  width: 200px;
+}
+.colormap {
+  position: absolute;
+  left: 200px;
+  top: 250px;
+  width: 600px;
+  height: 500px;
+  shape-rendering: crispEdges;
+}
+.highlighting text {
+  fill: rgba(0, 0, 0, 0.25);
+}
+.highlighting text.active {
+  fill: black;
+}
