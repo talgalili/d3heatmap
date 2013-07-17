@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 <meta charset="utf-8">
 <style>
 
@@ -21,14 +23,29 @@
 
 .heatmap {
   position: relative;
-  width: 850px;
-  height: 750px;
+  width: 820px;
+  height: 700px;
   border: 1px solid #CCC;
+  overflow: hidden;
+}
+.inner {
+  position: relative;
+  top: -70px;
+}
+.info {
+  position: absolute;
+  left: 20px;
+  top: 90px;
+  width: 160px;
+  height: 140px;
+  text-align: right;
+  font-size: 40px;
+  padding-top: 118px;
 }
 .colDend {
   position: absolute;
   top: 0;
-  left: 250px;
+  left: 200px;
   width: 600px;
   height: 250px;
 }
@@ -37,30 +54,41 @@
   left: 0;
   top: 250px;
   height: 500px;
-  width: 250px;
+  width: 200px;
 }
 .colormap {
   position: absolute;
-  left: 250px;
+  left: 200px;
   top: 250px;
   width: 600px;
   height: 500px;
   shape-rendering: crispEdges;
 }
-
+.highlighting text {
+  fill: rgba(0, 0, 0, 0.25);
+}
+.highlighting text.active {
+  fill: black;
+}
 </style>
+</head>
 <body>
   <div class="heatmap">
-    <svg class="colDend"></svg>
-    <svg class="rowDend"></svg>
-    <svg class="colormap"></svg>
+    <div class="inner">
+      <div class="info"></div>
+      <svg class="colDend"></svg>
+      <svg class="rowDend"></svg>
+      <svg class="colormap"></svg>
+    </div>
   </div>
+  <div id="tooltip"></div>
 <script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script>
 var id = 'cluster';
 var rotated = false;
-var width = 250,
-    height = 500;
 var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
 var yZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
 var colormapZooms = [
@@ -71,9 +99,9 @@ var colormapZooms = [
 d3.select('.colDend').call(xZoomBehavior);
 d3.select('.rowDend').call(yZoomBehavior);
 
-var rowDraw = dendrogram(d3.select('svg.rowDend'), rowData(), false, 250, 500, yZoomBehavior);
-var colDraw = dendrogram(d3.select('svg.colDend'), colData(), true, 600, 250, xZoomBehavior);
-var colormapDraw = colormap(d3.select('svg.colormap'), matrixData(), 600, 500, colormapZooms);
+var row = dendrogram(d3.select('svg.rowDend'), rowData(), false, 250, 500, yZoomBehavior);
+var col = dendrogram(d3.select('svg.colDend'), colData(), true, 600, 250, xZoomBehavior);
+var colormap = colormap(d3.select('svg.colormap'), matrixData(), 600, 500, colormapZooms);
 
 function updateColormapZoom() {
   var xZoom = colormapZooms[0];
@@ -82,15 +110,15 @@ function updateColormapZoom() {
   yZoom.scale(yZoomBehavior.scale());
   xZoom.translate(xZoomBehavior.translate());
   yZoom.translate(yZoomBehavior.translate());
-  colormapDraw();
+  colormap.draw();
 }
 
 xZoomBehavior.on('zoom', function() {
-  colDraw();
+  col.draw();
   updateColormapZoom();
 });
 yZoomBehavior.on('zoom', function() {
-  rowDraw();
+  row.draw();
   updateColormapZoom();
 });
 
@@ -118,9 +146,11 @@ function colormap(svg, data, width, height, zoomBehaviors) {
       .attr("height", height)
     .append("g");
   var rect = svg.selectAll("rect").data(merged);
-  rect.enter().append("rect");
+  rect.enter().append("rect").classed("datapt", true);
   rect.exit().remove();
   rect
+      .property("colIndex", function(d, i) { return i % cols; })
+      .property("rowIndex", function(d, i) { return Math.floor(i / cols); })
       .attr("x", function(d, i) {
         return x(i % cols);
       })
@@ -141,7 +171,9 @@ function colormap(svg, data, width, height, zoomBehaviors) {
   }
   draw();
   
-  return draw;
+  return {
+    draw: draw
+  };
 }
 
 function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
@@ -157,7 +189,10 @@ function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
 
   var transform = "translate(40,0)";
   if (rotated) {
-    transform = "rotate(-90," + height/2 + "," + height/2 + ") " + transform;
+    // Flip dendrogram vertically
+    x.range([1, 0]);
+    // Rotate
+    transform = "rotate(-90," + height/2 + "," + height/2 + ") translate(140, 0)";
   }
 
   if (rotated)
@@ -206,17 +241,24 @@ function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
         .attr("class", "node")
         .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
 
+    var anchor = rotated ? "end" : "start";
+    var dx = rotated ? -3 : 3;
     var leafNode = node.filter(function(d, i){ return !d.children; })
         .append("text")
-        .attr("dx", 3)
+        .attr("dx", dx)
         .attr("dy", 3)
-        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+        .style("text-anchor", anchor)
         .text(function(d) { return d.name; });
 
     //d3.select(self.frameElement).style("height", height + "px");
+    
+    return leafNode;
   }
-  draw();
-  return draw;
+  var leaves = draw();
+  return {
+    draw: draw,
+    leaves: leaves[0]
+  };
 }
 
 function rowData() {
@@ -231,4 +273,23 @@ function matrixData() {
   return {{matrix}};
 }
 
+$('.datapt').on('mouseover', function() {
+  $('.info').text($(this).children('title').text());
+  d3.select(row.leaves[this.rowIndex]).classed('active', true);
+  d3.select(col.leaves[this.colIndex]).classed('active', true);
+});
+$('.datapt').mouseleave(function() {
+  $('.info').text('');
+  d3.select(row.leaves[this.rowIndex]).classed('active', false);
+  d3.select(col.leaves[this.colIndex]).classed('active', false);
+});
+$('.colormap').mouseover(function() {
+  d3.select(document.body).classed('highlighting', true);
+})
+$('.colormap').mouseleave(function() {
+  d3.select(document.body).classed('highlighting', false);
+})
+
 </script>
+</body>
+</html>
