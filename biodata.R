@@ -20,4 +20,4 @@ fit <- eBayes(lmFit(eset,design))
 selected  <- p.adjust(fit$p.value[, 2]) <0.015
 esetSel <- eset [selected, ]
 
-heatmap(exprs(esetSel))
+heatmap(exprs(esetSel), col=topo.colors(100))

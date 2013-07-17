@@ -44,11 +44,17 @@ hclustToTree <- function(hclust) {
 render <- function(data) {
   matrix <- as.matrix(data)
   
+  rng <- range(matrix)
+  
 #   rowClust <- hclust(dist(matrix))
 #   matrix <- matrix[rowClust$order,]
 #   colClust <- hclust(dist(t(matrix)))
 #   matrix <- matrix[,colClust$order]
+  tmp <- tempfile()
+  png(tmp)
   hm <- heatmap(data, keep.dendro=TRUE)
+  dev.off()
+  unlink(tmp)
   rowClust <- as.hclust(hm$Rowv)
   colClust <- as.hclust(hm$Colv)
   matrix <- matrix[hm$rowInd, hm$colInd]
@@ -61,7 +67,15 @@ render <- function(data) {
                         rows = row.names(matrix),
                         cols = names(matrix)))
   
+  domain <- toJSON(seq.int(rng[1], rng[2], length.out = 100))
+  
+  colors <- topo.colors(100)
+  colors <- toJSON(sub('FF$', '', colors))
+  #colors <- "['yellow', 'green']"
+  
   html <- paste(readLines('template.html', warn=FALSE), collapse='\n')
+  html <- sub('{{domain}}', domain, html, fixed = TRUE)
+  html <- sub('{{colors}}', colors, html, fixed = TRUE)
   html <- sub('{{rowDend}}', rowDend, html, fixed = TRUE)
   html <- sub('{{colDend}}', colDend, html, fixed = TRUE)
   html <- sub('{{matrix}}', matrix, html, fixed = TRUE)
