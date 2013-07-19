@@ -179,16 +179,31 @@ function heatmap(selector, data) {
     };
   }
   
-  var dispatcher = d3.dispatch('hover');
+  var dispatcher = d3.dispatch('hover', 'click');
   
   $('.datapt').on('mouseover', function() {
     $('.info').text($(this).children('title').text());
     d3.select(row.leaves[this.rowIndex]).classed('active', true);
     d3.select(col.leaves[this.colIndex]).classed('active', true);
     dispatcher.hover({
-      value: +$(this).children('title').text(),
-      row: this.rowIndex,
-      col: this.colIndex
+      data: {
+        value: +$(this).children('title').text(),
+        row: this.rowIndex,
+        col: this.colIndex
+      }
+    });
+  });
+  $('.datapt').on('click', function() {
+    $('.info').text($(this).children('title').text());
+    d3.selectAll('.datapt.clicked').classed('clicked', false);
+    d3.select(row.leaves[this.rowIndex]).classed('clicked', true);
+    d3.select(this).classed('clicked', true);
+    dispatcher.click({
+      data: {
+        value: +$(this).children('title').text(),
+        row: this.rowIndex,
+        col: this.colIndex
+      }
     });
   });
   $('.datapt').mouseleave(function() {

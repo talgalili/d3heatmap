@@ -15,7 +15,7 @@
   shape-rendering: crispEdges;
 }
 
-.heatmap {
+.d3-heatmap {
   position: relative;
   width: 820px;
   height: 700px;

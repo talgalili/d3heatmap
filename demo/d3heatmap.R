@@ -24,16 +24,25 @@ heatmap(exprs(esetSel), col=topo.colors(100))
 
 library(shiny)
 
-showHeatmap(exprs(esetSel))
-# runApp(
-#   list(
-#     ui = basicPage(
-#       heatmapOutput('heatmap')
-#     ),
-#     server = function(input, output) {
-#       output$heatmap <- renderHeatmap(
-#         exprs(esetSel)
-#       )
-#     }
-#   )
-# )
+#showHeatmap(exprs(esetSel))
+runApp(
+  list(
+    ui = pageWithSidebar(
+      headerPanel('Heatmap'),
+      sidebarPanel(
+        verbatimTextOutput('hovered')
+      ),
+      mainPanel(
+        heatmapOutput('heatmap')
+      )
+    ),
+    server = function(input, output) {
+      output$heatmap <- renderHeatmap(
+        exprs(esetSel)
+      )
+      output$hovered <- renderPrint(
+        input$heatmap_hover
+      )
+    }
+  )
+)
