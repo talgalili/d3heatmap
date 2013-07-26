@@ -4,6 +4,7 @@ $.extend(heatmapOutputBinding, {
     return scope.find('.d3-heatmap');
   },
   renderValue: function(el, data) {
+    $(el).html('');
     var id = this.getId(el);
     var hm = heatmap(el, data);
     hm.on('hover', function(e) {
