@@ -50,7 +50,7 @@ d3heatmap <- function(data, theme = "", colors = "RdYlBu",
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
-  colors <- rev(leaflet::colorNumeric(colors, 1:100)(1:100))
+  colors <- leaflet::colorNumeric(colors, 1:100)(1:100)
 
   matrix <- list(data = as.numeric(t(matrix)),
     dim = dim(matrix),
