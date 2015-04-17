@@ -3,8 +3,31 @@ function heatmap(selector, data, options) {
 
   var bbox = el.node().getBoundingClientRect();
 
+  var Controller = function() {
+    this._events = d3.dispatch("highlight");
+    this._highlight = {x: null, y: null};
+  };
+  (function() {
+    this.highlight = function(x, y) {
+      if (arguments.length == 0) {
+        return this._highlight;
+      } else if (arguments.length == 1) {
+        this._highlight = x;
+      } else {
+        this._highlight = {x: x, y: y};
+      }
+      this._events.highlight.call(this, this._highlight);
+    };
+
+    this.on = function(evt, callback) {
+      this._events.on(evt, callback);
+    };
+  }).call(Controller.prototype);
+
+  var controller = new Controller();
+
   // Set option defaults
-  var opts = {};
+  var opts = {}, options = options || {};
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
   opts.xclust_height = options.xclust_height || opts.height * 0.12;
@@ -189,6 +212,17 @@ function heatmap(selector, data, options) {
     var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
+    
+    axisNodes.selectAll("text")
+        .property("index", function(d, i) { return i; })
+        .on("mouseenter", function(e) {
+          var hl = {x: null, y: null};
+          if (rotated)
+            hl.x = this.index;
+          else
+            hl.y = this.index;
+          controller.highlight(hl);
+        });
 
     if (rotated) {
       axisNodes.selectAll("text")
@@ -294,13 +328,13 @@ function heatmap(selector, data, options) {
     };
   }
 
-  function highlightPoints(row, col) {
-    var hasRow = typeof(row) === 'number';
-    var hasCol = typeof(col) === 'number';
+  function highlightPoints(x, y) {
+    var hasX = typeof(x) === 'number';
+    var hasY = typeof(y) === 'number';
     el.selectAll('.datapt').classed('highlight', function(d, i) {
-      return (this.rowIndex === row) || (this.colIndex === col);
+      return (this.rowIndex === y) || (this.colIndex === x);
     });
-    el.classed('heatmap-hover', hasRow || hasCol);
+    el.classed('heatmap-hover', hasX || hasY);
   }
   
   var dispatcher = d3.dispatch('hover', 'click');
@@ -336,24 +370,26 @@ function heatmap(selector, data, options) {
     d3.select(col.leaves[this.colIndex]).classed('active', false);
   }
   function on_col_label_mouseenter(e) {
-    var col = +d3.select(this).attr("index");
-    highlightPoints(null, col);
+    controller.highlight(+d3.select(this).attr("index"), null);
   }
   function on_col_label_mouseleave(e) {
-    highlightPoints(null, null);
+    controller.highlight(null, null);
   }
   function on_row_label_mouseenter(e) {
-    var row = +d3.select(this).attr("index");
-    highlightPoints(row, null);
+    controller.highlight(null, +d3.select(this).attr("index"));
   }
   function on_row_label_mouseleave(e) {
-    highlightPoints(null, null);
+    controller.highlight(null, null);
   }
   el.select('.colormap').on("mouseover", function() {
     el.classed('highlighting', true);
   });
   el.select('.colormap').on("mouseleave", function() {
     el.classed('highlighting', false);
+  });
+
+  controller.on("highlight", function(hl) {
+    highlightPoints(hl.x, hl.y);
   });
   
   return {
