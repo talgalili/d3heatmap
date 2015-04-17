@@ -1,17 +1,17 @@
-function heatmap(selector, data, opts) {
+function heatmap(selector, data, options) {
   var el = d3.select(selector);
 
   var bbox = el.node().getBoundingClientRect();
 
   // Set option defaults
-  opts = opts || {};
-  opts.width = opts.width || bbox.width;
-  opts.height = opts.height || bbox.height;
-  opts.xclust_height = opts.xclust_height || opts.height * 0.12;
-  opts.yclust_width = opts.yclust_width || opts.width * 0.12;
-  opts.xaxis_height = opts.xaxis_height || 120;
-  opts.yaxis_width = opts.yaxis_width || 120;
-  opts.axis_padding = 3;
+  var opts = {};
+  opts.width = options.width || bbox.width;
+  opts.height = options.height || bbox.height;
+  opts.xclust_height = options.xclust_height || opts.height * 0.12;
+  opts.yclust_width = options.yclust_width || opts.width * 0.12;
+  opts.xaxis_height = options.xaxis_height || 120;
+  opts.yaxis_width = options.yaxis_width || 120;
+  opts.axis_padding = options.axis_padding || 3;
 
   if (!data.rows) {
     opts.yclust_width = 0;

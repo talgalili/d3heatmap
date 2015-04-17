@@ -7,12 +7,15 @@ HTMLWidgets.widget({
   initialize: function(el, width, height) {
 
     return {
-      lastTheme: null
+      lastTheme: null,
+      lastValue: null
     };
 
   },
 
   renderValue: function(el, x, instance) {
+    
+    instance.lastValue = x;
     
     if (instance.lastTheme && instance.lastTheme != x.theme) {
       d3.select(document.body).classed("theme-" + instance.lastTheme, false);
@@ -43,7 +46,9 @@ HTMLWidgets.widget({
   },
 
   resize: function(el, width, height, instance) {
-
+    if (instance.lastValue) {
+      this.renderValue(el, instance.lastValue, instance);
+    }
   }
 
 });

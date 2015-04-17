@@ -66,7 +66,8 @@ d3heatmap <- function(data, theme = "", width = NULL, height = NULL,
     x,
     width = width,
     height = height,
-    package = 'heatmap'
+    package = 'heatmap',
+    sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
 }
 
