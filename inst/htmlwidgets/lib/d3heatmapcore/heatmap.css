@@ -57,29 +57,16 @@ body.theme-dark {
   position: absolute;
   shape-rendering: crispEdges;
 }
-.highlighting text {
-  fill: rgba(0, 0, 0, 0.25);
-}
-.highlighting text.active {
-  fill: black;
-}
-.theme-dark .highlighting text {
-  fill: rgba(226, 226, 226, 0.25);
-}
-.theme-dark text,
-.theme-dark .highlighting text.active {
+.theme-dark text {
   fill: #E2E2E2;
 }
-.heatmap-hover .colormap .datapt {
+.highlighting .colormap .datapt {
   opacity: 0.2;
 }
-.heatmap-hover .colormap .datapt.highlight {
+.highlighting .colormap .datapt.highlight {
   opacity: 1;
 }
 
-.heatmap-hover .axis g.tick {
+.highlighting .axis g.tick.faded {
   opacity: 0.4 !important;
-}
-.heatmap-hover .axis g.tick.highlight {
-  opacity: 1 !important;
 }

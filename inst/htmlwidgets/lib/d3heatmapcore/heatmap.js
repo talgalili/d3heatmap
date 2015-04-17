@@ -118,6 +118,10 @@ function heatmap(selector, data, options) {
     inner.on("click", function() {
       controller.highlight(null, null);
     });
+    controller.on('highlight.inner', function(hl) {
+      inner.classed('highlighting',
+        typeof(hl.x) === 'number' || typeof(hl.y) === 'number');
+    });
   })();
   
   var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
@@ -210,6 +214,12 @@ function heatmap(selector, data, options) {
           return color(d);
         });
     rect.append("title").text(function(d) { return d + ""; });
+
+    controller.on('highlight.datapt', function(hl) {
+      rect.classed('highlight', function(d, i) {
+        return (this.rowIndex === hl.y) || (this.colIndex === hl.x);
+      });
+    });
     
     function draw() {
       var t = [zoomBehaviors[0].translate()[0], zoomBehaviors[1].translate()[1]];
@@ -280,6 +290,18 @@ function heatmap(selector, data, options) {
         .attr("transform", "rotate(45),translate(6, 0)")
         .style("text-anchor", "start");
     }
+    
+    controller.on('highlight.axis-' + (rotated ? 'x' : 'y'), function(hl) {
+      var ticks = axisNodes.selectAll('.tick');
+      var selected = hl[rotated ? 'x' : 'y'];
+      if (typeof(selected) !== 'number') {
+        ticks.classed('faded', false);
+        return;
+      }
+      ticks.classed('faded', function(d, i) {
+        return i !== selected;
+      });
+    });
 
   }
   
@@ -378,30 +400,7 @@ function heatmap(selector, data, options) {
     };
   }
 
-  function highlightPoints(x, y) {
-    var hasX = typeof(x) === 'number';
-    var hasY = typeof(y) === 'number';
-    el.selectAll('.datapt').classed('highlight', function(d, i) {
-      return (this.rowIndex === y) || (this.colIndex === x);
-    });
-    el.classed('heatmap-hover', hasX || hasY);
-    
-    if (hasX) {
-      el.selectAll('.xaxis g.tick').classed('highlight', function(d, i) {
-        return i == x;
-      });
-    } else {
-      el.selectAll('.xaxis g.tick').classed('highlight', true);
-    }
-    if (hasY) {
-      el.selectAll('.yaxis g.tick').classed('highlight', function(d, i) {
-        return i == y;
-      });
-    } else {
-      el.selectAll('.yaxis g.tick').classed('highlight', true);
-    }
-  }
-  
+ 
   var dispatcher = d3.dispatch('hover', 'click');
   
   function on_datapt_mouseenter(e) {
@@ -453,10 +452,6 @@ function heatmap(selector, data, options) {
 //     el.classed('highlighting', false);
 //   });
 
-  controller.on("highlight", function(hl) {
-    highlightPoints(hl.x, hl.y);
-  });
-  
   return {
     on: function(type, listener) {
       dispatcher.on(type, listener);
