@@ -1,3 +1,7 @@
+body.theme-dark {
+  background-color: #333 !important;
+}
+
 .node circle {
   fill: #fff;
   stroke: steelblue;
@@ -13,6 +17,9 @@
   stroke: #AAA;
   stroke-width: 1px;
   shape-rendering: crispEdges;
+}
+.theme-dark .link {
+  stroke: #BBB;
 }
 
 .d3-heatmap {
@@ -67,8 +74,15 @@
 .highlighting text.active {
   fill: black;
 }
+.theme-dark .highlighting text {
+  fill: rgba(226, 226, 226, 0.25);
+}
+.theme-dark text,
+.theme-dark .highlighting text.active {
+  fill: #E2E2E2;
+}
 .heatmap-hover .colormap .datapt {
-  opacity: 0.15;
+  opacity: 0.2;
 }
 .heatmap-hover .colormap .datapt.highlight {
   opacity: 1;

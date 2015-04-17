@@ -5,7 +5,7 @@
 #' @import htmlwidgets
 #'
 #' @export
-d3heatmap <- function(data, width = NULL, height = NULL) {
+d3heatmap <- function(data, theme = "", width = NULL, height = NULL) {
 
   
   matrix <- as.matrix(data)
@@ -41,7 +41,7 @@ d3heatmap <- function(data, width = NULL, height = NULL) {
     colors = colors,
     domain = domain)
   
-  x <- list(rows = rowDend, cols = colDend, matrix = matrix)
+  x <- list(rows = rowDend, cols = colDend, matrix = matrix, theme = theme)
   
   # create widget
   htmlwidgets::createWidget(

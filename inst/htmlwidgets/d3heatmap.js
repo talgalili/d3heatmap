@@ -7,11 +7,19 @@ HTMLWidgets.widget({
   initialize: function(el, width, height) {
 
     return {
+      lastTheme: null
     };
 
   },
 
   renderValue: function(el, x, instance) {
+    
+    if (instance.lastTheme && instance.lastTheme != x.theme) {
+      d3.select(document.body).classed("theme-" + instance.lastTheme, false);
+    }
+    if (x.theme) {
+      d3.select(document.body).classed("theme-" + x.theme, true);
+    }
 
     el.innerHTML = "";
     var hm = heatmap(el, x);
