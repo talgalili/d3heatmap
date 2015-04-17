@@ -20,4 +20,5 @@ Imports:
 URL: https://github.com/rstudio/shiny-incubator
 BugReports: https://github.com/rstudio/shiny-incubator/issues
 Collate:
+    'd3heatmap.R'
     'heatmap.R'
