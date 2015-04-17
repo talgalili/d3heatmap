@@ -12,7 +12,8 @@
 #' @import htmlwidgets
 #'
 #' @export
-d3heatmap <- function(data, theme = "", width = NULL, height = NULL,
+d3heatmap <- function(data, theme = "", colors = "RdYlBu",
+  width = NULL, height = NULL,
   cluster = !any(is.na(data))
   ) {
 
@@ -49,7 +50,7 @@ d3heatmap <- function(data, theme = "", width = NULL, height = NULL,
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
-  colors <- rev(leaflet::colorNumeric("RdYlBu", 1:100)(1:100))
+  colors <- rev(leaflet::colorNumeric(colors, 1:100)(1:100))
 
   matrix <- list(data = as.numeric(t(matrix)),
     dim = dim(matrix),

@@ -4,7 +4,8 @@
 \alias{d3heatmap}
 \title{D3 Heatmap widget}
 \usage{
-d3heatmap(message, width = NULL, height = NULL)
+d3heatmap(data, theme = "", colors = "RdYlBu", width = NULL,
+  height = NULL, cluster = !any(is.na(data)))
 }
 \description{
 Creates a D3.js-based heatmap widget.
