@@ -166,13 +166,13 @@ function heatmap(selector, data, options) {
       .append("g");
     var rect = svg.selectAll("rect").data(merged);
     rect.enter().append("rect").classed("datapt", true)
-        .on("click", on_datapt_click)
-        .on("mouseenter", function(d, i) {
-          controller.datapoint_hover(this.colIndex, this.rowIndex, d);
-        })
-        .on("mouseleave", function(d, i) {
-          controller.datapoint_hover(null, null, null);
-        });
+        //.on("click", on_datapt_click)
+        //.on("mouseenter", function(d, i) {
+        //  controller.datapoint_hover(this.colIndex, this.rowIndex, d);
+        //})
+        //.on("mouseleave", function(d, i) {
+        //  controller.datapoint_hover(null, null, null);
+        //});
     rect.exit().remove();
     rect
         .property("colIndex", function(d, i) { return i % cols; })
@@ -411,12 +411,12 @@ function heatmap(selector, data, options) {
   function on_row_label_mouseleave(e) {
     controller.highlight(null, null);
   }
-  el.select('.colormap').on("mouseover", function() {
-    el.classed('highlighting', true);
-  });
-  el.select('.colormap').on("mouseleave", function() {
-    el.classed('highlighting', false);
-  });
+//   el.select('.colormap').on("mouseover", function() {
+//     el.classed('highlighting', true);
+//   });
+//   el.select('.colormap').on("mouseleave", function() {
+//     el.classed('highlighting', false);
+//   });
 
   controller.on("highlight", function(hl) {
     highlightPoints(hl.x, hl.y);
