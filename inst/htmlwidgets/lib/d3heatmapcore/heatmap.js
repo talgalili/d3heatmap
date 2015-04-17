@@ -4,8 +4,8 @@ function heatmap(selector, data) {
   (function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
-    var colDend = inner.append("svg").classed("colDend", true);
-    var rowDend = inner.append("svg").classed("rowDend", true);
+    var colDend = inner.append("svg").classed("dendrogram colDend", true);
+    var rowDend = inner.append("svg").classed("dendrogram rowDend", true);
     var colmap = inner.append("svg").classed("colormap", true);
   })();
   

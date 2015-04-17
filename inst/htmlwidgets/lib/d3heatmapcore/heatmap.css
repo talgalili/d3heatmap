@@ -36,6 +36,9 @@
   font-size: 40px;
   padding-top: 118px;
 }
+.dendrogram {
+  cursor: default;
+}
 .colDend {
   position: absolute;
   top: 0;
