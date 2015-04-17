@@ -28,8 +28,8 @@ body.theme-dark {
   stroke-width: 1px;
 }
 .d3heatmap .axis text {
-  font: 16px sans-serif;
-  font-family: sans-serif;
+  font: 15px;
+  font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }
 .inner {
   position: relative;

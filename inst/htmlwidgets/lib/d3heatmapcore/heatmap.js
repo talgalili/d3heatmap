@@ -110,6 +110,10 @@ function heatmap(selector, data, options) {
     var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
     var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
+    
+    // Hack the width of the x-axis to allow x-overflow of rotated labels; the
+    // QtWebkit viewer won't allow svg elements to overflow:visible.
+    xaxis.style("width", (opts.width - opts.yclust_width) + "px");
 
     inner.on("click", function() {
       controller.highlight(null, null);
@@ -242,25 +246,19 @@ function heatmap(selector, data, options) {
     var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
+    var fontSize = Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8)));
+    axisNodes.selectAll("text").style("font-size", fontSize + "px");
     
-    if (rotated) {
-      axisNodes.selectAll("text")
-        .attr("transform", "rotate(45),translate(6, 0)")
-        .style("text-anchor", "start");
-    }
-
-    var mouseTargets = svg.append("g").selectAll("rect").data(leaves);
+    var mouseTargets = svg.append("g").selectAll("g").data(leaves);
     mouseTargets
       .enter()
-        .append("rect");
+        .append("g").append("rect");
     mouseTargets
-        .attr(rotated ? "x" : "y", function(d, i) {
-          return scale(d);
+        .attr("transform", function(d, i) {
+          var x = rotated ? scale(d) : 0;
+          var y = rotated ? 0 : scale(d);
+          return "translate(" + x + "," + y + ")";
         })
-        .attr(rotated ? "width" : "height", scale.rangeBand())
-        .attr(rotated ? "y" : "x", 0)
-        .attr(rotated ? "height" : "width", rotated ? height : width)
-        .attr("fill", "transparent")
         .on("click", function(d, i) {
           var hl = {x: null, y: null};
           if (rotated)
@@ -269,8 +267,20 @@ function heatmap(selector, data, options) {
             hl.y = i;
           controller.highlight(hl);
           d3.event.stopPropagation();
-        });
+        })
+      .selectAll("rect")
+        .attr("transform", rotated ? "rotate(45),translate(6,0)" : "")
+        .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
+        .attr("width", rotated ? height * 1.414 : width)
+        .attr("fill", "red")
+        .style("opacity", 0.6);
         
+    if (rotated) {
+      axisNodes.selectAll("text")
+        .attr("transform", "rotate(45),translate(6, 0)")
+        .style("text-anchor", "start");
+    }
+
   }
   
   function dendrogram(svg, data, rotated, width, height, padding, zoomBehavior) {
