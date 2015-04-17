@@ -273,8 +273,7 @@ function heatmap(selector, data, options) {
         .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
         .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
         .attr("width", rotated ? height * 1.414 * 1.2 : width)
-        .attr("fill", "red")
-        .style("opacity", 0.5);
+        .attr("fill", "transparent");
 
     if (rotated) {
       axisNodes.selectAll("text")
