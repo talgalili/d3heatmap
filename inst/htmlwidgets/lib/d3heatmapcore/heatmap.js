@@ -1,10 +1,12 @@
 function heatmap(selector, data, opts) {
   var el = d3.select(selector);
 
+  var bbox = el.node().getBoundingClientRect();
+
   // Set option defaults
   opts = opts || {};
-  opts.width = opts.width || 800;
-  opts.height = opts.height || 500;
+  opts.width = opts.width || bbox.width;
+  opts.height = opts.height || bbox.height;
   opts.xclust_height = opts.xclust_height || opts.height * 0.12;
   opts.yclust_width = opts.yclust_width || opts.width * 0.12;
   opts.xaxis_height = opts.xaxis_height || 120;
@@ -144,7 +146,12 @@ function heatmap(selector, data, opts) {
         })
         .attr("width", x(1))
         .attr("height", y(1))
-        .attr("fill", function(d) { return color(d); });
+        .attr("fill", function(d) {
+          if (d === null) {
+            return "transparent";
+          }
+          return color(d);
+        });
     rect.append("title").text(function(d) { return d + ""; });
     
     function draw() {
@@ -179,9 +186,17 @@ function heatmap(selector, data, opts) {
         .tickPadding(padding)
         .tickValues(leaves);
 
-    var g = svg.append("g")
+    var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
+
+    if (rotated) {
+      axisNodes.selectAll("text")
+        .attr("y", -4)
+        .attr("x", 10)
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start");
+    }
   }
   
   function dendrogram(svg, data, rotated, width, height, padding, zoomBehavior) {

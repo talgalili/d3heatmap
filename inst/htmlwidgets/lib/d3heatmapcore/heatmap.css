@@ -2,16 +2,6 @@ body.theme-dark {
   background-color: #333 !important;
 }
 
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.node {
-  font: 12px sans-serif;
-}
-
 .link {
   fill: none;
   stroke: #AAA;
@@ -22,22 +12,22 @@ body.theme-dark {
   stroke: #BBB;
 }
 
-.d3-heatmap {
+.d3heatmap {
   position: relative;
   width: 820px;
   height: 700px;
   overflow: hidden;
 }
-.d3-heatmap .domain {
+.d3heatmap .domain {
   fill: none;
   stroke: none;
 }
-.d3-heatmap .axis line {
+.d3heatmap .axis line {
   fill: none;
   stroke: #AAA;
   stroke-width: 1px;
 }
-.d3-heatmap .axis text {
+.d3heatmap .axis text {
   font: 12px sans-serif;
   font-family: sans-serif;
 }
@@ -54,7 +44,7 @@ body.theme-dark {
   font-size: 40px;
   padding-top: 118px;
 }
-.dendrogram {
+.d3heatmap text {
   cursor: default;
 }
 .colDend {
