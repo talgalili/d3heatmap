@@ -90,16 +90,26 @@ function heatmap(selector, data, options) {
     width: colormapBounds.width,
     height: opts.xaxis_height
   };
-  
+
+  function cssify(styles) {
+    return {
+      position: styles.position,
+      top: styles.top + "px",
+      left: styles.left + "px",
+      width: styles.width + "px",
+      height: styles.height + "px"
+    }
+  }
+
   // Create DOM structure
   (function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
-    var colDend = inner.append("svg").classed("dendrogram colDend", true).style(colDendBounds);
-    var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(rowDendBounds);
-    var colmap = inner.append("svg").classed("colormap", true).style(colormapBounds);
-    var xaxis = inner.append("svg").classed("axis xaxis", true).style(xaxisBounds);
-    var yaxis = inner.append("svg").classed("axis yaxis", true).style(yaxisBounds);
+    var colDend = inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
+    var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
+    var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
+    var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
+    var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
   })();
   
   var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
