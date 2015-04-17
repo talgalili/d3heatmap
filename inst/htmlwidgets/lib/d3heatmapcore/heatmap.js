@@ -249,14 +249,15 @@ function heatmap(selector, data, options) {
     var fontSize = Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8)));
     axisNodes.selectAll("text").style("font-size", fontSize + "px");
     
-    var mouseTargets = svg.append("g").selectAll("g").data(leaves);
+    var mouseTargets = svg.append("g")
+      .selectAll("g").data(leaves);
     mouseTargets
       .enter()
         .append("g").append("rect");
     mouseTargets
         .attr("transform", function(d, i) {
-          var x = rotated ? scale(d) : 0;
-          var y = rotated ? 0 : scale(d);
+          var x = rotated ? scale(d) + scale.rangeBand()/2 : 0;
+          var y = rotated ? padding + 6 : scale(d);
           return "translate(" + x + "," + y + ")";
         })
         .on("click", function(d, i) {
@@ -269,10 +270,11 @@ function heatmap(selector, data, options) {
           d3.event.stopPropagation();
         })
       .selectAll("rect")
-        .attr("transform", rotated ? "rotate(45),translate(6,0)" : "")
+        .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
         .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
-        .attr("width", rotated ? height * 1.414 : width)
-        .attr("fill", "transparent");
+        .attr("width", rotated ? height * 1.414 * 1.2 : width)
+        .attr("fill", "red")
+        .style("opacity", 0.5);
 
     if (rotated) {
       axisNodes.selectAll("text")
