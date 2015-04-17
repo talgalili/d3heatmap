@@ -16,5 +16,6 @@ spr <- spr %>% select(-sample)
 sprM <- as.matrix(spr)
 sprM <- sprM[1:10,1:30]
 
-d3heatmap(sprM, theme = "dark")
+colors <- rev(c("#800C38", "#BD122B", "#E31E16", "#FC3518", "#FD4919", "#FD7832",  "#FD9638", "#FE864C", "#FECB62", "#FFE98C"))
+d3heatmap(sprM, colors = colors, theme = "dark")
 #d3heatmap(matrix(runif(100), 10, 10), theme = 'dark')
