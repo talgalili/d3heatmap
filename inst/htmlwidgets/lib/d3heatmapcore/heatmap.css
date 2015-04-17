@@ -76,3 +76,10 @@ body.theme-dark {
 .heatmap-hover .colormap .datapt.highlight {
   opacity: 1;
 }
+
+.heatmap-hover .axis g.tick {
+  opacity: 0.4 !important;
+}
+.heatmap-hover .axis g.tick.highlight {
+  opacity: 1 !important;
+}

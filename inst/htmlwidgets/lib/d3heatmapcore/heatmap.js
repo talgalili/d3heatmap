@@ -385,6 +385,14 @@ function heatmap(selector, data, options) {
       return (this.rowIndex === y) || (this.colIndex === x);
     });
     el.classed('heatmap-hover', hasX || hasY);
+    
+    el.selectAll('.axis g.tick').classed('highlight', false);
+    if (hasX) {
+      d3.select(el.selectAll('.xaxis g.tick')[0][x]).classed('highlight', true);
+    }
+    if (hasY) {
+      d3.select(el.selectAll('.yaxis g.tick')[0][y]).classed('highlight', true);
+    }
   }
   
   var dispatcher = d3.dispatch('hover', 'click');
