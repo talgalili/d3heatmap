@@ -28,7 +28,7 @@ body.theme-dark {
   stroke-width: 1px;
 }
 .d3heatmap .axis text {
-  font: 12px sans-serif;
+  font: 16px sans-serif;
   font-family: sans-serif;
 }
 .inner {

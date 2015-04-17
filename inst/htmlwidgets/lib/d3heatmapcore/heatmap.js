@@ -245,9 +245,7 @@ function heatmap(selector, data, options) {
     
     if (rotated) {
       axisNodes.selectAll("text")
-        .attr("y", -4)
-        .attr("x", 10)
-        .attr("transform", "rotate(90)")
+        .attr("transform", "rotate(45),translate(6, 0)")
         .style("text-anchor", "start");
     }
 
