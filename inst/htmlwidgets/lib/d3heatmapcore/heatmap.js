@@ -4,8 +4,9 @@ function heatmap(selector, data, options) {
   var bbox = el.node().getBoundingClientRect();
 
   var Controller = function() {
-    this._events = d3.dispatch("highlight");
+    this._events = d3.dispatch("highlight", "datapoint_hover");
     this._highlight = {x: null, y: null};
+    this._datapoint_hover = {x: null, y: null, value: null};
   };
   (function() {
     this.highlight = function(x, y) {
@@ -17,6 +18,17 @@ function heatmap(selector, data, options) {
         this._highlight = {x: x, y: y};
       }
       this._events.highlight.call(this, this._highlight);
+    };
+
+    this.datapoint_hover = function(x, y, value) {
+      if (arguments.length == 0) {
+        return this._datapoint_hover;
+      } else if (arguments.length == 1) {
+        this._datapoint_hover = x;
+      } else {
+        this._datapoint_hover = {x: x, y: y, value: value};
+      }
+      this._events.datapoint_hover.call(this, this._datapoint_hover);
     };
 
     this.on = function(evt, callback) {
@@ -155,8 +167,12 @@ function heatmap(selector, data, options) {
     var rect = svg.selectAll("rect").data(merged);
     rect.enter().append("rect").classed("datapt", true)
         .on("click", on_datapt_click)
-        .on("mouseenter", on_datapt_mouseenter)
-        .on("mouseleave", on_datapt_mouseleave);
+        .on("mouseenter", function(d, i) {
+          controller.datapoint_hover(this.colIndex, this.rowIndex, d);
+        })
+        .on("mouseleave", function(d, i) {
+          controller.datapoint_hover(null, null, null);
+        });
     rect.exit().remove();
     rect
         .property("colIndex", function(d, i) { return i % cols; })
@@ -213,17 +229,6 @@ function heatmap(selector, data, options) {
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
     
-    axisNodes.selectAll("text")
-        .property("index", function(d, i) { return i; })
-        .on("mouseenter", function(e) {
-          var hl = {x: null, y: null};
-          if (rotated)
-            hl.x = this.index;
-          else
-            hl.y = this.index;
-          controller.highlight(hl);
-        });
-
     if (rotated) {
       axisNodes.selectAll("text")
         .attr("y", -4)
@@ -231,6 +236,31 @@ function heatmap(selector, data, options) {
         .attr("transform", "rotate(90)")
         .style("text-anchor", "start");
     }
+
+    var mouseTargets = svg.append("g").selectAll("rect").data(leaves);
+    mouseTargets
+      .enter()
+        .append("rect");
+    mouseTargets
+        .attr(rotated ? "x" : "y", function(d, i) {
+          return scale(d);
+        })
+        .attr(rotated ? "width" : "height", scale.rangeBand())
+        .attr(rotated ? "y" : "x", 0)
+        .attr(rotated ? "height" : "width", rotated ? height : width)
+        .attr("fill", "transparent")
+        .on("mouseenter", function(d, i) {
+          var hl = {x: null, y: null};
+          if (rotated)
+            hl.x = i;
+          else
+            hl.y = i;
+          controller.highlight(hl);
+        })
+        .on("mouseleave", function(d, i) {
+          controller.highlight(null, null);
+        });
+        
   }
   
   function dendrogram(svg, data, rotated, width, height, padding, zoomBehavior) {

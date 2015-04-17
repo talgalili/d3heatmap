@@ -7,5 +7,5 @@ dependencies:
   version: 0.0.0
   src: htmlwidgets/lib/d3heatmapcore
   script: heatmap.js
-  style: heatmap.css
+  stylesheet: heatmap.css
 
