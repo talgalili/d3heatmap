@@ -1,12 +1,68 @@
-function heatmap(selector, data) {
+function heatmap(selector, data, opts) {
   var el = d3.select(selector);
+
+  // Set option defaults
+  opts = opts || {};
+  opts.width = opts.width || 800;
+  opts.height = opts.height || 500;
+  opts.xclust_height = opts.xclust_height || opts.height * 0.12;
+  opts.yclust_width = opts.yclust_width || opts.width * 0.12;
+  opts.xaxis_height = opts.xaxis_height || 120;
+  opts.yaxis_width = opts.yaxis_width || 120;
+  opts.axis_padding = 3;
+
+  if (!data.rows) {
+    opts.yclust_width = 0;
+  }
+  if (!data.cols) {
+    opts.xclust_height = 0;
+  }
+
+  var colormapBounds = {
+    position: "absolute",
+    left: opts.yclust_width,
+    top: opts.xclust_height,
+    width: opts.width - opts.yclust_width - opts.yaxis_width,
+    height: opts.height - opts.xclust_height - opts.xaxis_height
+  };
+  var colDendBounds = {
+    position: "absolute",
+    left: colormapBounds.left,
+    top: 0,
+    width: colormapBounds.width,
+    height: opts.xclust_height
+  };
+  var rowDendBounds = {
+    position: "absolute",
+    left: 0,
+    top: colormapBounds.top,
+    width: opts.yclust_width,
+    height: colormapBounds.height
+  };
+  var yaxisBounds = {
+    position: "absolute",
+    top: colormapBounds.top,
+    left: colormapBounds.left + colormapBounds.width,
+    width: opts.yaxis_width,
+    height: colormapBounds.height
+  };
+  var xaxisBounds = {
+    position: "absolute",
+    top: colormapBounds.top + colormapBounds.height,
+    left: colormapBounds.left,
+    width: colormapBounds.width,
+    height: opts.xaxis_height
+  };
   
+  // Create DOM structure
   (function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
-    var colDend = inner.append("svg").classed("dendrogram colDend", true);
-    var rowDend = inner.append("svg").classed("dendrogram rowDend", true);
-    var colmap = inner.append("svg").classed("colormap", true);
+    var colDend = inner.append("svg").classed("dendrogram colDend", true).style(colDendBounds);
+    var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(rowDendBounds);
+    var colmap = inner.append("svg").classed("colormap", true).style(colormapBounds);
+    var xaxis = inner.append("svg").classed("axis xaxis", true).style(xaxisBounds);
+    var yaxis = inner.append("svg").classed("axis yaxis", true).style(yaxisBounds);
   })();
   
   var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
@@ -19,9 +75,11 @@ function heatmap(selector, data) {
   el.select('.colDend').call(xZoomBehavior);
   el.select('.rowDend').call(yZoomBehavior);
   
-  var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, 500, yZoomBehavior);
-  var col = dendrogram(el.select('svg.colDend'), data.cols, true, 600, 250, xZoomBehavior);
-  var colormap = colormap(el.select('svg.colormap'), data.matrix, 600, 500, colormapZooms);
+  var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding, yZoomBehavior);
+  var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding, xZoomBehavior);
+  var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, colormapZooms);
+  var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, xZoomBehavior);
+  var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, yZoomBehavior);
   
   function updateColormapZoom() {
     var xZoom = colormapZooms[0];
@@ -34,11 +92,15 @@ function heatmap(selector, data) {
   }
   
   xZoomBehavior.on('zoom', function() {
-    col.draw();
+    if (col) {
+      col.draw();
+    }
     updateColormapZoom();
   });
   yZoomBehavior.on('zoom', function() {
-    row.draw();
+    if (row) {
+      row.draw();
+    }
     updateColormapZoom();
   });
   
@@ -96,9 +158,33 @@ function heatmap(selector, data) {
       draw: draw
     };
   }
-  
-  function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
+
+  function axisLabels(svg, data, rotated, width, height, padding) {
+    var leaves;
+    if (data.children) {
+      leaves = d3.layout.cluster().nodes(data)
+          .filter(function(x) { return !x.children; })
+          .map(function(x) { return x.name + ""; });
+    } else if (data.length) {
+      leaves = data;
+    }
     
+    var scale = d3.scale.ordinal()
+        .domain(leaves)
+        .rangeBands([0, rotated ? width : height]);
+    var axis = d3.svg.axis()
+        .scale(scale)
+        .orient(rotated ? "bottom" : "right")
+        .outerTickSize(0)
+        .tickPadding(padding)
+        .tickValues(leaves);
+
+    var g = svg.append("g")
+        .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
+        .call(axis);
+  }
+  
+  function dendrogram(svg, data, rotated, width, height, padding, zoomBehavior) {
     var x = d3.scale.linear();
     var y = d3.scale.linear()
         .domain([0, height])
@@ -106,14 +192,14 @@ function heatmap(selector, data) {
     
     var cluster = d3.layout.cluster()
         .separation(function(a, b) { return 1; })
-        .size([rotated ? width : height, (rotated ? height : width) - 160]);
+        .size([rotated ? width : height, (rotated ? height : width) - padding]);
     
-    var transform = "translate(40,0)";
+    var transform = "";
     if (rotated) {
       // Flip dendrogram vertically
       x.range([1, 0]);
       // Rotate
-      transform = "rotate(-90," + height/2 + "," + height/2 + ") translate(140, 0)";
+      transform = "rotate(-90," + height/2 + "," + height/2 + ") translate(" + (height-1) + ", 0)";
     }
     
     if (rotated)
@@ -155,6 +241,7 @@ function heatmap(selector, data) {
           .attr("class", "link")
           .attr("points", elbow);
       
+      /*
       var node = svg.selectAll(".node")
           .data(nodes)
           .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
@@ -183,11 +270,12 @@ function heatmap(selector, data) {
       }
       
       return leafNode;
+      */
     }
-    var leaves = draw();
+    draw();
     return {
       draw: draw,
-      leaves: leaves[0]
+      nodes: nodes
     };
   }
 

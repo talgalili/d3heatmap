@@ -22,7 +22,7 @@ HTMLWidgets.widget({
     }
 
     el.innerHTML = "";
-    var hm = heatmap(el, x);
+    var hm = heatmap(el, x, x.options);
     if (window.Shiny) {
       var id = this.getId(el);
       hm.on('hover', function(e) {

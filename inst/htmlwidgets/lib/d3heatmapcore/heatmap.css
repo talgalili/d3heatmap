@@ -9,7 +9,7 @@ body.theme-dark {
 }
 
 .node {
-  font: 10px sans-serif;
+  font: 12px sans-serif;
 }
 
 .link {
@@ -26,12 +26,23 @@ body.theme-dark {
   position: relative;
   width: 820px;
   height: 700px;
-  border: 1px solid #CCC;
   overflow: hidden;
+}
+.d3-heatmap .domain {
+  fill: none;
+  stroke: none;
+}
+.d3-heatmap .axis line {
+  fill: none;
+  stroke: #AAA;
+  stroke-width: 1px;
+}
+.d3-heatmap .axis text {
+  font: 12px sans-serif;
+  font-family: sans-serif;
 }
 .inner {
   position: relative;
-  top: -70px;
 }
 .info {
   position: absolute;
@@ -48,24 +59,12 @@ body.theme-dark {
 }
 .colDend {
   position: absolute;
-  top: 0;
-  left: 200px;
-  width: 600px;
-  height: 250px;
 }
 .rowDend {
   position: absolute;
-  left: 0;
-  top: 250px;
-  height: 500px;
-  width: 200px;
 }
 .colormap {
   position: absolute;
-  left: 200px;
-  top: 250px;
-  width: 600px;
-  height: 500px;
   shape-rendering: crispEdges;
 }
 .highlighting text {
