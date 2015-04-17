@@ -110,6 +110,10 @@ function heatmap(selector, data, options) {
     var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
     var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
+
+    inner.on("click", function() {
+      controller.highlight(null, null);
+    });
   })();
   
   var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
@@ -259,16 +263,14 @@ function heatmap(selector, data, options) {
         .attr(rotated ? "y" : "x", 0)
         .attr(rotated ? "height" : "width", rotated ? height : width)
         .attr("fill", "transparent")
-        .on("mouseenter", function(d, i) {
+        .on("click", function(d, i) {
           var hl = {x: null, y: null};
           if (rotated)
             hl.x = i;
           else
             hl.y = i;
           controller.highlight(hl);
-        })
-        .on("mouseleave", function(d, i) {
-          controller.highlight(null, null);
+          d3.event.stopPropagation();
         });
         
   }
