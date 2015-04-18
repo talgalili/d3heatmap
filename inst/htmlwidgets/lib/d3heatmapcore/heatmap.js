@@ -187,18 +187,12 @@ function heatmap(selector, data, options) {
         .attr("height", height)
       .append("g");
     var rect = svg.selectAll("rect").data(merged);
-    rect.enter().append("rect").classed("datapt", true)
-        //.on("click", on_datapt_click)
-        //.on("mouseenter", function(d, i) {
-        //  controller.datapoint_hover(this.colIndex, this.rowIndex, d);
-        //})
-        //.on("mouseleave", function(d, i) {
-        //  controller.datapoint_hover(null, null, null);
-        //});
+    rect.enter().append("rect").classed("datapt", true);
     rect.exit().remove();
     rect
         .property("colIndex", function(d, i) { return i % cols; })
         .property("rowIndex", function(d, i) { return Math.floor(i / cols); })
+        .property("value", function(d, i) { return d; })
         .attr("x", function(d, i) {
           return x(i % cols);
         })
@@ -213,7 +207,8 @@ function heatmap(selector, data, options) {
           }
           return color(d);
         });
-    rect.append("title").text(function(d) { return d + ""; });
+    rect.append("title")
+        .text(function(d, i) { return (d === null) ? "NA" : d + ""; });
 
     controller.on('highlight.datapt', function(hl) {
       rect.classed('highlight', function(d, i) {
@@ -403,36 +398,6 @@ function heatmap(selector, data, options) {
  
   var dispatcher = d3.dispatch('hover', 'click');
   
-  function on_datapt_mouseenter(e) {
-    el.select('.info').text(d3.select(this).select('title').text());
-    d3.select(row.leaves[this.rowIndex]).classed('active', true);
-    d3.select(col.leaves[this.colIndex]).classed('active', true);
-    dispatcher.hover({
-      data: {
-        value: +d3.select(this).select('title').text(),
-        row: this.rowIndex,
-        col: this.colIndex
-      }
-    });
-  }
-  function on_datapt_click(e) {
-    el.select('.info').text(d3.select(this).select('title').text());
-    d3.selectAll('.datapt.clicked').classed('clicked', false);
-    d3.select(row.leaves[this.rowIndex]).classed('clicked', true);
-    d3.select(this).classed('clicked', true);
-    dispatcher.click({
-      data: {
-        value: +d3.select(this).select('title').text(),
-        row: this.rowIndex,
-        col: this.colIndex
-      }
-    });
-  }
-  function on_datapt_mouseleave(e) {
-    el.select('.info').text('');
-    d3.select(row.leaves[this.rowIndex]).classed('active', false);
-    d3.select(col.leaves[this.colIndex]).classed('active', false);
-  }
   function on_col_label_mouseenter(e) {
     controller.highlight(+d3.select(this).attr("index"), null);
   }
@@ -445,12 +410,6 @@ function heatmap(selector, data, options) {
   function on_row_label_mouseleave(e) {
     controller.highlight(null, null);
   }
-//   el.select('.colormap').on("mouseover", function() {
-//     el.classed('highlighting', true);
-//   });
-//   el.select('.colormap').on("mouseleave", function() {
-//     el.classed('highlighting', false);
-//   });
 
   return {
     on: function(type, listener) {
