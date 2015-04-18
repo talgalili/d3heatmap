@@ -10,7 +10,7 @@ function heatmap(selector, data, options) {
   };
   (function() {
     this.highlight = function(x, y) {
-      if (arguments.length == 0) {
+      if (arguments.length === 0) {
         return this._highlight;
       } else if (arguments.length == 1) {
         this._highlight = x;
@@ -21,7 +21,7 @@ function heatmap(selector, data, options) {
     };
 
     this.datapoint_hover = function(x, y, value) {
-      if (arguments.length == 0) {
+      if (arguments.length === 0) {
         return this._datapoint_hover;
       } else if (arguments.length == 1) {
         this._datapoint_hover = x;
@@ -39,7 +39,8 @@ function heatmap(selector, data, options) {
   var controller = new Controller();
 
   // Set option defaults
-  var opts = {}, options = options || {};
+  var opts = {};
+  options = options || {};
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
   opts.xclust_height = options.xclust_height || opts.height * 0.12;
@@ -98,7 +99,7 @@ function heatmap(selector, data, options) {
       left: styles.left + "px",
       width: styles.width + "px",
       height: styles.height + "px"
-    }
+    };
   }
 
   // Create DOM structure
@@ -168,7 +169,7 @@ function heatmap(selector, data, options) {
     if (data.length === 0)
       return function() {};
     
-    var cols = data.dim[1]
+    var cols = data.dim[1];
     var rows = data.dim[0];
     
     var merged = data.data;
