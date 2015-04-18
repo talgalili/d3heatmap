@@ -3,7 +3,7 @@ library(tidyr)
 library(heatmap)
 
 # Read CSV data
-df <- read.csv("~/Downloads/summary99-0415.csv")
+df <- read.csv("~/Downloads/summary99-0415.csv", encoding = "latin1")
 head(df)
 
 # Drop unneeded columns, spread long to wide
@@ -15,6 +15,7 @@ row.names(spr) <- spr$sample
 spr <- spr %>% select(-sample)
 sprM <- as.matrix(spr)
 sprM <- sprM[1:10,1:30]
+#sprM <- sprM[sample.int(nrow(sprM), 20),sample.int(ncol(sprM), 60)]
 
 colors <- rev(c("#800C38", "#BD122B", "#E31E16", "#FC3518", "#FD4919", "#FD7832",  "#FD9638", "#FE864C", "#FECB62", "#FFE98C"))
 d3heatmap(sprM, colors = colors, theme = "dark")
