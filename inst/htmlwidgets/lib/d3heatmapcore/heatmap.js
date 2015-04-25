@@ -4,15 +4,16 @@ function heatmap(selector, data, options) {
   var bbox = el.node().getBoundingClientRect();
 
   var Controller = function() {
-    this._events = d3.dispatch("highlight", "datapoint_hover");
+    this._events = d3.dispatch("highlight", "datapoint_hover", "transform");
     this._highlight = {x: null, y: null};
     this._datapoint_hover = {x: null, y: null, value: null};
+    this._transform = null;
   };
   (function() {
     this.highlight = function(x, y) {
-      if (arguments.length === 0) {
-        return this._highlight;
-      } else if (arguments.length == 1) {
+      if (!arguments.length) return this._highlight;
+
+      if (arguments.length == 1) {
         this._highlight = x;
       } else {
         this._highlight = {x: x, y: y};
@@ -21,14 +22,20 @@ function heatmap(selector, data, options) {
     };
 
     this.datapoint_hover = function(x, y, value) {
-      if (arguments.length === 0) {
-        return this._datapoint_hover;
-      } else if (arguments.length == 1) {
+      if (!arguments.length) return this._datapoint_hover;
+      
+      if (arguments.length == 1) {
         this._datapoint_hover = x;
       } else {
         this._datapoint_hover = {x: x, y: y, value: value};
       }
       this._events.datapoint_hover.call(this, this._datapoint_hover);
+    };
+
+    this.transform = function(_) {
+      if (!arguments.length) return this._transform;
+      this._transform = _;
+      this._events.transform.call(this, _);
     };
 
     this.on = function(evt, callback) {
@@ -125,46 +132,13 @@ function heatmap(selector, data, options) {
     });
   })();
   
-  var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
-  var yZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
-  var colormapZooms = [
-    d3.behavior.zoom().scaleExtent([1, Infinity]),
-    d3.behavior.zoom().scaleExtent([1, Infinity])
-  ];
-
-  el.select('.colDend').call(xZoomBehavior);
-  el.select('.rowDend').call(yZoomBehavior);
+  var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
+  var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
+  var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
+  var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
+  var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
   
-  var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding, yZoomBehavior);
-  var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding, xZoomBehavior);
-  var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, colormapZooms);
-  var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, xZoomBehavior);
-  var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, yZoomBehavior);
-  
-  function updateColormapZoom() {
-    var xZoom = colormapZooms[0];
-    var yZoom = colormapZooms[1];
-    xZoom.scale(xZoomBehavior.scale());
-    yZoom.scale(yZoomBehavior.scale());
-    xZoom.translate(xZoomBehavior.translate());
-    yZoom.translate(yZoomBehavior.translate());
-    colormap.draw();
-  }
-  
-  xZoomBehavior.on('zoom', function() {
-    if (col) {
-      col.draw();
-    }
-    updateColormapZoom();
-  });
-  yZoomBehavior.on('zoom', function() {
-    if (row) {
-      row.draw();
-    }
-    updateColormapZoom();
-  });
-  
-  function colormap(svg, data, width, height, zoomBehaviors) {
+  function colormap(svg, data, width, height) {
     // Check for no data
     if (data.length === 0)
       return function() {};
@@ -180,8 +154,43 @@ function heatmap(selector, data, options) {
         .domain(data.domain)
         .range(data.colors);
     
-    zoomBehaviors[0].x(x);
-    zoomBehaviors[1].y(y);
+    var brush = d3.svg.brush()
+        .x(x)
+        .y(y)
+        .clamp([true, true])
+        .on('brush', function() {
+          var extent = brush.extent();
+          extent[0][0] = Math.round(extent[0][0]);
+          extent[0][1] = Math.round(extent[0][1]);
+          extent[1][0] = Math.round(extent[1][0]);
+          extent[1][1] = Math.round(extent[1][1]);
+          d3.select(this).call(brush.extent(extent));
+        })
+        .on('brushend', function() {
+
+          if (brush.empty()) {
+            controller.transform({
+              scale: [1,1],
+              translate: [0,0],
+              extent: [[0,0],[cols,rows]]
+            });
+          } else {
+            var ex = brush.extent();
+            var scale = [
+              cols / (ex[1][0] - ex[0][0]),
+              rows / (ex[1][1] - ex[0][1])
+            ];
+            var translate = [-x(ex[0][0]) * scale[0], -y(ex[0][1]) * scale[1]];
+            controller.transform({scale: scale, translate: translate, extent: ex});
+          }
+          brush.clear();
+          d3.select(this).call(brush);
+        });
+
+    controller.on('transform.colormap', function(_) {
+      svg.transition().ease('linear').duration(500)
+          .attr('transform', 'translate(' + _.translate + ') scale(' + _.scale + ')');
+    });
     
     svg = svg
         .attr("width", width)
@@ -211,25 +220,21 @@ function heatmap(selector, data, options) {
     rect.append("title")
         .text(function(d, i) { return (d === null) ? "NA" : d + ""; });
 
+    svg.append("g")
+        .attr('class', 'brush')
+        .call(brush)
+        .call(brush.event);
+
     controller.on('highlight.datapt', function(hl) {
       rect.classed('highlight', function(d, i) {
         return (this.rowIndex === hl.y) || (this.colIndex === hl.x);
       });
     });
-    
-    function draw() {
-      var t = [zoomBehaviors[0].translate()[0], zoomBehaviors[1].translate()[1]];
-      var s = [zoomBehaviors[0].scale(), zoomBehaviors[1].scale()];
-      svg.attr("transform", "translate(" + t[0] + " " + t[1] + ") " + "scale(" + s[0] + " " + s[1] + ")");
-    }
-    draw();
-    
-    return {
-      draw: draw
-    };
   }
 
   function axisLabels(svg, data, rotated, width, height, padding) {
+    svg = svg.append('g');
+
     var leaves;
     if (data.children) {
       leaves = d3.layout.cluster().nodes(data)
@@ -299,9 +304,17 @@ function heatmap(selector, data, options) {
       });
     });
 
+    controller.on('transform.axis-' + (rotated ? 'x' : 'y'), function(_) {
+      var i = rotated ? 0 : 1;
+      //scale.domain(leaves.slice(_.extent[0][i], _.extent[1][i]));
+      var rb = [_.translate[i], (rotated ? width : height) * _.scale[i] + _.translate[i]];
+      scale.rangeBands(rb);
+      axisNodes.transition().duration(500).ease('linear').call(axis);
+    });
+
   }
   
-  function dendrogram(svg, data, rotated, width, height, padding, zoomBehavior) {
+  function dendrogram(svg, data, rotated, width, height, padding) {
     var x = d3.scale.linear();
     var y = d3.scale.linear()
         .domain([0, height])
@@ -309,49 +322,35 @@ function heatmap(selector, data, options) {
     
     var cluster = d3.layout.cluster()
         .separation(function(a, b) { return 1; })
-        .size([rotated ? width : height, (rotated ? height : width) - padding]);
+        .size([rotated ? width : height, (rotated ? height : width) - padding - 1]);
     
-    var transform = "";
+    var transform = "translate(1,0)";
     if (rotated) {
       // Flip dendrogram vertically
       x.range([1, 0]);
       // Rotate
-      transform = "rotate(-90," + height/2 + "," + height/2 + ") translate(" + (height-1) + ", 0)";
+      transform = "rotate(-90) translate(-2,0)";
     }
-    
-    if (rotated)
-      zoomBehavior.x(y);
-    else
-      zoomBehavior.y(y);
-    
-    svg = svg
+
+    dendrG = svg
         .attr("width", width)
         .attr("height", height)
       .append("g")
         .attr("transform", transform);
+    zoomG = dendrG
+      .append("g");
     
     var nodes = cluster.nodes(data),
         links = cluster.links(nodes);
     
     function draw() {
-      // Constrain translation to extent
-      if (d3.event) {
-        var t = d3.event.translate;
-        var s = d3.event.scale;
-        if (rotated)
-          t[0] = Math.max(-width * (s - 1), Math.min(0, t[0]));
-        else
-          t[1] = Math.max(-height * (s - 1), Math.min(0, t[1]));
-        zoomBehavior.translate(t);
-      }
-      
       function elbow(d, i) {
         return x(d.source.y) + "," + y(d.source.x) + " " +
             x(d.source.y) + "," + y(d.target.x) + " " +
             x(d.target.y) + "," + y(d.target.x);
       }
       
-      var link = svg.selectAll(".link")
+      var link = zoomG.selectAll(".link")
           .data(links)
           .attr("points", elbow)
         .enter().append("polyline")
@@ -359,7 +358,7 @@ function heatmap(selector, data, options) {
           .attr("points", elbow);
       
       /*
-      var node = svg.selectAll(".node")
+      var node = zoomG.selectAll(".node")
           .data(nodes)
           .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
         .enter().append("g")
@@ -389,6 +388,13 @@ function heatmap(selector, data, options) {
       return leafNode;
       */
     }
+
+    controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
+//       var scale = [1, _.scale[rotated ? 0 : 1]];
+//       var translate = [0, _.translate[rotated ? 0 : 1]];
+//       zoomG.attr('transform', 'scale(' + scale + ') translate(' + translate + ')');
+    });
+
     draw();
     return {
       draw: draw,

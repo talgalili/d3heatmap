@@ -26,9 +26,10 @@ body.theme-dark {
   fill: none;
   stroke: #AAA;
   stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .d3heatmap .axis text {
-  font: 15px;
+  font-size: 15px;
   font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }
 .inner {
@@ -46,6 +47,12 @@ body.theme-dark {
 }
 .d3heatmap text {
   cursor: default;
+}
+.d3heatmap .brush .extent{
+  fill: blue;
+  fill-opacity: 0.15;
+  stroke-width: 1px;
+  stroke: blue;
 }
 .colDend {
   position: absolute;
