@@ -55,7 +55,10 @@ function heatmap(selector, data, options) {
   opts.xaxis_height = options.xaxis_height || 120;
   opts.yaxis_width = options.yaxis_width || 120;
   opts.axis_padding = options.axis_padding || 3;
-  opts.show_grid = options.show_grid || true;
+  opts.show_grid = options.show_grid;
+  if (typeof(opts.show_grid) === 'undefined') {
+    opts.show_grid = true;
+  }
   opts.brush_color = options.brush_color || "#0000FF";
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
@@ -235,6 +238,8 @@ function heatmap(selector, data, options) {
       spacing = opts.show_grid;
     } else if (!!opts.show_grid) {
       spacing = 0.25;
+    } else {
+      spacing = 0;
     }
     function draw(selection) {
       selection
