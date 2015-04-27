@@ -18,5 +18,6 @@ sprM <- sprM[1:10,1:30]
 #sprM <- sprM[sample.int(nrow(sprM), 20),sample.int(ncol(sprM), 60)]
 
 colors <- rev(c("#800C38", "#BD122B", "#E31E16", "#FC3518", "#FD4919", "#FD7832",  "#FD9638", "#FE864C", "#FECB62", "#FFE98C"))
-d3heatmap(sprM, colors = colors, theme = "dark")
+d3heatmap(sprM, colors = colors, theme = "dark", xaxis_height = 140, 
+  xaxis_font_size = "10px", yaxis_font_size = "12px")
 #d3heatmap(matrix(runif(100), 10, 10), theme = 'dark')
