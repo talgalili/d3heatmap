@@ -55,6 +55,7 @@ function heatmap(selector, data, options) {
   opts.xaxis_height = options.xaxis_height || 120;
   opts.yaxis_width = options.yaxis_width || 120;
   opts.axis_padding = options.axis_padding || 3;
+  opts.show_grid = options.show_grid || true;
 
   if (!data.rows) {
     opts.yclust_width = 0;
@@ -153,7 +154,11 @@ function heatmap(selector, data, options) {
     // Check for no data
     if (data.length === 0)
       return function() {};
-    
+
+	if (!opts.show_grid) {
+      svg.style("shape-rendering", "crispEdges");
+	}
+ 
     var cols = data.dim[1];
     var rows = data.dim[0];
     
@@ -186,50 +191,67 @@ function heatmap(selector, data, options) {
               extent: [[0,0],[cols,rows]]
             });
           } else {
+            var tf = controller.transform();
             var ex = brush.extent();
+            console.log(JSON.stringify(ex));
             var scale = [
               cols / (ex[1][0] - ex[0][0]),
               rows / (ex[1][1] - ex[0][1])
             ];
-            var translate = [-x(ex[0][0]) * scale[0], -y(ex[0][1]) * scale[1]];
+            var translate = [
+              ex[0][0] * (width / cols) * scale[0] * -1,
+              ex[0][1] * (height / rows) * scale[1] * -1
+            ];
             controller.transform({scale: scale, translate: translate, extent: ex});
           }
           brush.clear();
           d3.select(this).call(brush);
         });
 
-    controller.on('transform.colormap', function(_) {
-      svg.transition().ease('linear').duration(500)
-          .attr('transform', 'translate(' + _.translate + ') scale(' + _.scale + ')');
-    });
-    
     svg = svg
         .attr("width", width)
-        .attr("height", height)
-      .append("g");
+        .attr("height", height);
     var rect = svg.selectAll("rect").data(merged);
-    rect.enter().append("rect").classed("datapt", true);
-    rect.exit().remove();
-    rect
+    rect.enter().append("rect").classed("datapt", true)
         .property("colIndex", function(d, i) { return i % cols; })
         .property("rowIndex", function(d, i) { return Math.floor(i / cols); })
         .property("value", function(d, i) { return d; })
-        .attr("x", function(d, i) {
-          return x(i % cols);
-        })
-        .attr("y", function(d, i) {
-          return y(Math.floor(i / cols));
-        })
-        .attr("width", x(1))
-        .attr("height", y(1))
         .attr("fill", function(d) {
           if (d === null) {
             return "transparent";
           }
           return color(d);
         });
+    rect.exit().remove();
     rect.append("title")
         .text(function(d, i) { return (d === null) ? "NA" : d + ""; });
+
+    var spacing;
+    if (typeof(opts.show_grid) === 'number') {
+      spacing = opts.show_grid;
+    } else if (!!opts.show_grid) {
+      spacing = 0.25;
+    }
+    function draw(selection) {
+      selection
+          .attr("x", function(d, i) {
+            return x(i % cols);
+          })
+          .attr("y", function(d, i) {
+            return y(Math.floor(i / cols));
+          })
+          .attr("width", (x(1) - x(0)) - spacing)
+          .attr("height", (y(1) - y(0)) - spacing);
+    }
+
+    draw(rect);
+
+    controller.on('transform.colormap', function(_) {
+      x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
+      y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
+      draw(rect.transition().duration(500).ease("linear"));
+    });
+    
 
     svg.append("g")
         .attr('class', 'brush')

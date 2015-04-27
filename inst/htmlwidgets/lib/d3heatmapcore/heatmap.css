@@ -62,7 +62,6 @@ body.theme-dark {
 }
 .colormap {
   position: absolute;
-  shape-rendering: crispEdges;
 }
 .theme-dark text {
   fill: #E2E2E2;
