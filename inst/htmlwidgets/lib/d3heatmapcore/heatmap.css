@@ -22,6 +22,9 @@ body.theme-dark {
   fill: none;
   stroke: none;
 }
+.d3heatmap .axis {
+  overflow: hidden;
+}
 .d3heatmap .axis line {
   fill: none;
   stroke: #AAA;
@@ -54,12 +57,15 @@ body.theme-dark {
 }
 .colDend {
   position: absolute;
+  overflow: hidden;
 }
 .rowDend {
   position: absolute;
+  overflow: hidden;
 }
 .colormap {
   position: absolute;
+  overflow: hidden;
 }
 .theme-dark text {
   fill: #E2E2E2;
