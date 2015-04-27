@@ -122,6 +122,17 @@ function heatmap(selector, data, options) {
     // Hack the width of the x-axis to allow x-overflow of rotated labels; the
     // QtWebkit viewer won't allow svg elements to overflow:visible.
     xaxis.style("width", (opts.width - opts.yclust_width) + "px");
+    xaxis
+      .append("defs")
+        .append("clipPath").attr("id", "xaxis-clip")
+          .append("polygon")
+            .attr("points", "" + [
+              [0, 0],
+              [xaxisBounds.width, 0],
+              [xaxisBounds.width + yaxisBounds.width, xaxisBounds.height],
+              [0, xaxisBounds.height]
+            ]);
+    xaxis.node(0).setAttribute("clip-path", "url(#xaxis-clip)");
 
     inner.on("click", function() {
       controller.highlight(null, null);
@@ -235,6 +246,8 @@ function heatmap(selector, data, options) {
   function axisLabels(svg, data, rotated, width, height, padding) {
     svg = svg.append('g');
 
+    // The data variable is either cluster info, or a flat list of names.
+    // If the former, transform it to simply a list of names.
     var leaves;
     if (data.children) {
       leaves = d3.layout.cluster().nodes(data)
@@ -244,6 +257,7 @@ function heatmap(selector, data, options) {
       leaves = data;
     }
     
+    // Define scale, axis
     var scale = d3.scale.ordinal()
         .domain(leaves)
         .rangeBands([0, rotated ? width : height]);
@@ -254,6 +268,7 @@ function heatmap(selector, data, options) {
         .tickPadding(padding)
         .tickValues(leaves);
 
+    // Create the actual axis
     var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
@@ -264,27 +279,30 @@ function heatmap(selector, data, options) {
       .selectAll("g").data(leaves);
     mouseTargets
       .enter()
-        .append("g").append("rect");
-    mouseTargets
-        .attr("transform", function(d, i) {
-          var x = rotated ? scale(d) + scale.rangeBand()/2 : 0;
-          var y = rotated ? padding + 6 : scale(d);
-          return "translate(" + x + "," + y + ")";
-        })
-        .on("click", function(d, i) {
-          var hl = {x: null, y: null};
-          if (rotated)
-            hl.x = i;
-          else
-            hl.y = i;
-          controller.highlight(hl);
-          d3.event.stopPropagation();
-        })
-      .selectAll("rect")
-        .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
-        .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
-        .attr("width", rotated ? height * 1.414 * 1.2 : width)
-        .attr("fill", "transparent");
+        .append("g").append("rect")
+          .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
+          .attr("fill", "transparent")
+          .on("click", function(d, i) {
+            var hl = {x: null, y: null};
+            if (rotated)
+              hl.x = i;
+            else
+              hl.y = i;
+            controller.highlight(hl);
+            d3.event.stopPropagation();
+          });
+    function layoutMouseTargets(selection) {
+      selection
+          .attr("transform", function(d, i) {
+            var x = rotated ? scale(d) + scale.rangeBand()/2 : 0;
+            var y = rotated ? padding + 6 : scale(d);
+            return "translate(" + x + "," + y + ")";
+          })
+        .selectAll("rect")
+          .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
+          .attr("width", rotated ? height * 1.414 * 1.2 : width);
+    }
+    layoutMouseTargets(mouseTargets);
 
     if (rotated) {
       axisNodes.selectAll("text")
@@ -305,11 +323,32 @@ function heatmap(selector, data, options) {
     });
 
     controller.on('transform.axis-' + (rotated ? 'x' : 'y'), function(_) {
-      var i = rotated ? 0 : 1;
-      //scale.domain(leaves.slice(_.extent[0][i], _.extent[1][i]));
-      var rb = [_.translate[i], (rotated ? width : height) * _.scale[i] + _.translate[i]];
+      var dim = rotated ? 0 : 1;
+      //scale.domain(leaves.slice(_.extent[0][dim], _.extent[1][dim]));
+      var rb = [_.translate[dim], (rotated ? width : height) * _.scale[dim] + _.translate[dim]];
       scale.rangeBands(rb);
-      axisNodes.transition().duration(500).ease('linear').call(axis);
+      var tAxisNodes = axisNodes.transition().duration(500).ease('linear');
+      tAxisNodes.call(axis);
+      tAxisNodes.selectAll("g")
+          .style("opacity", function(d, i) {
+            if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+      tAxisNodes
+        .selectAll("text")
+          .style("text-anchor", "start");
+      mouseTargets.transition().duration(500).ease('linear')
+          .call(layoutMouseTargets)
+          .style("opacity", function(d, i) {
+            if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
     });
 
   }
