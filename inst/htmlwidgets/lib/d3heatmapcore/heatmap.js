@@ -310,12 +310,15 @@ function heatmap(selector, data, options) {
           .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
           .attr("fill", "transparent")
           .on("click", function(d, i) {
+            var dim = rotated ? 'x' : 'y';
             var hl = {x: null, y: null};
-            if (rotated)
-              hl.x = i;
-            else
-              hl.y = i;
-            controller.highlight(hl);
+            hl[dim] = i;
+            if (controller.highlight() && controller.highlight()[dim] == i) {
+              // If clicked already-highlighted row/col, then unhighlight
+              controller.highlight(null);
+            } else {
+              controller.highlight(hl);
+            }
             d3.event.stopPropagation();
           });
     function layoutMouseTargets(selection) {
