@@ -376,12 +376,17 @@ function heatmap(selector, data, options) {
         .attr("height", height)
       .append("g")
         .attr("transform", transform);
-    zoomG = dendrG
-      .append("g");
+    var zoomG = dendrG
+      .append("g").classed("zoomG", true);
     
     var nodes = cluster.nodes(data),
         links = cluster.links(nodes);
     
+    var link = zoomG.selectAll(".link").data(links);
+    link
+      .enter().append("polyline")
+        .attr("class", "link");
+
     function draw() {
       function elbow(d, i) {
         return x(d.source.y) + "," + y(d.source.x) + " " +
@@ -389,51 +394,26 @@ function heatmap(selector, data, options) {
             x(d.target.y) + "," + y(d.target.x);
       }
       
-      var link = zoomG.selectAll(".link")
-          .data(links)
-          .attr("points", elbow)
-        .enter().append("polyline")
-          .attr("class", "link")
+      link
           .attr("points", elbow);
-      
-      /*
-      var node = zoomG.selectAll(".node")
-          .data(nodes)
-          .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
-        .enter().append("g")
-          .attr("class", "node")
-          .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
-      
-      var anchor = rotated ? "end" : "start";
-      var dx = rotated ? -3 : 3;
-      var leafNode = node.filter(function(d, i){ return !d.children; })
-        .append("text")
-          .attr("dx", dx)
-          .attr("dy", 3)
-          .attr("index", function(d, i) { return i; })
-          .style("text-anchor", anchor)
-          .text(function(d) { return d.name; })
-
-      if (rotated) {
-          leafNode
-              .on("mouseenter", on_col_label_mouseenter)
-              .on("mouseleave", on_col_label_mouseleave);
-      } else {
-          leafNode
-              .on("mouseenter", on_row_label_mouseenter)
-              .on("mouseleave", on_row_label_mouseleave);
-      }
-      
-      return leafNode;
-      */
     }
 
     controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
-//       var scale = [1, _.scale[rotated ? 0 : 1]];
-//       var translate = [0, _.translate[rotated ? 0 : 1]];
-//       zoomG.attr('transform', 'scale(' + scale + ') translate(' + translate + ')');
+      var scale = [1, _.scale[rotated ? 0 : 1]];
+      var translate = [0, _.translate[rotated ? 0 : 1] / scale[1]];
+      zoomG.transition().duration(500).ease("linear")
+          .attr('transform', 'scale(' + scale + ') translate(' + translate + ')');
     });
-
+/*
+      controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
+      var scaleBy = _.scale[rotated ? 0 : 1];
+      var translateBy = _.translate[rotated ? 0 : 1];
+      var rng = [translateBy, height * scaleBy + translateBy];
+      console.log(rng);
+      y.range(rng);
+      draw();
+    });
+*/
     draw();
     return {
       draw: draw,
