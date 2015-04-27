@@ -371,54 +371,50 @@ function heatmap(selector, data, options) {
       transform = "rotate(-90) translate(-2,0)";
     }
 
-    dendrG = svg
+    var dendrG = svg
         .attr("width", width)
         .attr("height", height)
       .append("g")
         .attr("transform", transform);
-    var zoomG = dendrG
-      .append("g").classed("zoomG", true);
     
     var nodes = cluster.nodes(data),
         links = cluster.links(nodes);
+
+    // I'm not sure why, but after the heatmap loads the "links"
+    // array mutates to much smaller values. I can't figure out
+    // what's doing it, so instead we just make a deep copy of
+    // the parts we want.
+    var links1 = links.map(function(link, i) {
+      return {
+        source: {x: link.source.x, y: link.source.y},
+        target: {x: link.target.x, y: link.target.y}
+      };
+    });
     
-    var link = zoomG.selectAll(".link").data(links);
-    link
+    var lines = dendrG.selectAll("polyline").data(links1);
+    lines
       .enter().append("polyline")
         .attr("class", "link");
 
-    function draw() {
+    function draw(selection) {
       function elbow(d, i) {
         return x(d.source.y) + "," + y(d.source.x) + " " +
             x(d.source.y) + "," + y(d.target.x) + " " +
             x(d.target.y) + "," + y(d.target.x);
       }
       
-      link
+      selection
           .attr("points", elbow);
     }
 
     controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
-      var scale = [1, _.scale[rotated ? 0 : 1]];
-      var translate = [0, _.translate[rotated ? 0 : 1] / scale[1]];
-      zoomG.transition().duration(500).ease("linear")
-          .attr('transform', 'scale(' + scale + ') translate(' + translate + ')');
-    });
-/*
-      controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
       var scaleBy = _.scale[rotated ? 0 : 1];
       var translateBy = _.translate[rotated ? 0 : 1];
-      var rng = [translateBy, height * scaleBy + translateBy];
-      console.log(rng);
-      y.range(rng);
-      draw();
+      y.range([translateBy, height * scaleBy + translateBy]);
+      draw(lines.transition().duration(500).ease("linear"));
     });
-*/
-    draw();
-    return {
-      draw: draw,
-      nodes: nodes
-    };
+
+    draw(lines);
   }
 
  
