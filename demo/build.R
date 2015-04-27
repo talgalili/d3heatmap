@@ -3,7 +3,7 @@ library(tidyr)
 library(heatmap)
 
 # Read CSV data
-df <- read.csv("~/Downloads/summary99-0415.csv", encoding = "latin1")
+df <- read.csv("~/Downloads/summary99-0422.csv", encoding = "latin1")
 head(df)
 
 # Drop unneeded columns, spread long to wide

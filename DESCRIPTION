@@ -8,7 +8,6 @@ Maintainer: Joe Cheng <joe@rstudio.com>
 Description: Yes
 License: GPL-3
 Depends:
-    R
 Imports:
     stats,
     tools,
