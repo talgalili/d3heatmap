@@ -56,6 +56,9 @@ function heatmap(selector, data, options) {
   opts.yaxis_width = options.yaxis_width || 120;
   opts.axis_padding = options.axis_padding || 3;
   opts.show_grid = options.show_grid || true;
+  opts.brush_color = options.brush_color || "#0000FF";
+  opts.xaxis_font_size = options.xaxis_font_size;
+  opts.yaxis_font_size = options.yaxis_font_size;
 
   if (!data.rows) {
     opts.yclust_width = 0;
@@ -205,7 +208,8 @@ function heatmap(selector, data, options) {
             controller.transform({scale: scale, translate: translate, extent: ex});
           }
           brush.clear();
-          d3.select(this).call(brush);
+          d3.select(this).call(brush).select(".brush .extent")
+              .style({fill: opts.brush_color, stroke: opts.brush_color});
         });
 
     svg = svg
@@ -294,8 +298,9 @@ function heatmap(selector, data, options) {
     var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
-    var fontSize = Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8)));
-    axisNodes.selectAll("text").style("font-size", fontSize + "px");
+    var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']
+        || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
+    axisNodes.selectAll("text").style("font-size", fontSize);
     
     var mouseTargets = svg.append("g")
       .selectAll("g").data(leaves);
@@ -351,6 +356,9 @@ function heatmap(selector, data, options) {
       scale.rangeBands(rb);
       var tAxisNodes = axisNodes.transition().duration(500).ease('linear');
       tAxisNodes.call(axis);
+      // Set text-anchor on the non-transitioned node to prevent jumpiness
+      // in RStudio Viewer pane
+      axisNodes.selectAll("text").style("text-anchor", "start");
       tAxisNodes.selectAll("g")
           .style("opacity", function(d, i) {
             if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {

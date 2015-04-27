@@ -49,10 +49,8 @@ body.theme-dark {
   cursor: default;
 }
 .d3heatmap .brush .extent{
-  fill: blue;
   fill-opacity: 0.15;
   stroke-width: 1px;
-  stroke: blue;
 }
 .colDend {
   position: absolute;

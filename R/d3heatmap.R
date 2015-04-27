@@ -14,7 +14,13 @@
 #' @export
 d3heatmap <- function(data, theme = "", colors = "RdYlBu",
   width = NULL, height = NULL,
-  cluster = !any(is.na(data))
+  cluster = !any(is.na(data)),
+  xaxis_height = 120,
+  yaxis_width = 120,
+  xaxis_font_size = NULL,
+  yaxis_font_size = NULL,
+  brush_color = "#0000FF",
+  show_grid = TRUE
   ) {
 
   
@@ -47,6 +53,15 @@ d3heatmap <- function(data, theme = "", colors = "RdYlBu",
     # No clustering
     options <- c(options, list(xclust_height = 0, yclust_width = 0))
   }
+  
+  options <- c(options, list(
+    xaxis_height = xaxis_height,
+    yaxis_width = yaxis_width,
+    xaxis_font_size = xaxis_font_size,
+    yaxis_font_size = yaxis_font_size,
+    brush_color = brush_color,
+    show_grid = show_grid
+  ))
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
