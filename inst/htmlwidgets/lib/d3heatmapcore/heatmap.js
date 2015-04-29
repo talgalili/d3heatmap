@@ -11,7 +11,8 @@ function heatmap(selector, data, options) {
   };
   (function() {
     this.highlight = function(x, y) {
-      if (!arguments.length) return this._highlight;
+      // Copy for safety
+      if (!arguments.length) return {x: this._highlight.x, y: this._highlight.y};
 
       if (arguments.length == 1) {
         this._highlight = x;
@@ -316,12 +317,13 @@ function heatmap(selector, data, options) {
           .attr("fill", "transparent")
           .on("click", function(d, i) {
             var dim = rotated ? 'x' : 'y';
-            var hl = {x: null, y: null};
-            hl[dim] = i;
-            if (controller.highlight() && controller.highlight()[dim] == i) {
+            var hl = controller.highlight() || {x:null, y:null};
+            if (hl[dim] == i) {
               // If clicked already-highlighted row/col, then unhighlight
-              controller.highlight(null);
+              hl[dim] = null;
+              controller.highlight(hl);
             } else {
+              hl[dim] = i;
               controller.highlight(hl);
             }
             d3.event.stopPropagation();

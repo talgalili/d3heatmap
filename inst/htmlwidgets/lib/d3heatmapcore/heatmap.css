@@ -35,6 +35,9 @@ body.theme-dark {
   font-size: 15px;
   font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }
+.d3heatmap .axis rect {
+  cursor: pointer;
+}
 .inner {
   position: relative;
 }
