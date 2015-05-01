@@ -31,7 +31,7 @@ body.theme-dark {
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
-.d3heatmap .axis text {
+.d3heatmap .axis text, .d3heatmap-tip {
   font-size: 15px;
   font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }
@@ -82,4 +82,17 @@ body.theme-dark {
 
 .highlighting .axis g.tick.faded {
   opacity: 0.4 !important;
+}
+
+.d3heatmap-tip {
+  font-size: 13px;
+  color: white;
+  background-color: #444;
+  padding: 6px 12px;
+  box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.22);
+}
+.theme-dark .d3heatmap-tip {
+  background-color: white;
+  color: #444;
+}
 }

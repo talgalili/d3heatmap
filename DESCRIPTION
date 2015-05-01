@@ -3,10 +3,15 @@ Type: Package
 Title: Interactive heatmaps using htmlwidgets and D3.js
 Version: 0.2.0
 Date: 2015-05-01
-Author: RStudio, Inc.
+Authors@R: c(
+    person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
+    person("RStudio, Inc.", role = c("cph")),
+    person("Michael", "Bostock", role = c("ctb", "cph"), comment = "D3.js library"),
+    person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library")
+    )
 Maintainer: Joe Cheng <joe@rstudio.com>
 Description: Yes
-License: GPL-3
+License: GPL-3 | file LICENSE
 Depends:
 Imports:
     stats,

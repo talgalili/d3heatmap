@@ -1,4 +1,8 @@
 function heatmap(selector, data, options) {
+  function htmlEscape(str) {
+    return (str+"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
   var el = d3.select(selector);
 
   var bbox = el.node().getBoundingClientRect();
@@ -180,6 +184,13 @@ function heatmap(selector, data, options) {
     var color = d3.scale.linear()
         .domain(data.domain)
         .range(data.colors);
+    var tip = d3.tip()
+        .attr('class', 'd3heatmap-tip')
+        .html(function(d) {
+          return htmlEscape(d);
+        })
+        .direction("se")
+        .style("position", "fixed");
     
     var brush = d3.svg.brush()
         .x(x)
@@ -204,7 +215,6 @@ function heatmap(selector, data, options) {
           } else {
             var tf = controller.transform();
             var ex = brush.extent();
-            console.log(JSON.stringify(ex));
             var scale = [
               cols / (ex[1][0] - ex[0][0]),
               rows / (ex[1][1] - ex[0][1])
@@ -237,6 +247,7 @@ function heatmap(selector, data, options) {
     rect.exit().remove();
     rect.append("title")
         .text(function(d, i) { return (d === null) ? "NA" : d + ""; });
+    rect.call(tip);
 
     var spacing;
     if (typeof(opts.show_grid) === 'number') {
@@ -267,10 +278,27 @@ function heatmap(selector, data, options) {
     });
     
 
-    svg.append("g")
+    var brushG = svg.append("g")
         .attr('class', 'brush')
         .call(brush)
         .call(brush.event);
+    brushG.select("rect.background")
+        .on("mouseenter", function() {
+          tip.style("display", "block");
+        })
+        .on("mousemove", function() {
+          var col = Math.floor(x.invert(d3.event.offsetX));
+          var row = Math.floor(y.invert(d3.event.offsetY));
+          var value = merged[row*cols + col];
+          tip.show(value).style({
+            top: d3.event.clientY + 15 + "px",
+            left: d3.event.clientX + 15 + "px",
+            opacity: 0.9
+          });
+        })
+        .on("mouseleave", function() {
+          tip.hide().style("display", "none");
+        });
 
     controller.on('highlight.datapt', function(hl) {
       rect.classed('highlight', function(d, i) {

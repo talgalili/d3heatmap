@@ -8,4 +8,7 @@ dependencies:
   src: htmlwidgets/lib/d3heatmapcore
   script: heatmap.js
   stylesheet: heatmap.css
-
+- name: d3-tip
+  version: 0.6.6
+  src: htmlwidgets/lib/d3-tip
+  script: index.js
