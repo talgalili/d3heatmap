@@ -8,6 +8,8 @@
 #' D3 Heatmap widget
 #'
 #' Creates a D3.js-based heatmap widget.
+#' 
+#' @param data A numeric matrix
 #'
 #' @import htmlwidgets
 #'
@@ -20,7 +22,8 @@ d3heatmap <- function(data, theme = "", colors = "RdYlBu",
   xaxis_font_size = NULL,
   yaxis_font_size = NULL,
   brush_color = "#0000FF",
-  show_grid = TRUE
+  show_grid = TRUE,
+  anim_duration = 500
   ) {
 
   
@@ -60,7 +63,8 @@ d3heatmap <- function(data, theme = "", colors = "RdYlBu",
     xaxis_font_size = xaxis_font_size,
     yaxis_font_size = yaxis_font_size,
     brush_color = brush_color,
-    show_grid = show_grid
+    show_grid = show_grid,
+    anim_duration = anim_duration
   ))
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)

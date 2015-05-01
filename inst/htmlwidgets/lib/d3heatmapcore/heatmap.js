@@ -63,6 +63,10 @@ function heatmap(selector, data, options) {
   opts.brush_color = options.brush_color || "#0000FF";
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
+  opts.anim_duration = options.anim_duration;
+  if (typeof(opts.anim_duration) === 'undefined') {
+    opts.anim_duration = 500;
+  }
 
   if (!data.rows) {
     opts.yclust_width = 0;
@@ -259,7 +263,7 @@ function heatmap(selector, data, options) {
     controller.on('transform.colormap', function(_) {
       x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
       y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
-      draw(rect.transition().duration(500).ease("linear"));
+      draw(rect.transition().duration(opts.anim_duration).ease("linear"));
     });
     
 
@@ -364,7 +368,7 @@ function heatmap(selector, data, options) {
       //scale.domain(leaves.slice(_.extent[0][dim], _.extent[1][dim]));
       var rb = [_.translate[dim], (rotated ? width : height) * _.scale[dim] + _.translate[dim]];
       scale.rangeBands(rb);
-      var tAxisNodes = axisNodes.transition().duration(500).ease('linear');
+      var tAxisNodes = axisNodes.transition().duration(opts.anim_duration).ease('linear');
       tAxisNodes.call(axis);
       // Set text-anchor on the non-transitioned node to prevent jumpiness
       // in RStudio Viewer pane
@@ -380,7 +384,7 @@ function heatmap(selector, data, options) {
       tAxisNodes
         .selectAll("text")
           .style("text-anchor", "start");
-      mouseTargets.transition().duration(500).ease('linear')
+      mouseTargets.transition().duration(opts.anim_duration).ease('linear')
           .call(layoutMouseTargets)
           .style("opacity", function(d, i) {
             if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
@@ -451,7 +455,7 @@ function heatmap(selector, data, options) {
       var scaleBy = _.scale[rotated ? 0 : 1];
       var translateBy = _.translate[rotated ? 0 : 1];
       y.range([translateBy, height * scaleBy + translateBy]);
-      draw(lines.transition().duration(500).ease("linear"));
+      draw(lines.transition().duration(opts.anim_duration).ease("linear"));
     });
 
     draw(lines);
