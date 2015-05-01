@@ -4,8 +4,48 @@
 \alias{d3heatmap}
 \title{D3 Heatmap widget}
 \usage{
-d3heatmap(data, theme = "", colors = "RdYlBu", width = NULL,
-  height = NULL, cluster = !any(is.na(data)))
+d3heatmap(x, cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
+  width = NULL, height = NULL, xaxis_height = 120, yaxis_width = 120,
+  xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
+  show_grid = TRUE, anim_duration = 500, heatmap_options = list())
+}
+\arguments{
+\item{x}{A numeric matrix}
+
+\item{cluster}{\code{TRUE} to perform clustering and show dendrograms.
+Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
+
+\item{theme}{A custom CSS theme to use. Currently the only valid values are
+\code{""} and \code{"dark"}. \code{"dark"} is primarily intended for
+standalone visualizations, not R Markdown or Shiny.}
+
+\item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
+\code{"Blues"}), or a vector of colors to interpolate in hexadecimal
+\code{"#RRGGBB"} format.}
+
+\item{width}{Width in pixels (optional, defaults to automatic sizing).}
+
+\item{height}{Height in pixels (optional, defaults to automatic sizing).}
+
+\item{xaxis_height,yaxis_width}{Size of axes, in pixels.}
+
+\item{xaxis_font_size,yaxis_font_size}{Font size of axis labels, as a CSS
+size (e.g. \code{"14px"} or \code{"12pt"}).}
+
+\item{brush_color}{The base color to be used for the brush. The brush will be
+filled with a low-opacity version of this color. \code{"#RRGGBB"} format
+expected.}
+
+\item{show_grid}{\code{TRUE} to show gridlines, \code{FALSE} to hide them, or
+a numeric value to specify the gridline thickness in pixels (can be a
+non-integer).}
+
+\item{anim_duration}{Number of milliseconds to animate zooming in and out.
+For large \code{x} it may help performance to set this value to \code{0}.}
+
+\item{heatmap_options}{List of options to pass to
+  \code{\link[stats]{heatmap}}. Mostly only the clustering/dendrogram
+  related arguments are interesting.}
 }
 \description{
 Creates a D3.js-based heatmap widget.
