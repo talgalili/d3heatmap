@@ -8,7 +8,7 @@ This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.o
 
 ### Live demos
 
-http://rpubs.com/jcheng/d3heatmap 
+http://rpubs.com/jcheng/d3heatmap  
 http://rpubs.com/jcheng/d3heatmap_large
 
 ### Installation
