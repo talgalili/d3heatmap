@@ -10,7 +10,8 @@ Authors@R: c(
     person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library")
     )
 Maintainer: Joe Cheng <joe@rstudio.com>
-Description: Yes
+Description: Create zoomable heatmaps that are usable from the R console, in the
+    RStudio viewer pane, in R Markdown documents, and in Shiny apps.
 License: GPL-3 | file LICENSE
 Depends:
 Imports:
