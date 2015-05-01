@@ -10,11 +10,9 @@ License: GPL-3
 Depends:
 Imports:
     stats,
-    tools,
-    utils,
-    datasets,
     leaflet,
-    methods,
+    htmlwidgets
+Suggests:
     shiny
 URL: https://github.com/rstudio/shiny-incubator
 BugReports: https://github.com/rstudio/shiny-incubator/issues

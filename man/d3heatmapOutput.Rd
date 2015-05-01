@@ -2,11 +2,53 @@
 % Please edit documentation in R/d3heatmap.R
 \name{d3heatmapOutput}
 \alias{d3heatmapOutput}
-\title{Widget output function for use in Shiny}
+\alias{renderD3heatmap}
+\title{Wrapper functions for using d3heatmap in shiny}
 \usage{
 d3heatmapOutput(outputId, width = "100\%", height = "400px")
+
+renderD3heatmap(expr, env = parent.frame(), quoted = FALSE)
+}
+\arguments{
+\item{outputId}{Output variable to read from}
+
+\item{width,height}{The width and height of the map (see
+\link[htmlwidgets]{shinyWidgetOutput})}
+
+\item{expr}{An expression that generates a \code{\link{d3heatmap}} object}
+
+\item{env}{The environment in which to evaluate \code{expr}}
+
+\item{quoted}{Is \code{expr} a quoted expression (with \code{quote()})? This
+  is useful if you want to save an expression in a variable.}
 }
 \description{
-Widget output function for use in Shiny
+Use \code{d3heatmapOutput} to create a UI element, and \code{renderD3heatmap}
+to render the heatmap.
+}
+\examples{
+\donttest{
+library(d3heatmap)
+library(shiny)
+
+ui <- fluidPage(
+  h1("A heatmap demo"),
+  selectInput("palette", "Palette", c("YlOrRd", "RdYlBu", "Greens", "Blues")),
+  checkboxInput("cluster", "Apply clustering"),
+  d3heatmapOutput("heatmap")
+)
+
+server <- function(input, output, session) {
+  output$heatmap <- renderD3heatmap({
+    d3heatmap(
+      scale(mtcars),
+      colors = input$palette,
+      cluster = input$cluster
+    )
+  })
+}
+
+shinyApp(ui, server)
+}
 }
 

@@ -1,3 +1,6 @@
+#' @import htmlwidgets
+NULL
+
 `%||%` <- function(a, b) {
   if (!is.null(a))
     a
@@ -117,20 +120,55 @@ d3heatmap <- function(x,
     x,
     width = width,
     height = height,
-    package = 'heatmap',
+    package = 'd3heatmap',
     sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
 }
 
-#' Widget output function for use in Shiny
+#' Wrapper functions for using d3heatmap in shiny
+#' 
+#' Use \code{d3heatmapOutput} to create a UI element, and \code{renderD3heatmap}
+#' to render the heatmap.
+#' 
+#' @param outputId Output variable to read from
+#' @param width,height The width and height of the map (see
+#'   \link[htmlwidgets]{shinyWidgetOutput})
+#' @param expr An expression that generates a \code{\link{d3heatmap}} object
+#' @param env The environment in which to evaluate \code{expr}
+#' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
+#'   is useful if you want to save an expression in a variable.
 #'
+#' @examples 
+#' \donttest{
+#' library(d3heatmap)
+#' library(shiny)
+#' 
+#' ui <- fluidPage(
+#'   h1("A heatmap demo"),
+#'   selectInput("palette", "Palette", c("YlOrRd", "RdYlBu", "Greens", "Blues")),
+#'   checkboxInput("cluster", "Apply clustering"),
+#'   d3heatmapOutput("heatmap")
+#' )
+#' 
+#' server <- function(input, output, session) {
+#'   output$heatmap <- renderD3heatmap({
+#'     d3heatmap(
+#'       scale(mtcars),
+#'       colors = input$palette,
+#'       cluster = input$cluster
+#'     )
+#'   })
+#' }
+#' 
+#' shinyApp(ui, server)
+#' }
+#'   
 #' @export
 d3heatmapOutput <- function(outputId, width = '100%', height = '400px'){
-  shinyWidgetOutput(outputId, 'd3heatmap', width, height, package = 'heatmap')
+  shinyWidgetOutput(outputId, 'd3heatmap', width, height, package = 'd3heatmap')
 }
 
-#' Widget render function for use in Shiny
-#'
+#' @rdname d3heatmapOutput
 #' @export
 renderD3heatmap <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted

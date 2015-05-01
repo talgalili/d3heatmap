@@ -2,8 +2,5 @@
 
 export(d3heatmap)
 export(d3heatmapOutput)
-export(heatmapOutput)
 export(renderD3heatmap)
-export(renderHeatmap)
-export(showHeatmap)
 import(htmlwidgets)
