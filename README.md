@@ -2,11 +2,11 @@
 
 This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.org). It has the following features:
 
-* Clustering and dendrograms, courtesy of `base::heatmap`
 * Highlight rows/columns by clicking axis labels
 * Click and drag over colormap to zoom in (click on colormap to zoom out)
+* Optional clustering and dendrograms, courtesy of `base::heatmap`
 
-### Live demos
+### Examples
 
 http://rpubs.com/jcheng/d3heatmap  
 http://rpubs.com/jcheng/d3heatmap_large
