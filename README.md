@@ -14,10 +14,9 @@ http://rpubs.com/jcheng/d3heatmap_large
 ### Installation
 
 ```r
-if (!require(devtools)) {
-  install.packages("devtools")
-}
-devtools::install_github("rstudio/d3-heatmap")
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github('rstudio/leaflet')
+devtools::install_github("rstudio/d3heatmap")
 ```
 
 ### Usage
