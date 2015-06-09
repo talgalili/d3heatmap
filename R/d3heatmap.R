@@ -45,6 +45,7 @@ d3heatmap <- function(x,
   cluster = !any(is.na(x)),
   theme = NULL,
   colors = "RdYlBu",
+  rev_colors = F,
   width = NULL, height = NULL,
   xaxis_height = 120,
   yaxis_width = 120,
@@ -104,6 +105,7 @@ d3heatmap <- function(x,
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
   colors <- leaflet::colorNumeric(colors, 1:100)(1:100)
+  if (rev_colors) colors <- rev(colors)
 
   matrix <- list(data = as.numeric(t(matrix)),
     dim = dim(matrix),
