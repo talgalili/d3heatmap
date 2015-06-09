@@ -13,7 +13,6 @@ Maintainer: Joe Cheng <joe@rstudio.com>
 Description: Create zoomable heatmaps that are usable from the R console, in the
     RStudio viewer pane, in R Markdown documents, and in Shiny apps.
 License: GPL-3 | file LICENSE
-Depends:
 Imports:
     stats,
     leaflet,
