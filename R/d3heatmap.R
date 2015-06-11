@@ -77,15 +77,17 @@ d3heatmap <- function(x,
     
     if (length(hm$Rowv) > 0) {
       rowClust <- as.hclust(hm$Rowv)
-      rowDend <- hclustToTree(rowClust)[[1]]
+      # rowDend <- hclustToTree(rowClust)[[1]]
+      rowDend <- dendToTree(as.dendrogram(rowClust))
     }
     if (length(hm$Colv) > 0) {
       colClust <- as.hclust(hm$Colv)
-      colDend <- hclustToTree(colClust)[[1]]
+      # colDend <- hclustToTree(colClust)[[1]]
+      colDend <- dendToTree(as.dendrogram(colClust))
     }
 
     matrix <- matrix[hm$rowInd, hm$colInd]
-
+    
   } else {
     # No clustering
     options <- c(options, list(xclust_height = 0, yclust_width = 0))
