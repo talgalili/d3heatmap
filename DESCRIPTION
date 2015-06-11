@@ -1,10 +1,11 @@
 Package: d3heatmap
 Type: Package
-Title: Interactive heatmaps using htmlwidgets and D3.js
-Version: 0.2.0
-Date: 2015-05-01
+Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js""
+Version: 0.3.0
+Date: 2015-06-11
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
+    person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
     person("RStudio, Inc.", role = c("cph")),
     person("Michael", "Bostock", role = c("ctb", "cph"), comment = "D3.js library"),
     person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library")
@@ -19,9 +20,10 @@ Imports:
     leaflet,
     htmlwidgets
 Suggests:
-    shiny
-URL: https://github.com/rstudio/shiny-incubator
-BugReports: https://github.com/rstudio/shiny-incubator/issues
+    shiny,
+    dendextend
+URL: https://github.com/rstudio/d3heatmap
+BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
     'd3heatmap.R'
     'heatmap.R'
