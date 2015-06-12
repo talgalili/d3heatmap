@@ -1,8 +1,11 @@
-d3heatmap 0.3.0 (2015-06-11)
+d3heatmap 0.4.0 (2015-06-11)
 ----------------------------------------
 
-###NEW FUNCTIONS:
-   * dendToTree - internal function for create a parseable tree from a dendrogram (intended to replace hclustToTree)
-   
-###UPDATED FUNCTIONS:
-   * d3heatmap - now uses dendToTree instead of hclustToTree (it, of course, doesn't work - since other pieces of the code still needs to be fixed)
+* CRITICAL BUGFIX: The row and column labels were not ordered correctly in
+  previous versions of d3heatmap--ouch! Thank you Sang Hoon Yi!
+
+* The vertical order of row data has been flipped, it now matches the output of
+  stats::heatmap.
+
+* d3heatmap no longer depends on the leaflet package. It now depends on scales
+  version 2.5 or later.

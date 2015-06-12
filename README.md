@@ -6,6 +6,8 @@ This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.o
 * Click and drag over colormap to zoom in (click on colormap to zoom out)
 * Optional clustering and dendrograms, courtesy of `base::heatmap`
 
+<div style="color: red">**Critical:** If you are using a version of d3heatmap older than 0.4.0, please upgrade now! Previous versions put row and column names in the incorrect order!</div>
+
 ### Examples
 
 http://rpubs.com/jcheng/d3heatmap  
