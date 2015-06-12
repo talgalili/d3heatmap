@@ -53,6 +53,7 @@ function heatmap(selector, data, options) {
   opts.height = options.height || bbox.height;
   opts.xclust_height = options.xclust_height || opts.height * 0.12;
   opts.yclust_width = options.yclust_width || opts.width * 0.12;
+  opts.link_color = opts.link_color || "#AAA";
   opts.xaxis_height = options.xaxis_height || 120;
   opts.yaxis_width = options.yaxis_width || 120;
   opts.axis_padding = options.axis_padding || 6;
@@ -459,14 +460,22 @@ function heatmap(selector, data, options) {
     var links1 = links.map(function(link, i) {
       return {
         source: {x: link.source.x, y: link.source.height},
-        target: {x: link.target.x, y: link.target.height}
+        target: {x: link.target.x, y: link.target.height},
+        edgePar: link.target.edgePar
       };
     });
     
     var lines = dendrG.selectAll("polyline").data(links1);
     lines
       .enter().append("polyline")
-        .attr("class", "link");
+        .attr("class", "link")
+        .attr("stroke", function(d, i) {
+          if (!d.edgePar || !d.edgePar.col) {
+            return opts.link_color;
+          } else {
+            return d.edgePar.col;
+          }
+        });
 
     function draw(selection) {
       function elbow(d, i) {
