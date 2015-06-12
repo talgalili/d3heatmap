@@ -424,7 +424,9 @@ function heatmap(selector, data, options) {
   }
   
   function dendrogram(svg, data, rotated, width, height, padding) {
-    var x = d3.scale.linear();
+    var x = d3.scale.linear()
+        .domain([data.height, 0])
+        .range([0, width]);
     var y = d3.scale.linear()
         .domain([0, height])
         .range([0, height]);
@@ -436,7 +438,7 @@ function heatmap(selector, data, options) {
     var transform = "translate(1,0)";
     if (rotated) {
       // Flip dendrogram vertically
-      x.range([1, 0]);
+      x.range([0, -height]);
       // Rotate
       transform = "rotate(-90) translate(-2,0)";
     }
@@ -456,8 +458,8 @@ function heatmap(selector, data, options) {
     // the parts we want.
     var links1 = links.map(function(link, i) {
       return {
-        source: {x: link.source.x, y: link.source.y},
-        target: {x: link.target.x, y: link.target.y}
+        source: {x: link.source.x, y: link.source.height},
+        target: {x: link.target.x, y: link.target.height}
       };
     });
     
