@@ -101,10 +101,9 @@ dendToTree <- function(dend) {
 if(FALSE) {
   
   
-  
   x <- hclust(dist(1:3))
-  d <- as.dendrogram(x)
-
+  library(dendextend)
+  d <- color_branches(as.dendrogram(x), k = 2)
   plot(d)
   
   #source this whole file first!
