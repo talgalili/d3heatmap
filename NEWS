@@ -1,0 +1,8 @@
+d3heatmap 0.3.0 (2015-06-11)
+----------------------------------------
+
+###NEW FUNCTIONS:
+   * dendToTree - internal function for create a parseable tree from a dendrogram (intended to replace hclustToTree)
+   
+###UPDATED FUNCTIONS:
+   * d3heatmap - now uses dendToTree instead of hclustToTree (it, of course, doesn't work - since other pieces of the code still needs to be fixed)

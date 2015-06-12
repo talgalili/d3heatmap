@@ -1,40 +1,46 @@
-createLeafNode <- function(hclust, i) {
-  list(name = hclust$labels[[i]],
-       order = hclust$order[[i]])
-}
+# When serializing a dendrogram to a tree, we will limit ourselves
+# to the following fields.
+fields <- c("members", "height", "label")
+nodeParFields <- c("pch", "cex", "col", "xpd", "bg")
+edgeParFields <- c("col", "lty", "lwd")
 
-hclustToTree <- function(hclust) {
-  if (length(hclust$merge) == 0)
-    return(NULL)
+
+# Serialize a dendrogram object to a d3-friendly tree. The main
+# requirement is that nodes are lists with child nodes in a
+# field named `children`.
+dendToTree <- function(dend, reverse = FALSE) {
   
-  merges <- list()
-  for (index in 1:nrow(hclust$merge)) {
-    left <- hclust$merge[index, 1]
-    right <- hclust$merge[index, 2]
-    
-    if (left < 0)
-      left <- createLeafNode(hclust, -left)
-    else
-      left <- merges[[left]]
-    if (right < 0)
-      right <- createLeafNode(hclust, -right)
-    else
-      right <- merges[[right]]
-    
-    if (left$order > right$order) {
-      tmp <- left
-      left <- right
-      right <- tmp
-    }
-    
-    merges[[index]] <- list(
-      children = list(
-        left,
-        right
-      ),
-      order = left$order
+  # Gather the fields for this node
+  tree <- c(
+    as.list(attributes(dend)[fields]),
+    #list(order = {if(is.leaf(dend)) as.numeric(dend) else 0L}),
+    list(nodePar = attr(dend, "nodePar")[nodeParFields]),
+    list(edgePar = attr(dend, "edgePar")[edgeParFields])
+  )
+
+  # Recursively add children
+  if (!is.leaf(dend)) {
+    tree$children <- lapply(
+      if (reverse) rev(dend) else dend,
+      dendToTree
     )
   }
   
-  return(merges[nrow(hclust$merge)])
+  Filter(Negate(is.null), tree)
 }
+
+if(FALSE) {
+  
+  
+  
+  x <- hclust(dist(1:3))
+  d <- as.dendrogram(x)
+
+  plot(d)
+  
+  #source this whole file first!
+  str(hclustToTree(x)[[1]])
+  str(dendToTree(d))
+  
+}
+
