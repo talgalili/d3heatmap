@@ -17,13 +17,21 @@ dendToTree <- function(dend) {
     list(nodePar = attr(dend, "nodePar")[nodeParFields]),
     list(edgePar = attr(dend, "edgePar")[edgeParFields])
   )
+  
+  filter_null <- function(x) Filter(Negate(is.null), x)
+  # The next line is essential since without it we might get NULLs in the nodePar (etc.) when the tree is colored
+  # and it would cause an error in plotting: 
+      #   Error in if (length(nms) != n || any(nms == "")) stop("'options' must be a fully named list, or have no names (NULL)") : 
+      #     missing value where TRUE/FALSE needed
+  tree <- lapply(tree, filter_null)
+  
 
   # Recursively add children
   if (!is.leaf(dend)) {
     tree$children <- lapply(dend, dendToTree)
   }
   
-  Filter(Negate(is.null), tree)
+  filter_null(tree)
 }
 
 if(FALSE) {
