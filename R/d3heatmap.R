@@ -21,6 +21,8 @@ NULL
 #' @param colors Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
 #'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 #'   \code{"#RRGGBB"} format.
+#' @param invert_colors If \code{TRUE}, maps the colors specified in \code{colors}
+#'   in descending rather than ascending order.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' @param xaxis_height,yaxis_width Size of axes, in pixels.
@@ -45,6 +47,7 @@ d3heatmap <- function(x,
   cluster = !any(is.na(x)),
   theme = NULL,
   colors = "RdYlBu",
+  invert_colors = FALSE,
   width = NULL, height = NULL,
   xaxis_height = 120,
   yaxis_width = 120,
@@ -107,7 +110,9 @@ d3heatmap <- function(x,
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
-  colors <- scales::col_numeric(colors, 1:100)(1:100)
+  colors <- scales::col_numeric(colors, 1:100)(
+    if (invert_colors) 100:1 else 1:100
+  )
 
   matrix <- list(data = as.numeric(t(matrix)),
     dim = dim(matrix),

@@ -4,12 +4,10 @@ body.theme-dark {
 
 .link {
   fill: none;
-  stroke: #AAA;
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 .theme-dark .link {
-  stroke: #BBB;
 }
 
 .d3heatmap {
