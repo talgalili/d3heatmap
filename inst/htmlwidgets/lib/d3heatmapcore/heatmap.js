@@ -55,7 +55,7 @@ function heatmap(selector, data, options) {
   opts.yclust_width = options.yclust_width || opts.width * 0.12;
   opts.xaxis_height = options.xaxis_height || 120;
   opts.yaxis_width = options.yaxis_width || 120;
-  opts.axis_padding = options.axis_padding || 3;
+  opts.axis_padding = options.axis_padding || 6;
   opts.show_grid = options.show_grid;
   if (typeof(opts.show_grid) === 'undefined') {
     opts.show_grid = true;
@@ -426,19 +426,19 @@ function heatmap(selector, data, options) {
   function dendrogram(svg, data, rotated, width, height, padding) {
     var x = d3.scale.linear()
         .domain([data.height, 0])
-        .range([0, width]);
+        .range([-1, width-padding]);
     var y = d3.scale.linear()
         .domain([0, height])
         .range([0, height]);
     
     var cluster = d3.layout.cluster()
         .separation(function(a, b) { return 1; })
-        .size([rotated ? width : height, (rotated ? height : width) - padding - 1]);
+        .size([rotated ? width : height, NaN]);
     
     var transform = "translate(1,0)";
     if (rotated) {
       // Flip dendrogram vertically
-      x.range([0, -height]);
+      x.range([2, -height+padding+2]);
       // Rotate
       transform = "rotate(-90) translate(-2,0)";
     }
