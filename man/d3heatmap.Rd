@@ -5,9 +5,10 @@
 \title{D3 Heatmap widget}
 \usage{
 d3heatmap(x, cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
-  width = NULL, height = NULL, xaxis_height = 120, yaxis_width = 120,
-  xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
-  show_grid = TRUE, anim_duration = 500, heatmap_options = list())
+  invert_colors = FALSE, width = NULL, height = NULL,
+  xaxis_height = 120, yaxis_width = 120, xaxis_font_size = NULL,
+  yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
+  anim_duration = 500, heatmap_options = list())
 }
 \arguments{
 \item{x}{A numeric matrix}
@@ -22,6 +23,9 @@ standalone visualizations, not R Markdown or Shiny.}
 \item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal
 \code{"#RRGGBB"} format.}
+
+\item{invert_colors}{If \code{TRUE}, maps the colors specified in \code{colors}
+in descending rather than ascending order.}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing).}
 
