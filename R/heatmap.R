@@ -8,7 +8,7 @@ edgeParFields <- c("col", "lty", "lwd")
 # Serialize a dendrogram object to a d3-friendly tree. The main
 # requirement is that nodes are lists with child nodes in a
 # field named `children`.
-dendToTree <- function(dend, reverse = FALSE) {
+dendToTree <- function(dend) {
   
   # Gather the fields for this node
   tree <- c(
@@ -20,10 +20,7 @@ dendToTree <- function(dend, reverse = FALSE) {
 
   # Recursively add children
   if (!is.leaf(dend)) {
-    tree$children <- lapply(
-      if (reverse) rev(dend) else dend,
-      dendToTree
-    )
+    tree$children <- lapply(dend, dendToTree)
   }
   
   Filter(Negate(is.null), tree)

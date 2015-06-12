@@ -76,18 +76,18 @@ d3heatmap <- function(x,
     unlink(tmp)
     
     if (length(hm$Rowv) > 0) {
-      # reverse = TRUE because this is how stats::heatmap draws it.
+      # Reverse Rowv because this is how stats::heatmap draws it.
       # It would also make sense to not reverse the data here but in
       # the d3 code just draw from bottom to top, but that would be
       # a *lot* more work at this point.
-      rowDend <- dendToTree(hm$Rowv, reverse = TRUE)
+      rowDend <- dendToTree(rev(hm$Rowv))
     }
     if (length(hm$Colv) > 0) {
       colDend <- dendToTree(hm$Colv)
     }
 
     # VERY IMPORTANT that rowInd be reversed, because we're calling
-    # dendToTree(hm$Rowv, reverse = TRUE).
+    # rev(hm$Rowv) above.
     matrix <- matrix[rev(hm$rowInd), hm$colInd]
     
   } else {
