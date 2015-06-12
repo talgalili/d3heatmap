@@ -1,7 +1,7 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js""
-Version: 0.3.0
+Version: 0.4.0
 Date: 2015-06-11
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
@@ -17,7 +17,7 @@ License: GPL-3 | file LICENSE
 Depends:
 Imports:
     stats,
-    leaflet,
+    scales (>= 0.2.5),
     htmlwidgets
 Suggests:
     shiny,

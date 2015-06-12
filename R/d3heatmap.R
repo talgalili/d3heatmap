@@ -76,17 +76,19 @@ d3heatmap <- function(x,
     unlink(tmp)
     
     if (length(hm$Rowv) > 0) {
-      rowClust <- as.hclust(hm$Rowv)
-      # rowDend <- hclustToTree(rowClust)[[1]]
-      rowDend <- dendToTree(as.dendrogram(rowClust))
+      # Reverse Rowv because this is how stats::heatmap draws it.
+      # It would also make sense to not reverse the data here but in
+      # the d3 code just draw from bottom to top, but that would be
+      # a *lot* more work at this point.
+      rowDend <- dendToTree(rev(hm$Rowv))
     }
     if (length(hm$Colv) > 0) {
-      colClust <- as.hclust(hm$Colv)
-      # colDend <- hclustToTree(colClust)[[1]]
-      colDend <- dendToTree(as.dendrogram(colClust))
+      colDend <- dendToTree(hm$Colv)
     }
 
-    matrix <- matrix[hm$rowInd, hm$colInd]
+    # VERY IMPORTANT that rowInd be reversed, because we're calling
+    # rev(hm$Rowv) above.
+    matrix <- matrix[rev(hm$rowInd), hm$colInd]
     
   } else {
     # No clustering
@@ -105,7 +107,7 @@ d3heatmap <- function(x,
   
   domain <- seq.int(rng[1], rng[2], length.out = 100)
   
-  colors <- leaflet::colorNumeric(colors, 1:100)(1:100)
+  colors <- scales::col_numeric(colors, 1:100)(1:100)
 
   matrix <- list(data = as.numeric(t(matrix)),
     dim = dim(matrix),

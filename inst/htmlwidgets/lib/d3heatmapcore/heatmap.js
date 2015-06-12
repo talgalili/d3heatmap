@@ -314,7 +314,7 @@ function heatmap(selector, data, options) {
     if (data.children) {
       leaves = d3.layout.cluster().nodes(data)
           .filter(function(x) { return !x.children; })
-          .map(function(x) { return x.name + ""; });
+          .map(function(x) { return x.label + ""; });
     } else if (data.length) {
       leaves = data;
     }
