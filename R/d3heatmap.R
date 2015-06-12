@@ -364,8 +364,9 @@ d3heatmap <- function(x,
   #   matrix <- matrix[rowClust$order,]
   #   colClust <- hclust(dist(t(matrix)))
   #   matrix <- matrix[,colClust$order]
-  rowDend <- NULL
-  colDend <- NULL
+  ### TODO: this was commented out due to the new code (will be removed later)
+#   rowDend <- NULL
+#   colDend <- NULL
   options <- NULL
 
   if (cluster) {
@@ -376,21 +377,24 @@ d3heatmap <- function(x,
     hm <- do.call(stats::heatmap, heatmap_options)
     dev.off()
     unlink(tmp)
-    
-    if (length(hm$Rowv) > 0) {
-      # Reverse Rowv because this is how stats::heatmap draws it.
-      # It would also make sense to not reverse the data here but in
-      # the d3 code just draw from bottom to top, but that would be
-      # a *lot* more work at this point.
-      rowDend <- dendToTree(rev(hm$Rowv))
-    }
-    if (length(hm$Colv) > 0) {
-      colDend <- dendToTree(hm$Colv)
-    }
+
+    ### TODO: this was commented out due to the new code (will be removed later)
+#     if (length(hm$Rowv) > 0) {
+#       # Reverse Rowv because this is how stats::heatmap draws it.
+#       # It would also make sense to not reverse the data here but in
+#       # the d3 code just draw from bottom to top, but that would be
+#       # a *lot* more work at this point.
+#       rowDend <- dendToTree(rev(hm$Rowv))
+#     }
+#     if (length(hm$Colv) > 0) {
+#       colDend <- dendToTree(hm$Colv)
+#     }
 
     # VERY IMPORTANT that rowInd be reversed, because we're calling
     # rev(hm$Rowv) above.
-    matrix <- matrix[rev(hm$rowInd), hm$colInd]
+    
+    # TODO: this is commented out since it introduced a bug that made incorrect connections between row/col names and values!
+    # matrix <- matrix[rev(hm$rowInd), hm$colInd]
     
   } else {
     # No clustering
