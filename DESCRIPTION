@@ -17,7 +17,7 @@ License: GPL-3 | file LICENSE
 Depends:
 Imports:
     stats,
-    leaflet,
+    scales (>= 0.2.5),
     htmlwidgets
 Suggests:
     shiny,
