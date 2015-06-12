@@ -3,8 +3,15 @@
 \name{d3heatmap}
 \alias{d3heatmap}
 \title{D3 Heatmap widget}
+\source{
+The interface was designed based on \link{heatmap} and \link[gplots2]{heatmap.2}
+}
 \usage{
-d3heatmap(x, cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
+d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
+  distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
+  "column", "none"), reorderfun = function(d, w) reorder(d, w),
+  symm = FALSE, scale = c("none", "row", "column"), na.rm = TRUE,
+  cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
   invert_colors = FALSE, width = NULL, height = NULL,
   xaxis_height = 120, yaxis_width = 120, xaxis_font_size = NULL,
   yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
@@ -12,6 +19,24 @@ d3heatmap(x, cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
 }
 \arguments{
 \item{x}{A numeric matrix}
+
+\item{Rowv}{determines if and how the row dendrogram should be reordered.    By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.}
+
+\item{Colv}{determines if and how the column dendrogram should be reordered.    Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.}
+
+\item{distfun}{function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.}
+
+\item{hclustfun}{function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.}
+
+\item{dendrogram}{character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.}
+
+\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}}
+
+\item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
+
+\item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
+
+\item{na.rm}{logical indicating whether NA's should be removed.}
 
 \item{cluster}{\code{TRUE} to perform clustering and show dendrograms.
 Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
@@ -31,10 +56,13 @@ in descending rather than ascending order.}
 
 \item{height}{Height in pixels (optional, defaults to automatic sizing).}
 
-\item{xaxis_height,yaxis_width}{Size of axes, in pixels.}
+\item{xaxis_height}{Size of axes, in pixels.}
 
-\item{xaxis_font_size,yaxis_font_size}{Font size of axis labels, as a CSS
-size (e.g. \code{"14px"} or \code{"12pt"}).}
+\item{yaxis_width}{Size of axes, in pixels.}
+
+\item{xaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+
+\item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
 
 \item{brush_color}{The base color to be used for the brush. The brush will be
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format
@@ -53,5 +81,17 @@ For large \code{x} it may help performance to set this value to \code{0}.}
 }
 \description{
 Creates a D3.js-based heatmap widget.
+}
+\examples{
+\dontrun{
+
+library(d3heatmap)
+d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
+d3heatmap(scale(mtcars), cluster = FALSE)
+
+}
+}
+\seealso{
+\link{heatmap}, \link[gplots2]{heatmap.2}
 }
 

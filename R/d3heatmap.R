@@ -25,9 +25,12 @@ NULL
 #'   in descending rather than ascending order.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
-#' @param xaxis_height,yaxis_width Size of axes, in pixels.
-#' @param xaxis_font_size,yaxis_font_size Font size of axis labels, as a CSS 
-#'   size (e.g. \code{"14px"} or \code{"12pt"}).
+#' 
+#' @param xaxis_height Size of axes, in pixels.
+#' @param yaxis_width Size of axes, in pixels.
+#' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' 
 #' @param brush_color The base color to be used for the brush. The brush will be
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 #'   expected.
@@ -40,10 +43,56 @@ NULL
 #'   \code{\link[stats]{heatmap}}. Mostly only the clustering/dendrogram
 #'   related arguments are interesting.
 #'   
+#'   
+#' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
+#' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.
+#' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
+#' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
+#' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
+#' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
+#' 
+#' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
+#' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
+#' @param na.rm logical indicating whether NA's should be removed.
+#'   
 #' @import htmlwidgets
 #'   
 #' @export
+#' @source 
+#' The interface was designed based on \link{heatmap} and \link[gplots2]{heatmap.2}
+#' 
+#' @seealso 
+#' \link{heatmap}, \link[gplots2]{heatmap.2}
+#' 
+#' @examples 
+#' \dontrun{
+#' 
+#' library(d3heatmap)
+#' d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
+#' d3heatmap(scale(mtcars), cluster = FALSE)
+#' 
+#' }
+#' 
 d3heatmap <- function(x,
+
+                      
+# TODO: we must add some control on the values we see in the tooltip, the level of precision is ridiculous                                            
+    ## Also - it would be nice to have the row/col labels when hovering a cell...
+                      
+    ## dendrogram control
+    Rowv = TRUE,
+    Colv=if(symm)"Rowv" else TRUE,
+    distfun = dist,
+    hclustfun = hclust,
+    dendrogram = c("both","row","column","none"),
+    reorderfun = function(d, w) reorder(d, w),
+    symm = FALSE,
+                      
+    ## data scaling
+    scale = c("none","row", "column"),
+    na.rm=TRUE,
+    
+    ##TODO: decide later which names/conventions to keep
   cluster = !any(is.na(x)),
   theme = NULL,
   colors = "RdYlBu",
