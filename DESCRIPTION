@@ -2,7 +2,7 @@ Package: d3heatmap
 Type: Package
 Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js""
 Version: 0.5.0
-Date: 2015-06-12
+Date: 2015-06-13
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
     person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
@@ -20,7 +20,9 @@ Imports:
     htmlwidgets
 Suggests:
     shiny,
-    dendextend
+    knitr,
+    dendextend (>= 0.18.0)
+VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
