@@ -4,7 +4,7 @@
 \alias{d3heatmap}
 \title{D3 Heatmap widget}
 \source{
-The interface was designed based on \link{heatmap} and \link[gplots2]{heatmap.2}
+The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 }
 \usage{
 d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
@@ -92,6 +92,6 @@ d3heatmap(scale(mtcars), cluster = FALSE)
 }
 }
 \seealso{
-\link{heatmap}, \link[gplots2]{heatmap.2}
+\link{heatmap}, \link[gplots]{heatmap.2}
 }
 

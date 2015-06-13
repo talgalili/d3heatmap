@@ -59,10 +59,10 @@ NULL
 #'   
 #' @export
 #' @source 
-#' The interface was designed based on \link{heatmap} and \link[gplots2]{heatmap.2}
+#' The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 #' 
 #' @seealso 
-#' \link{heatmap}, \link[gplots2]{heatmap.2}
+#' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
 #' \dontrun{
@@ -113,7 +113,7 @@ d3heatmap <- function(x,
     x <- as.matrix(x)
   }
 
-  ############### gplots2::heatmap.2 code (some is commented out) ##############
+  ############### gplots::heatmap.2 code (some is commented out) ##############
   
   retval <- list()
   
