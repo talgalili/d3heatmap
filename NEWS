@@ -3,7 +3,7 @@ d3heatmap 0.5.0 (2015-06-13)
 
 * dendToTree - now cleans NA inside the nodePar/edgePar sub items in the list.
 
-* d3heatmap - gains new parameters from stats::heatmap and gplots::heatmap.2 - including the ability to input the dendrogram that will be plotted. (currently it only allows for colored labels)
+* d3heatmap - gains new parameters from stats::heatmap and gplots::heatmap.2 - including the ability to input the dendrogram that will be plotted. (currently it only allows for colored branches)
 
 * Added a basic Vignette
 

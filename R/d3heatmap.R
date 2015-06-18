@@ -512,6 +512,7 @@ if(FALSE) {
     color_branches(k = 2)
   library(d3heatmap)
   d3heatmap(x, Rowv = row_dend2, Colv = col_dend2) # Works!
+  d3heatmap(x)
   
   row_dend2 <- x %>% dist %>% hclust %>% as.dendrogram %>%
     color_branches(k = 3) %>% 
