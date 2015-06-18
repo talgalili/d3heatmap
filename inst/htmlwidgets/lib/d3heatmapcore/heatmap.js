@@ -424,10 +424,30 @@ function heatmap(selector, data, options) {
 
   }
   
+  function edgeStrokeWidth(node) {
+    if (node.edgePar && node.edgePar.lwd)
+      return node.edgePar.lwd;
+    else
+      return 1;
+  }
+  
+  function maxChildStrokeWidth(node, recursive) {
+    var max = 0;
+    for (var i = 0; i < node.children.length; i++) {
+      if (recursive) {
+        max = Math.max(max, maxChildStrokeWidth(node.children[i], true));
+      }
+      max = Math.max(max, edgeStrokeWidth(node.children[i]));
+    }
+    return max;
+  }
+  
   function dendrogram(svg, data, rotated, width, height, padding) {
+    var topLineWidth = maxChildStrokeWidth(data, false);
+    
     var x = d3.scale.linear()
         .domain([data.height, 0])
-        .range([-1, width-padding]);
+        .range([topLineWidth/2, width-padding]);
     var y = d3.scale.linear()
         .domain([0, height])
         .range([0, height]);
@@ -439,7 +459,7 @@ function heatmap(selector, data, options) {
     var transform = "translate(1,0)";
     if (rotated) {
       // Flip dendrogram vertically
-      x.range([2, -height+padding+2]);
+      x.range([topLineWidth/2, -height+padding+2]);
       // Rotate
       transform = "rotate(-90) translate(-2,0)";
     }
@@ -470,11 +490,40 @@ function heatmap(selector, data, options) {
       .enter().append("polyline")
         .attr("class", "link")
         .attr("stroke", function(d, i) {
-          if (!d.edgePar || !d.edgePar.col) {
+          if (!d.edgePar.col) {
             return opts.link_color;
           } else {
             return d.edgePar.col;
           }
+        })
+        .attr("stroke-width", edgeStrokeWidth)
+        .attr("stroke-dasharray", function(d, i) {
+          var pattern;
+          switch (d.edgePar.lty) {
+            case 6:
+              pattern = [3,3,5,3];
+              break;
+            case 5:
+              pattern = [15,5];
+              break;
+            case 4:
+              pattern = [2,4,4,4];
+              break;
+            case 3:
+              pattern = [2,4];
+              break;
+            case 2:
+              pattern = [4,4];
+              break;
+            case 1:
+            default:
+              pattern = [];
+              break;
+          }
+          for (var i = 0; i < pattern.length; i++) {
+            pattern[i] = pattern[i] * (d.edgePar.lwd || 1);
+          }
+          return pattern.join(",");
         });
 
     function draw(selection) {
