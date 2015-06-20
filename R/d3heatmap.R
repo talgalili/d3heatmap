@@ -74,26 +74,23 @@ NULL
 #' }
 #' 
 d3heatmap <- function(x,
-
-                      
-# TODO: we must add some control on the values we see in the tooltip, the level of precision is ridiculous                                            
-    ## Also - it would be nice to have the row/col labels when hovering a cell...
-                      
-    ## dendrogram control
-    Rowv = TRUE,
-    Colv=if(symm)"Rowv" else TRUE,
-    distfun = dist,
-    hclustfun = hclust,
-    dendrogram = c("both","row","column","none"),
-    reorderfun = function(d, w) reorder(d, w),
-    symm = FALSE,
-                      
-    ## data scaling
-    scale = c("none","row", "column"),
-    na.rm=TRUE,
-    
-    ##TODO: decide later which names/conventions to keep
-  cluster = !any(is.na(x)),
+  # TODO: we must add some control on the values we see in the tooltip, the level of precision is ridiculous                                            
+  ## Also - it would be nice to have the row/col labels when hovering a cell...
+  
+  ## dendrogram control
+  Rowv = TRUE,
+  Colv = if (symm) "Rowv" else TRUE,
+  distfun = dist,
+  hclustfun = hclust,
+  dendrogram = c("both", "row", "column", "none"),
+  reorderfun = function(d, w) reorder(d, w),
+  symm = FALSE,
+  
+  ## data scaling
+  scale = c("row", "column", "none"),
+  na.rm=TRUE,
+  
+  ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
   invert_colors = FALSE,
@@ -106,301 +103,103 @@ d3heatmap <- function(x,
   show_grid = TRUE,
   anim_duration = 500,
   heatmap_options = list()
-  ) {
-
+) {
+  
   if(!is.matrix(x)) {
-    # warning("x was coerced to a matrix using as.matrix")
     x <- as.matrix(x)
   }
-
-  ############### gplots::heatmap.2 code (some is commented out) ##############
   
-  retval <- list()
-  
-  scale <- if(symm && missing(scale)) "none" else match.arg(scale)
-  dendrogram <- match.arg(dendrogram)
-  
-  
-  
-  # TODO: This is redundant. we'd probably want to remove cluster (or dendrogram?!) from the list of parameters
-  if(!cluster) {
-    Rowv <- FALSE
-    Colv <- FALSE
-    dendrogram <- "none"
-  } else {
-    if(dendrogram == "row") Colv <- FALSE
-    if(dendrogram == "column") Rowv <- FALSE
-    if(dendrogram == "none") Rowv <- Colv <- FALSE
-  }
-  
-  
-  
-  
-#   trace <- match.arg(trace)
-#   density.info <- match.arg(density.info)
-#   
-#   if(length(col)==1 && is.character(col) )
-#     col <- get(col, mode="function")
-#   
-#   if(!missing(breaks) && (scale!="none"))
-#     warning("Using scale=\"row\" or scale=\"column\" when breaks are",
-#             "specified can produce unpredictable results.",
-#             "Please consider using only one or the other.")
-  
-  if ( is.null(Rowv) || is.na(Rowv) )
-    Rowv <- FALSE
-  if ( is.null(Colv) || is.na(Colv) )
-    Colv <- FALSE
-  else if( all(Colv=="Rowv") )
-    Colv <- Rowv
-  
-  if(length(di <- dim(x)) != 2 || !is.numeric(x))
-    stop("`x' must be a numeric matrix")
-
-  nr <- di[1]
-  nc <- di[2]
+  nr <- dim(x)[1]
+  nc <- dim(x)[2]
   
   ### TODO: debating if to include this or not:
-#   
-#   if(nr <= 1 || nc <= 1)
-#     stop("`x' must have at least 2 rows and 2 columns")
-#   
-#   if(!is.numeric(margins) || length(margins) != 2)
-#     stop("`margins' must be a numeric vector of length 2")
-#   
-#   if(missing(cellnote))
-#     cellnote <- matrix("", ncol=ncol(x), nrow=nrow(x))
+  #   
+  #   if(nr <= 1 || nc <= 1)
+  #     stop("`x' must have at least 2 rows and 2 columns")
+  #   
   
-  is.dendrogram <- function (x) { inherits(x, "dendrogram")  }
-  
-  
-  if(!is.dendrogram(Rowv)) {
-    ## Check if Rowv and dendrogram arguments are consistent
-    if (
-      (
-        ( is.logical(Rowv)  && !isTRUE(Rowv) )
-        ||
-        ( is.null(Rowv) )
-      )
-      &&
-      ( dendrogram %in% c("both","row") )
-    )
-    {
-      if (is.logical(Colv) && (Colv))
-        dendrogram <- "column"
-      else
-        dendrogram <- "none"
-      
-      warning("Discrepancy: Rowv is FALSE, while dendrogram is `",
-              dendrogram, "'. Omitting row dendogram.")
-      
-    }
-  }
-  
-  if(!is.dendrogram(Colv)) {
-    ## Check if Colv and dendrogram arguments are consistent
-    if (
-      (
-        (is.logical(Colv) && !isTRUE(Colv) )
-        ||
-        (is.null(Colv))
-      )
-      &&
-      ( dendrogram %in% c("both","column")) )
-    {
-      if (is.logical(Rowv) && (Rowv))
-        dendrogram <- "row"
-      else
-        dendrogram <- "none"
-      
-      warning("Discrepancy: Colv is FALSE, while dendrogram is `",
-              dendrogram, "'. Omitting column dendogram.")
-    }
-  }
-  
-  
-  ## by default order by row/col mean
-  ## if(is.null(Rowv)) Rowv <- rowMeans(x, na.rm = na.rm)
-  ## if(is.null(Colv)) Colv <- colMeans(x, na.rm = na.rm)
-  
-  ## get the dendrograms and reordering indices
-  
-  ## if( dendrogram %in% c("both","row") )
-  ##  { ## dendrogram option is used *only* for display purposes
-  if(is.dendrogram(Rowv))
-  {
-    ddr <- Rowv ## use Rowv 'as-is', when it is dendrogram
-    rowInd <- order.dendrogram(ddr)
-    if(length(rowInd)>nr || any(rowInd<1 | rowInd > nr ))
-      stop("Rowv dendrogram doesn't match size of x")
-    if (length(rowInd) < nr)
-      nr <- length(rowInd)
-  }
-  else if (is.integer(Rowv))
-  {
-    ## Compute dendrogram and do reordering based on given vector
-    distr <- distfun(x)
-    hcr <- hclustfun(distr)
-    ddr <- as.dendrogram(hcr)
-    ddr <- reorderfun(ddr, Rowv)
-    
-    rowInd <- order.dendrogram(ddr)
-    if(nr != length(rowInd))
-      stop("row dendrogram ordering gave index of wrong length")
-  }
-  else if (isTRUE(Rowv))
-  { ## If TRUE, compute dendrogram and do reordering based on rowMeans
-    Rowv <- rowMeans(x, na.rm = na.rm)
-    distr <- distfun(x)
-    hcr <- hclustfun(distr)
-    ddr <- as.dendrogram(hcr)
-    ddr <- reorderfun(ddr, Rowv)
-    
-    rowInd <- order.dendrogram(ddr)
-    if(nr != length(rowInd))
-      stop("row dendrogram ordering gave index of wrong length")
+  scale <- if (symm && missing(scale)) {
+    "none"
   } else {
-    rowInd <- nr:1
+    match.arg(scale) 
+  }
+  dendrogram <- match.arg(dendrogram)
+  
+  # Use dendrogram argument to set defaults for Rowv/Colv
+  if (missing(Rowv)) {
+    Rowv <- dendrogram %in% c("both", "row")
+  }
+  if (missing(Colv)) {
+    Colv <- dendrogram %in% c("both", "col")
+  }
+
+  is.dendrogram <- function (x) { inherits(x, "dendrogram")  }
+
+  if (isTRUE(Rowv)) {
+    Rowv <- rowMeans(x, na.rm = na.rm)
+  }
+  if (is.numeric(Rowv)) {
+    Rowv <- reorderfun(as.dendrogram(hclustfun(distfun(x))), Rowv)
+  }
+  if (is.dendrogram(Rowv)) {
+    Rowv <- rev(Rowv)
+    rowInd <- order.dendrogram(Rowv)
+    if(nr != length(rowInd))
+      stop("Row dendrogram is the wrong size")
+  } else {
+    if (!is.null(Rowv) && !is.na(Rowv) && !identical(Rowv, FALSE))
+      warning("Invalid value for Rowv, ignoring")
+    Rowv <- NULL
+    rowInd <- 1:nr
   }
   
-  ## if( dendrogram %in% c("both","column") )
-  ##   {
-  if(is.dendrogram(Colv))
-  {
-    ddc <- Colv ## use Colv 'as-is', when it is dendrogram
-    colInd <- order.dendrogram(ddc)
-    if(length(colInd)>nc || any(colInd<1 | colInd > nc ))
-      stop("Colv dendrogram doesn't match size of x")
-    if (length(colInd) < nc)
-      nc <- length(colInd)
+  if (identical(Colv, "Rowv")) {
+    Colv <- Rowv
   }
-  else if(identical(Colv, "Rowv")) {
-    if(nr != nc)
-      stop('Colv = "Rowv" but nrow(x) != ncol(x)')
-    if(exists("ddr"))
-    {
-      ddc <- ddr
-      colInd <- order.dendrogram(ddc)
-    } else
-      colInd <- rowInd
-  } else if(is.integer(Colv))
-  {## Compute dendrogram and do reordering based on given vector
-    distc <- distfun(if(symm)x else t(x))
-    hcc <- hclustfun(distc)
-    ddc <- as.dendrogram(hcc)
-    ddc <- reorderfun(ddc, Colv)
-    
-    colInd <- order.dendrogram(ddc)
-    if(nc != length(colInd))
-      stop("column dendrogram ordering gave index of wrong length")
-  }
-  else if (isTRUE(Colv))
-  {## If TRUE, compute dendrogram and do reordering based on rowMeans
+  if (isTRUE(Colv)) {
     Colv <- colMeans(x, na.rm = na.rm)
-    distc <- distfun(if(symm)x else t(x))
-    hcc <- hclustfun(distc)
-    ddc <- as.dendrogram(hcc)
-    ddc <- reorderfun(ddc, Colv)
-    
-    colInd <- order.dendrogram(ddc)
-    if(nc != length(colInd))
-      stop("column dendrogram ordering gave index of wrong length")
   }
-  else
-  {
+  if (is.numeric(Colv)) {
+    Colv <- reorderfun(as.dendrogram(hclustfun(distfun(t(x)))), Colv)
+  }
+  if (is.dendrogram(Colv)) {
+    colInd <- order.dendrogram(Colv)
+    if (nc != length(colInd))
+      stop("Col dendrogram is the wrong size")
+  } else {
+    if (!is.null(Colv) && !is.na(Colv) && !identical(Colv, FALSE))
+      warning("Invalid value for Rowv, ignoring")
+    Colv <- NULL
     colInd <- 1:nc
   }
-  
-#   retval$rowInd <- rowInd
-#   retval$colInd <- colInd
-#   retval$call <- match.call()
-  
-  
-  ## reorder x & cellnote
+
+  ## reorder x
   x <- x[rowInd, colInd]
-  x.unscaled <- x
-  # cellnote <- cellnote[rowInd, colInd]
-  
-#   if(is.null(labRow))
-#     labRow <- if(is.null(rownames(x))) (1:nr)[rowInd] else rownames(x)
-#   else
-#     labRow <- labRow[rowInd]
-#   
-#   if(is.null(labCol))
-#     labCol <- if(is.null(colnames(x))) (1:nc)[colInd] else colnames(x)
-#   else
-#     labCol <- labCol[colInd]
-#   
-#   if(!is.null(colRow))
-#     colRow <- colRow[rowInd]
-#   
-#   if(!is.null(colCol))
-#     colCol <- colCol[colInd]
+  x_unscaled <- x
   
   if(scale == "row") {
-    retval$rowMeans <- rm <- rowMeans(x, na.rm = na.rm)
-    x <- sweep(x, 1, rm)
-    retval$rowSDs <-  sx <- apply(x, 1, sd, na.rm = na.rm)
-    x <- sweep(x, 1, sx, "/")
+    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
   }
   else if(scale == "column") {
-    retval$colMeans <- rm <- colMeans(x, na.rm = na.rm)
-    x <- sweep(x, 2, rm)
-    retval$colSDs <-  sx <- apply(x, 2, sd, na.rm = na.rm)
-    x <- sweep(x, 2, sx, "/")
+    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
   
-  ############### binding code between heatmap.2 and d3heatmap code ##############
-  
-  rowDend <- if(exists("ddr") && is.dendrogram(ddr)) dendToTree(ddr) else NULL  
-  colDend <- if(exists("ddc") && is.dendrogram(ddc)) dendToTree(ddc) else NULL  
+  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL  
+  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL  
 
-  ############### original d3heatmap code ##############
+  rng <- range(x, na.rm = TRUE)
   
-  matrix <- as.matrix(x)
-  rng <- range(matrix, na.rm = TRUE)
-  
-  #   rowClust <- hclust(dist(matrix))
-  #   matrix <- matrix[rowClust$order,]
-  #   colClust <- hclust(dist(t(matrix)))
-  #   matrix <- matrix[,colClust$order]
-  ### TODO: this was commented out due to the new code (will be removed later)
-#   rowDend <- NULL
-#   colDend <- NULL
   options <- NULL
-
-  if (cluster) {
-    tmp <- tempfile()
-    png(tmp)
-    heatmap_options$x = quote(matrix)
-    heatmap_options$keep.dendro = TRUE
-    hm <- do.call(stats::heatmap, heatmap_options)
-    dev.off()
-    unlink(tmp)
-
-    ### TODO: this was commented out due to the new code (will be removed later)
-#     if (length(hm$Rowv) > 0) {
-#       # Reverse Rowv because this is how stats::heatmap draws it.
-#       # It would also make sense to not reverse the data here but in
-#       # the d3 code just draw from bottom to top, but that would be
-#       # a *lot* more work at this point.
-#       rowDend <- dendToTree(rev(hm$Rowv))
-#     }
-#     if (length(hm$Colv) > 0) {
-#       colDend <- dendToTree(hm$Colv)
-#     }
-
-    # VERY IMPORTANT that rowInd be reversed, because we're calling
-    # rev(hm$Rowv) above.
-    
-    # TODO: this is commented out since it introduced a bug that made incorrect connections between row/col names and values!
-    # matrix <- matrix[rev(hm$rowInd), hm$colInd]
-    
-  } else {
-    # No clustering
-    options <- c(options, list(xclust_height = 0, yclust_width = 0))
-  }
   
+  if (is.null(rowDend)) {
+    c(options, list(yclust_width = 0))
+  }
+  if (is.null(colDend)) {
+    c(options, list(xclust_height = 0))
+  }
+
   options <- c(options, list(
     xaxis_height = xaxis_height,
     yaxis_width = yaxis_width,
@@ -417,19 +216,19 @@ d3heatmap <- function(x,
     if (invert_colors) 100:1 else 1:100
   )
 
-  matrix <- list(data = as.numeric(t(matrix)),
-    dim = dim(matrix),
-    rows = row.names(matrix) %||% paste(1:nrow(matrix)),
-    cols = colnames(matrix) %||% paste(1:ncol(matrix)),
+  mtx <- list(data = as.numeric(t(x)),
+    dim = dim(x),
+    rows = row.names(x) %||% paste(1:nrow(x)),
+    cols = colnames(x) %||% paste(1:ncol(x)),
     colors = colors,
     domain = domain)
   
-  x <- list(rows = rowDend, cols = colDend, matrix = matrix, theme = theme, options = options)
+  payload <- list(rows = rowDend, cols = colDend, matrix = mtx, theme = theme, options = options)
   
   # create widget
   htmlwidgets::createWidget(
     name = 'd3heatmap',
-    x,
+    payload,
     width = width,
     height = height,
     package = 'd3heatmap',
