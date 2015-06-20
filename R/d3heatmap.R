@@ -351,25 +351,24 @@ if(FALSE) {
   # various examples  
   library(d3heatmap)
   d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
-  d3heatmap(scale(mtcars), cluster = FALSE)
+  d3heatmap(scale(mtcars), dendrogram = "none")
   
   d3heatmap(scale(mtcars))
-  d3heatmap(scale(mtcars), cluster = FALSE)
+  d3heatmap(scale(mtcars), dendrogram = "none")
   d3heatmap(scale(mtcars), Colv = FALSE)
   d3heatmap(scale(mtcars), Rowv = FALSE)
   d3heatmap(scale(mtcars), dendrogram = "row")
   d3heatmap(scale(mtcars), dendrogram = "col")
-  d3heatmap(scale(mtcars), dendrogram = "none") # like cluster = FALSE
   
   x <- mtcars[c(2:4,7),1:4]
   d3heatmap(x)
-  d3heatmap(x, cluster = FALSE)
+  d3heatmap(x, dendrogram = "none")
   
   d3heatmap(x, scale = "row")
   scale(x)
-  d3heatmap(scale(x), cluster = FALSE)
-  d3heatmap(x, scale = "column", cluster = FALSE)
-  d3heatmap(x, scale = "row", cluster = FALSE)
+  d3heatmap(scale(x), dendrogram = "none")
+  d3heatmap(x, scale = "column", dendrogram = "none")
+  d3heatmap(x, scale = "row", dendrogram = "none")
   
   heatmap(scale(mtcars[1:4,1:4]), Rowv = NA, Colv = NA)
   
@@ -390,7 +389,7 @@ if(FALSE) {
     set("branches_lwd", c(4,1)) %>%    
     set("branches_lty", c(1,1,3)) %>%  
     set("branches_col", c("gold","grey","blue", "red")) 
-  # set("branches_col", c(1,2,3)) # TODO: this doesn't work - needs to be fixed...
+  row_dend3 <- set(row_dend3, "branches_col", c(1,2,3)) # TODO: this doesn't work - needs to be fixed...
   plot(row_dend3) # line width and line type are still ignored.
   d3heatmap(x, Rowv = row_dend3) 
   

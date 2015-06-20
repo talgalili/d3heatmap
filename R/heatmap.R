@@ -10,16 +10,26 @@ edgeParFields <- c("col", "lty", "lwd")
 # field named `children`.
 dendToTree <- function(dend) {
   
+  toList <- function(x) {
+    if (is.null(x))
+      NULL
+    else
+      as.list(x)
+  }
+  
   # Gather the fields for this node
   tree <- c(
     as.list(attributes(dend)[fields]),
     #list(order = {if(is.leaf(dend)) as.numeric(dend) else 0L}),
-    list(nodePar = attr(dend, "nodePar")[nodeParFields]),
-    list(edgePar = attr(dend, "edgePar")[edgeParFields])
+    list(nodePar = toList(attr(dend, "nodePar")[nodeParFields])),
+    list(edgePar = toList(attr(dend, "edgePar")[edgeParFields]))
   )
   
   # In the future, this could either be fixed here, or in the javascript.
-  if(is.null(tree$edgePar$col)) tree$edgePar$col <- "black"
+  if (is.null(tree$edgePar$col))
+    tree$edgePar$col <- "" # Default to empty so CSS takes over (for dark theme)
+  else
+    tree$edgePar$col <- rgb(t(col2rgb(tree$edgePar$col, alpha = TRUE)), maxColorValue = 255)
   
   filter_null <- function(x) Filter(Negate(is.null), x)
   # The next line is essential since without it we might get NULLs in the nodePar (etc.) when the tree is colored
