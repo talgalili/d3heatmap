@@ -21,8 +21,6 @@ NULL
 #'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 #'   \code{"#RRGGBB"} format, or a color interpolation function like
 #'   \code{\link[grDevices]{colorRamp}}.
-#' @param invert_colors If \code{TRUE}, maps the colors specified in \code{colors}
-#'   in descending rather than ascending order.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' 
@@ -98,7 +96,6 @@ d3heatmap <- function(x,
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
-  invert_colors = FALSE,
   width = NULL, height = NULL,
   xaxis_height = 120,
   yaxis_width = 120,

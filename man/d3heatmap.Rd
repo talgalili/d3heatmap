@@ -12,10 +12,9 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   "column", "none"), reorderfun = function(d, w) reorder(d, w),
   symm = FALSE, scale = c("row", "column", "none"), na.rm = TRUE,
   label = as.character(x), theme = NULL, colors = "RdYlBu",
-  invert_colors = FALSE, width = NULL, height = NULL,
-  xaxis_height = 120, yaxis_width = 120, xaxis_font_size = NULL,
-  yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
-  anim_duration = 500, heatmap_options = list())
+  width = NULL, height = NULL, xaxis_height = 120, yaxis_width = 120,
+  xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
+  show_grid = TRUE, anim_duration = 500, heatmap_options = list())
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -49,9 +48,6 @@ standalone visualizations, not R Markdown or Shiny.}
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
-
-\item{invert_colors}{If \code{TRUE}, maps the colors specified in \code{colors}
-in descending rather than ascending order.}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing).}
 
