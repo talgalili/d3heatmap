@@ -14,7 +14,7 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   label = as.character(x), theme = NULL, colors = "RdYlBu",
   width = NULL, height = NULL, xaxis_height = 120, yaxis_width = 120,
   xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
-  show_grid = TRUE, anim_duration = 500, heatmap_options = list())
+  show_grid = TRUE, anim_duration = 500)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -70,11 +70,7 @@ a numeric value to specify the gridline thickness in pixels (can be a
 non-integer).}
 
 \item{anim_duration}{Number of milliseconds to animate zooming in and out.
-For large \code{x} it may help performance to set this value to \code{0}.}
-
-\item{heatmap_options}{List of options to pass to
-  \code{\link[stats]{heatmap}}. Mostly only the clustering/dendrogram
-  related arguments are interesting.}
+  For large \code{x} it may help performance to set this value to \code{0}.}
 }
 \description{
 Creates a D3.js-based heatmap widget.

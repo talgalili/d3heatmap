@@ -37,10 +37,6 @@ NULL
 #'   non-integer).
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
-#' @param heatmap_options List of options to pass to
-#'   \code{\link[stats]{heatmap}}. Mostly only the clustering/dendrogram
-#'   related arguments are interesting.
-#'   
 #'   
 #' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
 #' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.
@@ -103,8 +99,7 @@ d3heatmap <- function(x,
   yaxis_font_size = NULL,
   brush_color = "#0000FF",
   show_grid = TRUE,
-  anim_duration = 500,
-  heatmap_options = list()
+  anim_duration = 500
 ) {
   
   if(!is.matrix(x)) {
