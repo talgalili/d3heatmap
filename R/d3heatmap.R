@@ -245,6 +245,7 @@ d3heatmap <- function(x,
   )
 }
 
+#' @import png base64enc
 encodeAsPNG <- function(x, colors) {
   colorData <- as.raw(col2rgb(colors(x), alpha = TRUE))
   dim(colorData) <- c(4, ncol(x), nrow(x))

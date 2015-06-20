@@ -3,4 +3,6 @@
 export(d3heatmap)
 export(d3heatmapOutput)
 export(renderD3heatmap)
+import(base64enc)
 import(htmlwidgets)
+import(png)

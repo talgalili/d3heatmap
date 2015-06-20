@@ -15,9 +15,10 @@ Description: Create zoomable heatmaps that are usable from the R console, in the
     RStudio viewer pane, in R Markdown documents, and in Shiny apps.
 License: GPL-3 | file LICENSE
 Imports:
-    stats,
     scales (>= 0.2.5),
-    htmlwidgets
+    htmlwidgets,
+    png,
+    base64enc
 Suggests:
     shiny,
     knitr,
