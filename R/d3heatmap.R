@@ -13,14 +13,14 @@ NULL
 #' Creates a D3.js-based heatmap widget.
 #' 
 #' @param x A numeric matrix
-#' @param cluster \code{TRUE} to perform clustering and show dendrograms. 
 #'   Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.
 #' @param theme A custom CSS theme to use. Currently the only valid values are 
 #'   \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 #'   standalone visualizations, not R Markdown or Shiny.
 #' @param colors Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
 #'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
-#'   \code{"#RRGGBB"} format.
+#'   \code{"#RRGGBB"} format, or a color interpolation function like
+#'   \code{\link[grDevices]{colorRamp}}.
 #' @param invert_colors If \code{TRUE}, maps the colors specified in \code{colors}
 #'   in descending rather than ascending order.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
@@ -54,6 +54,8 @@ NULL
 #' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
+#' 
+#' @param label matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #'   
 #' @import htmlwidgets
 #'   
@@ -88,7 +90,10 @@ d3heatmap <- function(x,
   
   ## data scaling
   scale = c("row", "column", "none"),
-  na.rm=TRUE,
+  na.rm = TRUE,
+  
+  ## value formatting
+  label = as.character(x),
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -112,6 +117,16 @@ d3heatmap <- function(x,
   nr <- dim(x)[1]
   nc <- dim(x)[2]
   
+  if (is.null(dim(label))) {
+    if (length(label) != nr*nc) {
+      stop("Incorrect number of label values")
+    }
+    dim(label) <- dim(x)
+  }
+  if (!identical(dim(x), dim(label))) {
+    stop("Label matrix must have same dimensions as x")
+  }
+
   ### TODO: debating if to include this or not:
   #   
   #   if(nr <= 1 || nc <= 1)
@@ -175,7 +190,7 @@ d3heatmap <- function(x,
 
   ## reorder x
   x <- x[rowInd, colInd]
-  x_unscaled <- x
+  label <- label[rowInd, colInd]
   
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
@@ -210,20 +225,22 @@ d3heatmap <- function(x,
     anim_duration = anim_duration
   ))
   
-  domain <- seq.int(rng[1], rng[2], length.out = 100)
-  
-  colors <- scales::col_numeric(colors, 1:100)(
-    if (invert_colors) 100:1 else 1:100
-  )
+  if (is.factor(x)) {
+    colors <- scales::col_factor(colors, x)
+  } else {
+    colors <- scales::col_numeric(colors, x)
+  }
 
-  mtx <- list(data = as.numeric(t(x)),
+  imgUri <- encodeAsPNG(t(x), colors)
+
+  mtx <- list(data = as.character(t(label)),
     dim = dim(x),
     rows = row.names(x) %||% paste(1:nrow(x)),
-    cols = colnames(x) %||% paste(1:ncol(x)),
-    colors = colors,
-    domain = domain)
+    cols = colnames(x) %||% paste(1:ncol(x))
+  )
   
-  payload <- list(rows = rowDend, cols = colDend, matrix = mtx, theme = theme, options = options)
+  payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
+    theme = theme, options = options)
   
   # create widget
   htmlwidgets::createWidget(
@@ -234,6 +251,14 @@ d3heatmap <- function(x,
     package = 'd3heatmap',
     sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
+}
+
+encodeAsPNG <- function(x, colors) {
+  colorData <- as.raw(col2rgb(colors(x), alpha = TRUE))
+  dim(colorData) <- c(4, ncol(x), nrow(x))
+  pngData <- png::writePNG(colorData)
+  encoded <- base64enc::base64encode(pngData)
+  paste0("data:image/png;base64,", encoded)
 }
 
 #' Wrapper functions for using d3heatmap in shiny
@@ -266,7 +291,7 @@ d3heatmap <- function(x,
 #'     d3heatmap(
 #'       scale(mtcars),
 #'       colors = input$palette,
-#'       cluster = input$cluster
+#'       dendrogram = if (input$cluster) "both" else "none"
 #'     )
 #'   })
 #' }

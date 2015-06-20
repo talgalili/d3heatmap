@@ -10,15 +10,16 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  symm = FALSE, scale = c("none", "row", "column"), na.rm = TRUE,
-  cluster = !any(is.na(x)), theme = NULL, colors = "RdYlBu",
+  symm = FALSE, scale = c("row", "column", "none"), na.rm = TRUE,
+  label = as.character(x), theme = NULL, colors = "RdYlBu",
   invert_colors = FALSE, width = NULL, height = NULL,
   xaxis_height = 120, yaxis_width = 120, xaxis_font_size = NULL,
   yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
   anim_duration = 500, heatmap_options = list())
 }
 \arguments{
-\item{x}{A numeric matrix}
+\item{x}{A numeric matrix
+Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 
 \item{Rowv}{determines if and how the row dendrogram should be reordered.    By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.}
 
@@ -38,8 +39,7 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 
-\item{cluster}{\code{TRUE} to perform clustering and show dendrograms.
-Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
+\item{label}{matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for
@@ -47,7 +47,8 @@ standalone visualizations, not R Markdown or Shiny.}
 
 \item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal
-\code{"#RRGGBB"} format.}
+\code{"#RRGGBB"} format, or a color interpolation function like
+\code{\link[grDevices]{colorRamp}}.}
 
 \item{invert_colors}{If \code{TRUE}, maps the colors specified in \code{colors}
 in descending rather than ascending order.}

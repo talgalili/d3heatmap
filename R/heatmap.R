@@ -19,7 +19,7 @@ dendToTree <- function(dend) {
   )
   
   # In the future, this could either be fixed here, or in the javascript.
-  if(is.null(tree$edgePar$col)) tree$edgePar$col <- 1 # "black"
+  if(is.null(tree$edgePar$col)) tree$edgePar$col <- "black"
   
   filter_null <- function(x) Filter(Negate(is.null), x)
   # The next line is essential since without it we might get NULLs in the nodePar (etc.) when the tree is colored

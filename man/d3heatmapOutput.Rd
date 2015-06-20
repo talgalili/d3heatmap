@@ -43,7 +43,7 @@ server <- function(input, output, session) {
     d3heatmap(
       scale(mtcars),
       colors = input$palette,
-      cluster = input$cluster
+      dendrogram = if (input$cluster) "both" else "none"
     )
   })
 }

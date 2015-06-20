@@ -174,17 +174,18 @@ function heatmap(selector, data, options) {
     var cols = data.dim[1];
     var rows = data.dim[0];
     
-    var merged = data.data;
+    var merged = data.merged;
     
     var x = d3.scale.linear().domain([0, cols]).range([0, width]);
     var y = d3.scale.linear().domain([0, rows]).range([0, height]);
-    var color = d3.scale.linear()
-        .domain(data.domain)
-        .range(data.colors);
     var tip = d3.tip()
         .attr('class', 'd3heatmap-tip')
-        .html(function(d) {
-          return htmlEscape(d);
+        .html(function(d, i) {
+          return "<table>" + 
+            "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
+            "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
+            "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
+            "</table>";
         })
         .direction("se")
         .style("position", "fixed");
@@ -234,16 +235,16 @@ function heatmap(selector, data, options) {
     rect.enter().append("rect").classed("datapt", true)
         .property("colIndex", function(d, i) { return i % cols; })
         .property("rowIndex", function(d, i) { return Math.floor(i / cols); })
-        .property("value", function(d, i) { return d; })
+        .property("value", function(d, i) { return d.value; })
         .attr("fill", function(d) {
-          if (d === null) {
+          if (!d.color) {
             return "transparent";
           }
-          return color(d);
+          return d.color;
         });
     rect.exit().remove();
     rect.append("title")
-        .text(function(d, i) { return (d === null) ? "NA" : d + ""; });
+        .text(function(d, i) { return d.label; });
     rect.call(tip);
 
     var spacing;
@@ -286,13 +287,13 @@ function heatmap(selector, data, options) {
         .on("mousemove", function() {
           var col = Math.floor(x.invert(d3.event.offsetX));
           var row = Math.floor(y.invert(d3.event.offsetY));
-          var value = merged[row*cols + col];
-          tip.show(value).style({
+          var label = merged[row*cols + col].label;
+          tip.show({col: col, row: row, label: label}).style({
             top: d3.event.clientY + 15 + "px",
             left: d3.event.clientX + 15 + "px",
             opacity: 0.9
           });
-          controller.datapoint_hover({col:col, row:row, value:value});
+          controller.datapoint_hover({col:col, row:row, label:label});
         })
         .on("mouseleave", function() {
           tip.hide().style("display", "none");
