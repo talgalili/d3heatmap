@@ -46,10 +46,9 @@ NULL
 #' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
 #' 
 #' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
-#' @param revC logical indicating if the column order should be reversed for plotting, 
-#' such that e.g., for the symmetric case, the symmetry axis is as usual.
-#' Default (when missing) - is FALSE, unless identical(Rowv, Colv) 
-#' (assuming dendrogram is not "none")
+#' @param revC logical indicating if the column order should be reversed for plotting.
+#' Default (when missing) - is FALSE, unless symm is TRUE.
+#' This is useful for cor matrix.
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
@@ -254,6 +253,7 @@ d3heatmap <- function(x,
     } else {
       revC <- FALSE
     }
+    if(symm) revC <- TRUE
   }
   if(revC) {
     Colv <- rev(Colv)

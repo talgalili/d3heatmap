@@ -34,10 +34,9 @@ Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 
 \item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
-\item{revC}{logical indicating if the column order should be reversed for plotting,
-such that e.g., for the symmetric case, the symmetry axis is as usual.
-Default (when missing) - is FALSE, unless identical(Rowv, Colv)
-(assuming dendrogram is not "none")}
+\item{revC}{logical indicating if the column order should be reversed for plotting.
+Default (when missing) - is FALSE, unless symm is TRUE.
+This is useful for cor matrix.}
 
 \item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 
