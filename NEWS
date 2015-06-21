@@ -1,3 +1,16 @@
+d3heatmap 0.6.0 (2015-06-21)
+----------------------------------------
+
+* d3heatmap - gains new parameters:
+  * digits - for controling the resolution of the value presented in the hover tooltip 
+  * labRow, labCol	- character vectors with row and column labels to use;
+  * cexRow, cexCol - to mimic the same values in heatmap.
+
+* Fix error in coloring code; accept palette integers 
+* Remove invert_colors param, it no longer works
+* Remove heatmap_options parameter, it isn't needed
+
+
 d3heatmap 0.5.0 (2015-06-20)
 ----------------------------------------
 
