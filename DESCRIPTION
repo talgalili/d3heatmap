@@ -28,4 +28,4 @@ URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
     'd3heatmap.R'
-    'heatmap.R'
+    'dendrogram.R'
