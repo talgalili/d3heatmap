@@ -52,7 +52,15 @@ NULL
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param label matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
-#'   
+#'
+#' @param cexRow positive numbers. If not missing, it will override \code{xaxis_font_size}
+#' and will give it a value cexRow*14
+#' @param cexCol positive numbers. If not missing, it will override \code{yaxis_font_size}
+#' and will give it a value cexCol*14
+#'
+#' @param labRow character vectors with row labels to use; default to rownames(x).
+#' @param labCol character vectors with column labels to use; default to colnames(x).
+#'         
 #' @import htmlwidgets
 #'   
 #' @export
@@ -90,6 +98,12 @@ d3heatmap <- function(x,
   digits = 3L,
   label,
   
+  labRow, 
+  labCol, 
+
+  cexRow,
+  cexCol,
+  
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
@@ -116,7 +130,22 @@ d3heatmap <- function(x,
       label <- as.character(round(x, digits = digits))
     }
   }
+
   
+  if(!missing(cexRow)) {
+    if(is.numeric(cexRow)) {
+      xaxis_font_size <- cexRow * 14
+    } else {
+      warning("cexRow is not numeric. It is ignored")
+    }
+  }
+  if(!missing(cexCol)) {
+    if(is.numeric(cexCol)) {
+      yaxis_font_size <- cexCol * 14
+    } else {
+      warning("cexCol is not numeric. It is ignored")
+    }
+  }
   
   
   nr <- dim(x)[1]
@@ -238,10 +267,13 @@ d3heatmap <- function(x,
 
   imgUri <- encodeAsPNG(t(x), colors)
 
+  if(missing(labRow)) labRow <- rownames(x) %||% paste(1:nrow(x))
+  if(missing(labCol)) labCol <- colnames(x) %||% paste(1:ncol(x))
+
   mtx <- list(data = as.character(t(label)),
     dim = dim(x),
-    rows = row.names(x) %||% paste(1:nrow(x)),
-    cols = colnames(x) %||% paste(1:ncol(x))
+    rows = labRow,
+    cols = labCol
   )
   
   payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
@@ -383,9 +415,12 @@ if(FALSE) {
   d3heatmap(x, scale = "column", dendrogram = "none")
   d3heatmap(x, scale = "row", dendrogram = "none")
   
+  d3heatmap(x, labRow = 1:4)
+  d3heatmap(x, labCol = 1:4)
+  
   heatmap(scale(mtcars[1:4,1:4]), Rowv = NA, Colv = NA)
-  
-  
+
+
   library(dendextend)
   d3heatmap(x)
   # gives the same results - yay:
@@ -396,6 +431,11 @@ if(FALSE) {
   plot(row_dend2)
   d3heatmap:::dendToTree(row_dend2[[2]][[2]])
   d3heatmap(x, Rowv = row_dend2) # Works!
+
+  
+  row_dend <- x %>% dist %>% hclust %>% as.dendrogram # %>% plot
+  d3heatmap(x, Rowv = row_dend)
+  
   
   # Next step!
   row_dend3 <- x %>% dist %>% hclust %>% as.dendrogram %>%
@@ -405,5 +445,9 @@ if(FALSE) {
   row_dend3 <- set(row_dend3, "branches_col", c(1,2,3)) # TODO: this doesn't work - needs to be fixed...
   plot(row_dend3) # line width and line type are still ignored.
   d3heatmap(x, Rowv = row_dend3) 
+  labels(row_dend3) <- 1:4
+  d3heatmap(x, Rowv = row_dend3) 
+  
+  d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30) 
   
 }
