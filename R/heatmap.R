@@ -32,11 +32,13 @@ dendToTree <- function(dend) {
     tree$edgePar$col <- rgb(t(col2rgb(tree$edgePar$col, alpha = TRUE)), maxColorValue = 255)
   
   filter_null <- function(x) Filter(Negate(is.null), x)
+  filter_NA <- function(x) Filter(Negate(is.na), x)
   # The next line is essential since without it we might get NULLs in the nodePar (etc.) when the tree is colored
   # and it would cause an error in plotting: 
       #   Error in if (length(nms) != n || any(nms == "")) stop("'options' must be a fully named list, or have no names (NULL)") : 
       #     missing value where TRUE/FALSE needed
   tree <- lapply(tree, filter_null)
+  tree <- lapply(tree, filter_NA)
   
 
   # Recursively add children
@@ -57,7 +59,11 @@ if(FALSE) {
   
   #source this whole file first!
   str(hclustToTree(x)[[1]])
+  str(dendToTree(as.dendrogram(x)))
   str(dendToTree(d))
+  
+  str(dendToTree(row_dend2))
+  
   
   dendToTree(dend)
   
