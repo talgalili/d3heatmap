@@ -61,6 +61,8 @@ NULL
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
+#' @param ... currently ignored
+#' 
 #' @import htmlwidgets
 #'   
 #' @export
@@ -114,7 +116,9 @@ d3heatmap <- function(x,
   yaxis_font_size = NULL,
   brush_color = "#0000FF",
   show_grid = TRUE,
-  anim_duration = 500
+  anim_duration = 500,
+  
+  ...
 ) {
   
   if(!is.matrix(x)) {
