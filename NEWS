@@ -5,6 +5,7 @@ d3heatmap 0.6.0 (2015-06-21)
   * digits - for controling the resolution of the value presented in the hover tooltip 
   * labRow, labCol	- character vectors with row and column labels to use;
   * cexRow, cexCol - to mimic the same values in heatmap.
+  * revC - when dealing with a symmatric matrix
 
 * Fix error in coloring code; accept palette integers 
 * Remove invert_colors param, it no longer works

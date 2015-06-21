@@ -10,8 +10,8 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  symm = FALSE, scale = c("row", "column", "none"), na.rm = TRUE, labRow,
-  labCol, cexRow, cexCol, digits = 3L, cellnote, theme = NULL,
+  symm = FALSE, revC, scale = c("row", "column", "none"), na.rm = TRUE,
+  labRow, labCol, cexRow, cexCol, digits = 3L, cellnote, theme = NULL,
   colors = "RdYlBu", width = NULL, height = NULL, xaxis_height = 120,
   yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
   brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500, ...)
@@ -33,6 +33,11 @@ Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 \item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}}
 
 \item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
+
+\item{revC}{logical indicating if the column order should be reversed for plotting,
+such that e.g., for the symmetric case, the symmetry axis is as usual.
+Default (when missing) - is FALSE, unless identical(Rowv, Colv)
+(assuming dendrogram is not "none")}
 
 \item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 

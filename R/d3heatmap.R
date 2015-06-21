@@ -46,6 +46,11 @@ NULL
 #' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
 #' 
 #' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
+#' @param revC logical indicating if the column order should be reversed for plotting, 
+#' such that e.g., for the symmetric case, the symmetry axis is as usual.
+#' Default (when missing) - is FALSE, unless identical(Rowv, Colv) 
+#' (assuming dendrogram is not "none")
+#' 
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
@@ -91,6 +96,7 @@ d3heatmap <- function(x,
   dendrogram = c("both", "row", "column", "none"),
   reorderfun = function(d, w) reorder(d, w),
   symm = FALSE,
+  revC,
   
   ## data scaling
   scale = c("row", "column", "none"),
@@ -124,6 +130,7 @@ d3heatmap <- function(x,
   if(!is.matrix(x)) {
     x <- as.matrix(x)
   }
+  
 
   if(!is.matrix(x)) stop("x must be a matrix")
     
@@ -155,14 +162,14 @@ d3heatmap <- function(x,
   nr <- dim(x)[1]
   nc <- dim(x)[2]
   
-  if (is.null(dim(label))) {
-    if (length(label) != nr*nc) {
+  if (is.null(dim(cellnote))) {
+    if (length(cellnote) != nr*nc) {
       stop("Incorrect number of label values")
     }
-    dim(label) <- dim(x)
+    dim(cellnote) <- dim(x)
   }
-  if (!identical(dim(x), dim(label))) {
-    stop("Label matrix must have same dimensions as x")
+  if (!identical(dim(x), dim(cellnote))) {
+    stop("cellnote matrix must have same dimensions as x")
   }
 
   ### TODO: debating if to include this or not:
@@ -227,7 +234,7 @@ d3heatmap <- function(x,
 
   ## reorder x
   x <- x[rowInd, colInd]
-  label <- label[rowInd, colInd]
+  cellnote <- cellnote[rowInd, colInd]
   
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
@@ -238,6 +245,27 @@ d3heatmap <- function(x,
     x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
 
+  
+  # TODO:  We may wish to change the defaults a bit in the future
+  # deal with revC
+  if(missing(revC)) {
+    if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, Colv)) {
+      revC <- TRUE
+    } else {
+      revC <- FALSE
+    }
+  }
+  if(revC) {
+    Colv <- rev(Colv)
+    cellnote <- cellnote[, ncol(cellnote):1]
+    x <- x[, ncol(x):1]
+  }
+  
+  
+  
+  
+  
+  
   # work with labRow and labCol
   if(missing(labRow)) {
     labRow <- rownames(x) %||% paste(1:nrow(x)) 
@@ -257,7 +285,7 @@ d3heatmap <- function(x,
 
   rng <- range(x, na.rm = TRUE)
   
-  mtx <- list(data = as.character(t(label)),
+  mtx <- list(data = as.character(t(cellnote)),
               dim = dim(x),
               rows = labRow,
               cols = labCol
@@ -473,5 +501,12 @@ if(FALSE) {
   
   d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30) 
   d3heatmap(x, Rowv = row_dend3, cexRow = 3) 
+  
+  
+  
+  d3heatmap(cor(iris[,2:3]), revC = TRUE)
+  d3heatmap(cor(iris[,2:3]))
+  heatmap(cor(iris[,2:3]))
+  
   
 }
