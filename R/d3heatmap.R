@@ -137,7 +137,7 @@ d3heatmap <- function(x,
     Rowv <- dendrogram %in% c("both", "row")
   }
   if (missing(Colv)) {
-    Colv <- dendrogram %in% c("both", "col")
+    Colv <- dendrogram %in% c("both", "column")
   }
 
   is.dendrogram <- function (x) { inherits(x, "dendrogram")  }
