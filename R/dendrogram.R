@@ -49,6 +49,50 @@ dendToTree <- function(dend) {
   filter_null(tree)
 }
 
+
+
+is.dendrogram <- function (x) { inherits(x, "dendrogram")  }
+
+
+# dendextend:::`labels<-.dendrogram`
+`labels<-.dendrogram` <- function (object, ..., value) 
+{
+  if (missing(value)) {
+      warning("value is missing, returning the dendrogram as is")
+    return(object)
+  }
+  new_labels <- value
+  new_labels_length <- length(new_labels)
+  leaves_length <- length(order.dendrogram(object))
+  
+  if (new_labels_length < leaves_length) {
+    warning("The lengths of the new labels is shorter than the number of leaves in the dendrogram - labels are recycled.")
+    new_labels <- rep(new_labels, length.out = leaves_length)
+  }
+  .change.label.LTR <- function(dend_node) {
+    if (is.leaf(dend_node)) {
+      attr(dend_node, "label") <- new_labels[i_leaf_number]
+      i_leaf_number <<- i_leaf_number + 1
+    }
+    return(unclass(dend_node))
+  }
+  i_leaf_number <- 1
+  new_dend_object <- dendrapply(object, .change.label.LTR)
+  class(new_dend_object) <- "dendrogram"
+  return(new_dend_object)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 if(FALSE) {
   
   
