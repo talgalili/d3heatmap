@@ -58,8 +58,8 @@ NULL
 #' @param cexCol positive numbers. If not missing, it will override \code{yaxis_font_size}
 #' and will give it a value cexCol*14
 #'
-#' @param labRow character vectors with row labels to use; default to rownames(x).
-#' @param labCol character vectors with column labels to use; default to colnames(x).
+#' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
+#' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
 #' @import htmlwidgets
 #'   
@@ -182,7 +182,6 @@ d3heatmap <- function(x,
     Colv <- dendrogram %in% c("both", "column")
   }
 
-  is.dendrogram <- function (x) { inherits(x, "dendrogram")  }
 
   if (isTRUE(Rowv)) {
     Rowv <- rowMeans(x, na.rm = na.rm)
@@ -234,21 +233,43 @@ d3heatmap <- function(x,
     x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
     x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
+
+  # work with labRow and labCol
+  if(missing(labRow)) {
+    labRow <- rownames(x) %||% paste(1:nrow(x)) 
+  } else {
+    # if labRow was supplied, we need to update the labels of the dendrogram!
+    if(is.dendrogram(Rowv)) labels(Rowv) <- labRow
+  }
+  if(missing(labCol)) {
+    labCol <- colnames(x) %||% paste(1:ncol(x))
+  } else {
+    if(is.dendrogram(Colv)) labels(Colv) <- labCol
+  }
   
+    
   rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL  
   colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL  
 
   rng <- range(x, na.rm = TRUE)
   
-  options <- NULL
+  mtx <- list(data = as.character(t(label)),
+              dim = dim(x),
+              rows = labRow,
+              cols = labCol
+  )
   
-  if (is.null(rowDend)) {
-    c(options, list(yclust_width = 0))
-  }
-  if (is.null(colDend)) {
-    c(options, list(xclust_height = 0))
+    
+  if (is.factor(x)) {
+    colors <- scales::col_factor(colors, x)
+  } else {
+    colors <- scales::col_numeric(colors, x)
   }
 
+  imgUri <- encodeAsPNG(t(x), colors)
+
+  options <- NULL
+  
   options <- c(options, list(
     xaxis_height = xaxis_height,
     yaxis_width = yaxis_width,
@@ -258,23 +279,13 @@ d3heatmap <- function(x,
     show_grid = show_grid,
     anim_duration = anim_duration
   ))
-  
-  if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x)
-  } else {
-    colors <- scales::col_numeric(colors, x)
+
+  if (is.null(rowDend)) {
+    c(options, list(yclust_width = 0))
   }
-
-  imgUri <- encodeAsPNG(t(x), colors)
-
-  if(missing(labRow)) labRow <- rownames(x) %||% paste(1:nrow(x))
-  if(missing(labCol)) labCol <- colnames(x) %||% paste(1:ncol(x))
-
-  mtx <- list(data = as.character(t(label)),
-    dim = dim(x),
-    rows = labRow,
-    cols = labCol
-  )
+  if (is.null(colDend)) {
+    c(options, list(xclust_height = 0))
+  }
   
   payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
     theme = theme, options = options)
@@ -375,7 +386,13 @@ if(FALSE) {
   library(d3heatmap)
   d3heatmap(x, Rowv = row_dend2, Colv = col_dend2) # Works!
   d3heatmap(x)
+
+  d3heatmap(x, Rowv = FALSE)
+  d3heatmap(x, dendrogram = "no", labRow = 1:4)
+  d3heatmap(x, dendrogram = "no", labCol = 1:4)
+  d3heatmap(x, labRow = 1:4)
   
+    
   row_dend2 <- x %>% dist %>% hclust %>% as.dendrogram %>%
     color_branches(k = 3) %>% 
     set("branches_lwd", c(4,1)) %>%    
@@ -404,6 +421,8 @@ if(FALSE) {
   d3heatmap(scale(mtcars), Rowv = FALSE)
   d3heatmap(scale(mtcars), dendrogram = "row")
   d3heatmap(scale(mtcars), dendrogram = "col")
+  
+  
   
   x <- mtcars[c(2:4,7),1:4]
   d3heatmap(x)
@@ -449,5 +468,6 @@ if(FALSE) {
   d3heatmap(x, Rowv = row_dend3) 
   
   d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30) 
+  d3heatmap(x, Rowv = row_dend3, cexRow = 3) 
   
 }

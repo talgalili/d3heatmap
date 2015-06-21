@@ -43,9 +43,9 @@ Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 \item{label}{matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
 
-\item{labRow}{character vectors with row labels to use; default to rownames(x).}
+\item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
-\item{labCol}{character vectors with column labels to use; default to colnames(x).}
+\item{labCol}{character vectors with column labels to use (from left to right); default to colnames(x).}
 
 \item{cexRow}{positive numbers. If not missing, it will override \code{xaxis_font_size}
 and will give it a value cexRow*14}
