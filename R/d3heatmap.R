@@ -49,7 +49,9 @@ NULL
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
+#' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param label matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+#' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #'   
 #' @import htmlwidgets
 #'   
@@ -65,14 +67,12 @@ NULL
 #' 
 #' library(d3heatmap)
 #' d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
-#' d3heatmap(scale(mtcars), cluster = FALSE)
+#' d3heatmap(mtcars, scale = "column", colors = "Blues")
 #' 
 #' }
 #' 
 d3heatmap <- function(x,
-  # TODO: we must add some control on the values we see in the tooltip, the level of precision is ridiculous                                            
-  ## Also - it would be nice to have the row/col labels when hovering a cell...
-  
+
   ## dendrogram control
   Rowv = TRUE,
   Colv = if (symm) "Rowv" else TRUE,
@@ -87,7 +87,8 @@ d3heatmap <- function(x,
   na.rm = TRUE,
   
   ## value formatting
-  label = as.character(x),
+  digits = 3L,
+  label,
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -105,6 +106,18 @@ d3heatmap <- function(x,
   if(!is.matrix(x)) {
     x <- as.matrix(x)
   }
+
+  if(!is.matrix(x)) stop("x must be a matrix")
+    
+  if(missing(label)) {
+    if(is.null(digits)) {
+      label <- as.character(x)
+    } else {
+      label <- as.character(round(x, digits = digits))
+    }
+  }
+  
+  
   
   nr <- dim(x)[1]
   nc <- dim(x)[2]
@@ -337,8 +350,15 @@ if(FALSE) {
     set("branches_lty", c(1,1,3))
   plot(row_dend2)
   # for now, d3heatmap still ignores line type and width:
+  d3heatmap(x) # Works!
+  d3heatmap(x, digits = 0) # Works!
+  d3heatmap(x, Colv = col_dend2) # Works!
   d3heatmap(x, Rowv = row_dend2, Colv = col_dend2) # Works!
+  # str(unclass(row_dend2))
+
   
+  d3heatmap(matrix(rnorm(10), 2,5), digits = 20) # Works!
+  d3heatmap(matrix(rnorm(10), 2,5), digits = 2) # Works!
   
   
   # various examples  
