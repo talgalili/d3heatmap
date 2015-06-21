@@ -10,8 +10,8 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  symm = FALSE, scale = c("row", "column", "none"), na.rm = TRUE,
-  digits = 3L, label, labRow, labCol, cexRow, cexCol, theme = NULL,
+  symm = FALSE, scale = c("row", "column", "none"), na.rm = TRUE, labRow,
+  labCol, cexRow, cexCol, digits = 3L, cellnote, theme = NULL,
   colors = "RdYlBu", width = NULL, height = NULL, xaxis_height = 120,
   yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
   brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500)
@@ -38,11 +38,6 @@ Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 
-\item{digits}{integer indicating the number of decimal places to be used by \link{round} for 'label'.}
-
-\item{label}{matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
-If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
-
 \item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
 \item{labCol}{character vectors with column labels to use (from left to right); default to colnames(x).}
@@ -52,6 +47,11 @@ and will give it a value cexRow*14}
 
 \item{cexCol}{positive numbers. If not missing, it will override \code{yaxis_font_size}
 and will give it a value cexCol*14}
+
+\item{digits}{integer indicating the number of decimal places to be used by \link{round} for 'label'.}
+
+\item{cellnote}{(optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for

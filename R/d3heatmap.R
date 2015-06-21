@@ -50,7 +50,7 @@ NULL
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
-#' @param label matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+#' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #'
 #' @param cexRow positive numbers. If not missing, it will override \code{xaxis_font_size}
@@ -93,16 +93,16 @@ d3heatmap <- function(x,
   ## data scaling
   scale = c("row", "column", "none"),
   na.rm = TRUE,
-  
-  ## value formatting
-  digits = 3L,
-  label,
-  
+
   labRow, 
   labCol, 
 
   cexRow,
   cexCol,
+
+  ## value formatting
+  digits = 3L,
+  cellnote,
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -123,11 +123,11 @@ d3heatmap <- function(x,
 
   if(!is.matrix(x)) stop("x must be a matrix")
     
-  if(missing(label)) {
+  if(missing(cellnote)) {
     if(is.null(digits)) {
-      label <- as.character(x)
+      cellnote <- as.character(x)
     } else {
-      label <- as.character(round(x, digits = digits))
+      cellnote <- as.character(round(x, digits = digits))
     }
   }
 
