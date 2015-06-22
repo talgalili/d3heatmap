@@ -146,44 +146,6 @@ d3heatmap <- function(x,
   #     stop("`x' must have at least 2 rows and 2 columns")
 
 
-  ## Scale the data?
-  ##====================
-  scale <- match.arg(scale) 
-  
-  if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
-  
-  if(scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-  }
-  else if(scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-  }
-  
-
-  ## cellnote
-  ##====================
-  if(missing(cellnote)) {
-    if(cellnote_scale) {
-      cellnote <- round(x, digits = digits)
-    } else { # default
-      cellnote <- round(x_unscaled, digits = digits)
-    }
-  }
-      
-  # Check that cellnote is o.k.:
-  if (is.null(dim(cellnote))) {
-    if (length(cellnote) != nr*nc) {
-      stop("Incorrect number of cellnote values")
-    }
-    dim(cellnote) <- dim(x)
-  }
-  if (!identical(dim(x), dim(cellnote))) {
-    stop("cellnote matrix must have same dimensions as x")
-  }  
-  
-  
   ## Labels for Row/Column 
   ##======================
   rownames(x) <- labRow %||% paste(1:nrow(x))
@@ -277,10 +239,7 @@ d3heatmap <- function(x,
   ## reorder x (and others)
   ##=======================
   x <- x[rowInd, colInd]
-  cellnote <- cellnote[rowInd, colInd]
-  
 
-  
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
@@ -297,10 +256,47 @@ d3heatmap <- function(x,
   colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
   
+  ## Scale the data?
+  ##====================
+  scale <- match.arg(scale) 
+  
+  if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
+  
+  if(scale == "row") {
+    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+  }
+  else if(scale == "column") {
+    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
+  }
+  
+  
+  ## cellnote
+  ##====================
+  if(missing(cellnote)) {
+    if(cellnote_scale) {
+      cellnote <- round(x, digits = digits)
+    } else { # default
+      cellnote <- round(x_unscaled, digits = digits)
+    }
+  }
+  
+  # Check that cellnote is o.k.:
+  if (is.null(dim(cellnote))) {
+    if (length(cellnote) != nr*nc) {
+      stop("Incorrect number of cellnote values")
+    }
+    dim(cellnote) <- dim(x)
+  }
+  if (!identical(dim(x), dim(cellnote))) {
+    stop("cellnote matrix must have same dimensions as x")
+  }  
+  
+  
   ## Final touches before htmlwidgets
   ##=======================
-  rng <- range(x, na.rm = TRUE)
-  
+
   mtx <- list(data = as.character(t(cellnote)),
               dim = dim(x),
               rows = rownames(x),
