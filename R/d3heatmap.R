@@ -141,7 +141,13 @@ d3heatmap <- function(x,
     }
   }
 
-  
+  if(missing(labRow)) {
+    labRow <- rownames(x) %||% paste(1:nrow(x)) 
+  }  
+  if(missing(labCol)) {
+    labCol <- colnames(x) %||% paste(1:ncol(x))
+  }
+
   if(!missing(cexRow)) {
     if(is.numeric(cexRow)) {
       xaxis_font_size <- cexRow * 14
@@ -231,9 +237,27 @@ d3heatmap <- function(x,
     colInd <- 1:nc
   }
 
+  # TODO:  We may wish to change the defaults a bit in the future
+  # deal with revC
+  if(missing(revC)) {
+    if (symm) {
+      revC <- TRUE
+    } else if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, rev(Colv))) {
+      revC <- TRUE
+    } else {
+      revC <- FALSE
+    }
+  }
+  if(revC) {
+    Colv <- rev(Colv)
+    colInd <- rev(colInd)
+  }
+  
   ## reorder x
   x <- x[rowInd, colInd]
   cellnote <- cellnote[rowInd, colInd]
+  labCol <- labCol[colInd]
+  labRow <- labRow[rowInd]
   
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
@@ -244,44 +268,12 @@ d3heatmap <- function(x,
     x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
 
-  
-  # TODO:  We may wish to change the defaults a bit in the future
-  # deal with revC
-  if(missing(revC)) {
-    if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, Colv)) {
-      revC <- TRUE
-    } else {
-      revC <- FALSE
-    }
-    if(symm) revC <- TRUE
-  }
-  if(revC) {
-    Colv <- rev(Colv)
-    cellnote <- cellnote[, ncol(cellnote):1]
-    x <- x[, ncol(x):1]
-  }
-  
-  
-  
-  
-  
-  
-  # work with labRow and labCol
-  if(missing(labRow)) {
-    labRow <- rownames(x) %||% paste(1:nrow(x)) 
-  } else {
-    # if labRow was supplied, we need to update the labels of the dendrogram!
-    if(is.dendrogram(Rowv)) labels(Rowv) <- labRow
-  }
-  if(missing(labCol)) {
-    labCol <- colnames(x) %||% paste(1:ncol(x))
-  } else {
-    if(is.dendrogram(Colv)) labels(Colv) <- labCol
-  }
-  
-    
-  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL  
-  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL  
+  # Update the labels of the dendrogram
+  if(is.dendrogram(Rowv)) dendextend::labels(Rowv) <- labRow
+  if(is.dendrogram(Colv)) dendextend::labels(Colv) <- labCol
+
+  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
+  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
   rng <- range(x, na.rm = TRUE)
   
