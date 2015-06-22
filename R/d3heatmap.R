@@ -126,13 +126,21 @@ d3heatmap <- function(x,
   ...
 ) {
   
+  ## x is a matrix!
+  ##====================
   if(!is.matrix(x)) {
     x <- as.matrix(x)
   }
-  
-
   if(!is.matrix(x)) stop("x must be a matrix")
-    
+  
+  nr <- dim(x)[1]
+  nc <- dim(x)[2]
+  ### TODO: debating if to include this or not:
+  #   if(nr <= 1 || nc <= 1)
+  #     stop("`x' must have at least 2 rows and 2 columns")
+
+  ## cellnote
+  ##====================
   if(missing(cellnote)) {
     if(is.null(digits)) {
       cellnote <- as.character(x)
@@ -140,7 +148,40 @@ d3heatmap <- function(x,
       cellnote <- as.character(round(x, digits = digits))
     }
   }
+  
+  if (is.null(dim(cellnote))) {
+    if (length(cellnote) != nr*nc) {
+      stop("Incorrect number of cellnote values")
+    }
+    dim(cellnote) <- dim(x)
+  }
+  if (!identical(dim(x), dim(cellnote))) {
+    stop("cellnote matrix must have same dimensions as x")
+  }  
+  
+  
+  ## Scale the data?
+  ##====================
+  scale <- if (symm && missing(scale)) {
+    "none"
+  } else {
+    match.arg(scale) 
+  }
+  
+  if(scale != "none") x_unscaled <- x #keeps a backup for cellnote
+  
+  if(scale == "row") {
+    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+  }
+  else if(scale == "column") {
+    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
+  }
+  
 
+  ## Labels for Row/Column 
+  ##======================
   if(missing(labRow)) {
     labRow <- rownames(x) %||% paste(1:nrow(x)) 
   }  
@@ -163,31 +204,9 @@ d3heatmap <- function(x,
     }
   }
   
-  
-  nr <- dim(x)[1]
-  nc <- dim(x)[2]
-  
-  if (is.null(dim(cellnote))) {
-    if (length(cellnote) != nr*nc) {
-      stop("Incorrect number of cellnote values")
-    }
-    dim(cellnote) <- dim(x)
-  }
-  if (!identical(dim(x), dim(cellnote))) {
-    stop("cellnote matrix must have same dimensions as x")
-  }
 
-  ### TODO: debating if to include this or not:
-  #   
-  #   if(nr <= 1 || nc <= 1)
-  #     stop("`x' must have at least 2 rows and 2 columns")
-  #   
-  
-  scale <- if (symm && missing(scale)) {
-    "none"
-  } else {
-    match.arg(scale) 
-  }
+  ## Dendrograms for Row/Column 
+  ##=======================
   dendrogram <- match.arg(dendrogram)
   
   # Use dendrogram argument to set defaults for Rowv/Colv
@@ -237,8 +256,10 @@ d3heatmap <- function(x,
     colInd <- 1:nc
   }
 
+  
   # TODO:  We may wish to change the defaults a bit in the future
-  # deal with revC
+  ## revC
+  ##=======================
   if(missing(revC)) {
     if (symm) {
       revC <- TRUE
@@ -253,28 +274,27 @@ d3heatmap <- function(x,
     colInd <- rev(colInd)
   }
   
-  ## reorder x
+  ## reorder x (and others)
+  ##=======================
   x <- x[rowInd, colInd]
   cellnote <- cellnote[rowInd, colInd]
   labCol <- labCol[colInd]
   labRow <- labRow[rowInd]
   
-  if(scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-  }
-  else if(scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-  }
 
-  # Update the labels of the dendrogram
+  
+  
+  ## Dendrograms - Update the labels and change to dendToTree
+  ##=======================
   if(is.dendrogram(Rowv)) dendextend::labels(Rowv) <- labRow
   if(is.dendrogram(Colv)) dendextend::labels(Colv) <- labCol
 
   rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
   colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
+  
+  ## Final touches before htmlwidgets
+  ##=======================
   rng <- range(x, na.rm = TRUE)
   
   mtx <- list(data = as.character(t(cellnote)),
