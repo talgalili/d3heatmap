@@ -45,6 +45,9 @@ NULL
 #' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
 #' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
 #' 
+#' @param k_row an integer scalar with the desired number of groups by which to color the dendrogram's branches in the rows (uses \link[dendextend]{color_branches})
+#' @param k_col an integer scalar with the desired number of groups by which to color the dendrogram's branches in the columns (uses \link[dendextend]{color_branches})
+#' 
 #' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
 #' @param revC logical indicating if the column order should be reversed for plotting.
 #' Default (when missing) - is FALSE, unless symm is TRUE.
@@ -96,6 +99,10 @@ d3heatmap <- function(x,
   hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"),
   reorderfun = function(d, w) reorder(d, w),
+  
+  k_row,
+  k_col,
+  
   symm = FALSE,
   revC,
   
@@ -257,8 +264,8 @@ d3heatmap <- function(x,
     Colv <- NULL
     colInd <- 1:nc
   }
-
   
+    
   # TODO:  We may wish to change the defaults a bit in the future
   ## revC
   ##=======================
@@ -291,6 +298,14 @@ d3heatmap <- function(x,
   if(is.dendrogram(Rowv)) dendextend::labels(Rowv) <- labRow
   if(is.dendrogram(Colv)) dendextend::labels(Colv) <- labCol
 
+  # color branches?
+  if(is.dendrogram(Rowv) & !missing(k_row)) {
+    Rowv <- dendextend::color_branches(Rowv, k = k_row)
+  }
+  if(is.dendrogram(Colv) & !missing(k_col)) {
+    Colv <- dendextend::color_branches(Colv, k = k_row)
+  }
+  
   rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
   colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 

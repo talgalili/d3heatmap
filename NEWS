@@ -7,7 +7,7 @@ d3heatmap 0.6.0 (2015-06-22)
   * labRow, labCol	- character vectors with row and column labels to use;
   * cexRow, cexCol - to mimic the same values in heatmap.
   * revC - when dealing with a symmatric matrix
-  
+  * k_row/k_col - for coloring the branches of the dendrograms  
 
 * Fix error in coloring code; accept palette integers 
 * Remove invert_colors param, it no longer works
