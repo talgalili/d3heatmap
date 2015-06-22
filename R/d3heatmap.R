@@ -295,8 +295,8 @@ d3heatmap <- function(x,
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
-  if(is.dendrogram(Rowv)) dendextend::labels(Rowv) <- labRow
-  if(is.dendrogram(Colv)) dendextend::labels(Colv) <- labCol
+  if(is.dendrogram(Rowv)) dendextend::set(Rowv, "labels", labRow)
+  if(is.dendrogram(Colv)) dendextend::set(Colv, "labels", labCol)
 
   # color branches?
   if(is.dendrogram(Rowv) & !missing(k_row)) {
