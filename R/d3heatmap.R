@@ -152,13 +152,9 @@ d3heatmap <- function(x,
 
   ## Scale the data?
   ##====================
-  scale <- if (symm && missing(scale)) {
-    "none"
-  } else {
-    match.arg(scale) 
-  }
+  scale <- match.arg(scale) 
   
-  if(scale != "none") x_unscaled <- x #keeps a backup for cellnote
+  if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
   
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
@@ -173,10 +169,13 @@ d3heatmap <- function(x,
   ## cellnote
   ##====================
   if(missing(cellnote)) {
-    # x_unscaled is defined only if scale != "none"
-    cellnote <- if(cellnote_scale | (scale == "none")) as.character(x) else as.character(x_unscaled)
+    if(cellnote_scale) {
+      cellnote <- round(x, digits = digits)
+    } else { # default
+      cellnote <- round(x_unscaled, digits = digits)
+    }
   }
-  
+      
   # Check that cellnote is o.k.:
   if (is.null(dim(cellnote))) {
     if (length(cellnote) != nr*nc) {
@@ -303,7 +302,7 @@ d3heatmap <- function(x,
     Rowv <- dendextend::color_branches(Rowv, k = k_row)
   }
   if(is.dendrogram(Colv) & !missing(k_col)) {
-    Colv <- dendextend::color_branches(Colv, k = k_row)
+    Colv <- dendextend::color_branches(Colv, k = k_col)
   }
   
   rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
