@@ -106,8 +106,8 @@ d3heatmap <- function(x,
   scale = c("none", "row", "column"),
   na.rm = TRUE,
 
-  labRow, 
-  labCol, 
+  labRow = rownames(x), 
+  labCol = colnames(x), 
 
   cexRow,
   cexCol,
@@ -186,12 +186,8 @@ d3heatmap <- function(x,
   
   ## Labels for Row/Column 
   ##======================
-  if(missing(labRow)) {
-    labRow <- rownames(x) %||% paste(1:nrow(x)) 
-  }  
-  if(missing(labCol)) {
-    labCol <- colnames(x) %||% paste(1:ncol(x))
-  }
+  rownames(x) <- labRow %||% paste(1:nrow(x))
+  colnames(x) <- labCol %||% paste(1:ncol(x))
 
   if(!missing(cexRow)) {
     if(is.numeric(cexRow)) {
@@ -282,16 +278,12 @@ d3heatmap <- function(x,
   ##=======================
   x <- x[rowInd, colInd]
   cellnote <- cellnote[rowInd, colInd]
-  labCol <- labCol[colInd]
-  labRow <- labRow[rowInd]
   
 
   
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
-  if(is.dendrogram(Rowv)) dendextend::set(Rowv, "labels", labRow)
-  if(is.dendrogram(Colv)) dendextend::set(Colv, "labels", labCol)
 
   # color branches?
   if(is.dendrogram(Rowv) & !missing(k_row)) {
@@ -311,8 +303,8 @@ d3heatmap <- function(x,
   
   mtx <- list(data = as.character(t(cellnote)),
               dim = dim(x),
-              rows = labRow,
-              cols = labCol
+              rows = rownames(x),
+              cols = colnames(x)
   )
   
     
