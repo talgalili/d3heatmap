@@ -67,9 +67,10 @@ col_dend2 <- x %>% t %>% dist %>% hclust %>% as.dendrogram %>%
   sort
 
 d3heatmap(x, Rowv = row_dend2, Colv = col_dend2,
-          colors = "Greens")  # ,
+          colors = "Greens",
           # scale = "row",
-          # width = 600)
+          width = 600,
+          show_grid = FALSE)
 ```
 
 

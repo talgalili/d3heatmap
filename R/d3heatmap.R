@@ -44,18 +44,13 @@ NULL
 #' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
 #' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
 #' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
-#' By default, the dendrogram is reordered based on the row/column means.
-#' To change it, just use: \code{function(x, ...) x}
 #' 
-#' @param symm logical indicating if x should be treated symmetrically; 
-#' can only be true when x is a square matrix.
-#' default is \code{symm = identical(rownames(x), colnames(x))}
+#' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
 #' @param revC logical indicating if the column order should be reversed for plotting.
-#' Default (when missing) is symm (often FALSE).
+#' Default (when missing) - is FALSE, unless symm is TRUE.
 #' This is useful for cor matrix.
 #' 
-#' @param scale character indicating if the values should be centered and scaled (i.e.: subtracting the mean and dividing by the standard deviation)
-#' in either the "row" or the "column" direction, or none. The default is "none".
+#' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
@@ -99,11 +94,11 @@ d3heatmap <- function(x,
   hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"),
   reorderfun = function(d, w) reorder(d, w),
-  symm,
+  symm = FALSE,
   revC,
   
   ## data scaling
-  scale = c("none", "row", "column"),
+  scale = c("row", "column", "none"),
   na.rm = TRUE,
 
   labRow, 
@@ -120,7 +115,7 @@ d3heatmap <- function(x,
   theme = NULL,
   colors = "RdYlBu",
   width = NULL, height = NULL,
-  xaxis_height = 120,
+  xaxis_height = 80,
   yaxis_width = 120,
   xaxis_font_size = NULL,
   yaxis_font_size = NULL,
@@ -134,28 +129,10 @@ d3heatmap <- function(x,
   if(!is.matrix(x)) {
     x <- as.matrix(x)
   }
-  if(!is.matrix(x)) stop("x must be a matrix")
+  
 
-  if(missing(symm)) symm <- identical(rownames(x), colnames(x))
-  
-  # scale the data:
-  scale <- match.arg(scale)
-  if(scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-  }
-  else if(scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-    # like scale(x)
-  }
-  
-  
-  
-  
-  
-  
-      
+  if(!is.matrix(x)) stop("x must be a matrix")
+    
   if(missing(cellnote)) {
     if(is.null(digits)) {
       cellnote <- as.character(x)
@@ -164,7 +141,13 @@ d3heatmap <- function(x,
     }
   }
 
-  
+  if(missing(labRow)) {
+    labRow <- rownames(x) %||% paste(1:nrow(x)) 
+  }  
+  if(missing(labCol)) {
+    labCol <- colnames(x) %||% paste(1:ncol(x))
+  }
+
   if(!missing(cexRow)) {
     if(is.numeric(cexRow)) {
       xaxis_font_size <- cexRow * 14
@@ -200,6 +183,11 @@ d3heatmap <- function(x,
   #     stop("`x' must have at least 2 rows and 2 columns")
   #   
   
+  scale <- if (symm && missing(scale)) {
+    "none"
+  } else {
+    match.arg(scale) 
+  }
   dendrogram <- match.arg(dendrogram)
   
   # Use dendrogram argument to set defaults for Rowv/Colv
@@ -249,47 +237,43 @@ d3heatmap <- function(x,
     colInd <- 1:nc
   }
 
-  ## reorder x
-  x <- x[rowInd, colInd]
-  cellnote <- cellnote[rowInd, colInd]
-  
   # TODO:  We may wish to change the defaults a bit in the future
   # deal with revC
   if(missing(revC)) {
-    if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, Colv)) {
+    if (symm) {
+      revC <- TRUE
+    } else if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, rev(Colv))) {
       revC <- TRUE
     } else {
       revC <- FALSE
     }
-    if(symm) revC <- TRUE
   }
   if(revC) {
     Colv <- rev(Colv)
-    cellnote <- cellnote[, ncol(cellnote):1]
-    x <- x[, ncol(x):1]
+    colInd <- rev(colInd)
   }
   
+  ## reorder x
+  x <- x[rowInd, colInd]
+  cellnote <- cellnote[rowInd, colInd]
+  labCol <- labCol[colInd]
+  labRow <- labRow[rowInd]
   
-  
-  
-  
-  
-  # work with labRow and labCol
-  if(missing(labRow)) {
-    labRow <- rownames(x) %||% paste(1:nrow(x)) 
-  } else {
-    # if labRow was supplied, we need to update the labels of the dendrogram!
-    if(is.dendrogram(Rowv)) labels(Rowv) <- labRow
+  if(scale == "row") {
+    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
   }
-  if(missing(labCol)) {
-    labCol <- colnames(x) %||% paste(1:ncol(x))
-  } else {
-    if(is.dendrogram(Colv)) labels(Colv) <- labCol
+  else if(scale == "column") {
+    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
-  
-    
-  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL  
-  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL  
+
+  # Update the labels of the dendrogram
+  if(is.dendrogram(Rowv)) dendextend::labels(Rowv) <- labRow
+  if(is.dendrogram(Colv)) dendextend::labels(Colv) <- labCol
+
+  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
+  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
   rng <- range(x, na.rm = TRUE)
   
