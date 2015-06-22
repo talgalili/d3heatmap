@@ -317,11 +317,16 @@ d3heatmap <- function(x,
   
     
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x)
+    colors <- scales::col_factor(colors, x, na.color = "transparent")
   } else {
-    colors <- scales::col_numeric(colors, x)
+    rng <- range(x, na.rm = TRUE)
+    if (scale %in% c("row", "column")) {
+      rng <- c(max(abs(rng)), -max(abs(rng)))
+    }
+    
+    colors <- scales::col_numeric(colors, rng, na.color = "transparent")
   }
-
+  
   imgUri <- encodeAsPNG(t(x), colors)
 
   options <- NULL
