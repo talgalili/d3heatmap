@@ -10,6 +10,8 @@ d3heatmap 0.6.0 (2015-06-21)
 * Fix error in coloring code; accept palette integers 
 * Remove invert_colors param, it no longer works
 * Remove heatmap_options parameter, it isn't needed
+* When scale is not "none" and colors param is not a function, scale colors to be
+  centered at zero
 
 
 d3heatmap 0.5.0 (2015-06-20)
