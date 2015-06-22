@@ -275,8 +275,6 @@ d3heatmap <- function(x,
   rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
   colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
-  rng <- range(x, na.rm = TRUE)
-  
   mtx <- list(data = as.character(t(cellnote)),
               dim = dim(x),
               rows = labRow,
@@ -285,9 +283,14 @@ d3heatmap <- function(x,
   
     
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x)
+    colors <- scales::col_factor(colors, x, na.color = "transparent")
   } else {
-    colors <- scales::col_numeric(colors, x)
+    rng <- range(x, na.rm = TRUE)
+    if (scale %in% c("row", "column")) {
+      rng <- c(max(abs(rng)), -max(abs(rng)))
+    }
+    
+    colors <- scales::col_numeric(colors, rng, na.color = "transparent")
   }
 
   imgUri <- encodeAsPNG(t(x), colors)
