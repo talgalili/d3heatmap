@@ -60,13 +60,16 @@ Iris
 x <- datasets::iris[,-5] # [c(2:4,7),1:4]
 
 row_dend2 <- x %>% dist %>% hclust(method = "ave") %>% as.dendrogram %>%
-  color_branches(k = 3)
+  color_branches(k = 3) %>% 
+  reorder(rowMeans(x)) 
 col_dend2 <- x %>% t %>% dist %>% hclust %>% as.dendrogram %>%
-  color_branches(k = 2)
+  color_branches(k = 2) %>% 
+  sort
 
 d3heatmap(x, Rowv = row_dend2, Colv = col_dend2,
-          scale = "row",
-          width = 600)
+          colors = "Greens")  # ,
+          # scale = "row",
+          # width = 600)
 ```
 
 
