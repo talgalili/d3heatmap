@@ -56,7 +56,9 @@ NULL
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
-#'
+#' @param cellnote_scale logical (default is TRUE). IF cellnote is missing and x is used, 
+#' should cellnote be scaled if x is also scaled?
+#' 
 #' @param cexRow positive numbers. If not missing, it will override \code{xaxis_font_size}
 #' and will give it a value cexRow*14
 #' @param cexCol positive numbers. If not missing, it will override \code{yaxis_font_size}
@@ -110,6 +112,7 @@ d3heatmap <- function(x,
   ## value formatting
   digits = 3L,
   cellnote,
+  cellnote_scale = TRUE,
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -139,27 +142,7 @@ d3heatmap <- function(x,
   #   if(nr <= 1 || nc <= 1)
   #     stop("`x' must have at least 2 rows and 2 columns")
 
-  ## cellnote
-  ##====================
-  if(missing(cellnote)) {
-    if(is.null(digits)) {
-      cellnote <- as.character(x)
-    } else {
-      cellnote <- as.character(round(x, digits = digits))
-    }
-  }
-  
-  if (is.null(dim(cellnote))) {
-    if (length(cellnote) != nr*nc) {
-      stop("Incorrect number of cellnote values")
-    }
-    dim(cellnote) <- dim(x)
-  }
-  if (!identical(dim(x), dim(cellnote))) {
-    stop("cellnote matrix must have same dimensions as x")
-  }  
-  
-  
+
   ## Scale the data?
   ##====================
   scale <- if (symm && missing(scale)) {
@@ -180,6 +163,25 @@ d3heatmap <- function(x,
   }
   
 
+  ## cellnote
+  ##====================
+  if(missing(cellnote)) {
+    # x_unscaled is defined only if scale != "none"
+    cellnote <- if(cellnote_scale | (scale == "none")) as.character(x) else as.character(x_unscaled)
+  }
+  
+  # Check that cellnote is o.k.:
+  if (is.null(dim(cellnote))) {
+    if (length(cellnote) != nr*nc) {
+      stop("Incorrect number of cellnote values")
+    }
+    dim(cellnote) <- dim(x)
+  }
+  if (!identical(dim(x), dim(cellnote))) {
+    stop("cellnote matrix must have same dimensions as x")
+  }  
+  
+  
   ## Labels for Row/Column 
   ##======================
   if(missing(labRow)) {

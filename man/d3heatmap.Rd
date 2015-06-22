@@ -9,10 +9,11 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 \usage{
 d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
-  "column", "none"), reorderfun = function(d, w) reorder(d, w), symm, revC,
-  scale = c("none", "row", "column"), na.rm = TRUE, labRow, labCol, cexRow,
-  cexCol, digits = 3L, cellnote, theme = NULL, colors = "RdYlBu",
-  width = NULL, height = NULL, xaxis_height = 120, yaxis_width = 120,
+  "column", "none"), reorderfun = function(d, w) reorder(d, w),
+  symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
+  labRow, labCol, cexRow, cexCol, digits = 3L, cellnote,
+  cellnote_scale = TRUE, theme = NULL, colors = "RdYlBu", width = NULL,
+  height = NULL, xaxis_height = 80, yaxis_width = 120,
   xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
   show_grid = TRUE, anim_duration = 500, ...)
 }
@@ -30,20 +31,15 @@ Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 
 \item{dendrogram}{character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.}
 
-\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
-By default, the dendrogram is reordered based on the row/column means.
-To change it, just use: \code{function(x, ...) x}}
+\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}}
 
-\item{symm}{logical indicating if x should be treated symmetrically;
-can only be true when x is a square matrix.
-default is \code{symm = identical(rownames(x), colnames(x))}}
+\item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
 \item{revC}{logical indicating if the column order should be reversed for plotting.
-Default (when missing) is symm (often FALSE).
+Default (when missing) - is FALSE, unless symm is TRUE.
 This is useful for cor matrix.}
 
-\item{scale}{character indicating if the values should be centered and scaled (i.e.: subtracting the mean and dividing by the standard deviation)
-in either the "row" or the "column" direction, or none. The default is "none".}
+\item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 
@@ -61,6 +57,9 @@ and will give it a value cexCol*14}
 
 \item{cellnote}{(optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
+
+\item{cellnote_scale}{logical (default is TRUE). IF cellnote is missing and x is used,
+should cellnote be scaled if x is also scaled?}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for
