@@ -18,11 +18,11 @@ Imports:
     scales (>= 0.2.5),
     htmlwidgets,
     png,
-    base64enc
+    base64enc,
+    dendextend (>= 0.18.0)
 Suggests:
     shiny,
-    knitr,
-    dendextend (>= 0.18.0)
+    knitr
 VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
