@@ -98,7 +98,7 @@ d3heatmap <- function(x,
   revC,
   
   ## data scaling
-  scale = c("row", "column", "none"),
+  scale = c("none", "row", "column"),
   na.rm = TRUE,
 
   labRow, 
@@ -169,7 +169,7 @@ d3heatmap <- function(x,
   
   if (is.null(dim(cellnote))) {
     if (length(cellnote) != nr*nc) {
-      stop("Incorrect number of label values")
+      stop("Incorrect number of cellnote values")
     }
     dim(cellnote) <- dim(x)
   }
