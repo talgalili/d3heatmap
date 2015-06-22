@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 .bowerrc$
 .bower.json$
+^template\.html$

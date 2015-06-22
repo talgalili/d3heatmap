@@ -1,6 +1,6 @@
 Package: d3heatmap
 Type: Package
-Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js""
+Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js"
 Version: 0.6.0
 Date: 2015-06-21
 Authors@R: c(
