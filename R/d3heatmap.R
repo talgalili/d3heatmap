@@ -77,13 +77,9 @@ NULL
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' \dontrun{
-#' 
 #' library(d3heatmap)
-#' d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
 #' d3heatmap(mtcars, scale = "column", colors = "Blues")
 #' 
-#' }
 #' 
 d3heatmap <- function(x,
 
