@@ -11,9 +11,9 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
-  labRow, labCol, cexRow, cexCol, digits = 3L, cellnote,
-  cellnote_scale = FALSE, theme = NULL, colors = "RdYlBu", width = NULL,
-  height = NULL, xaxis_height = 80, yaxis_width = 120,
+  labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
+  cellnote, cellnote_scale = FALSE, theme = NULL, colors = "RdYlBu",
+  width = NULL, height = NULL, xaxis_height = 80, yaxis_width = 120,
   xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
   show_grid = TRUE, anim_duration = 500, ...)
 }
@@ -103,13 +103,8 @@ non-integer).}
 Creates a D3.js-based heatmap widget.
 }
 \examples{
-\dontrun{
-
 library(d3heatmap)
-d3heatmap(scale(mtcars), colors = "Greens", theme = "dark")
 d3heatmap(mtcars, scale = "column", colors = "Blues")
-
-}
 }
 \seealso{
 \link{heatmap}, \link[gplots]{heatmap.2}
