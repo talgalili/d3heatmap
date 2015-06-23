@@ -1,6 +1,6 @@
 Package: d3heatmap
 Type: Package
-Title: Interactive Heatmaps Using "htmlwidgets" and "D3.js"
+Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
 Version: 0.6.0
 Date: 2015-06-22
 Authors@R: c(
@@ -11,8 +11,10 @@ Authors@R: c(
     person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library")
     )
 Maintainer: Joe Cheng <joe@rstudio.com>
-Description: Create zoomable heatmaps that are usable from the R console, in the
-    RStudio viewer pane, in R Markdown documents, and in Shiny apps.
+Description: Create interactive heat maps that are usable from the R console, in the
+    'RStudio' viewer pane, in 'R Markdown' documents, and in 'Shiny' apps. Hover the
+    mouse pointer over a cell to show details, drag a rectangle to zoom, and click
+    row/column labels to highlight.
 License: GPL-3 | file LICENSE
 Imports:
     scales (>= 0.2.5),
