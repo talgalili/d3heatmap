@@ -245,6 +245,11 @@ d3heatmap <- function(x,
   ##=======================
 
   # color branches?
+  #----------------
+    # Due to the internal working of dendextend, in order to use it we first need
+      # to populate the dendextend::dendextend_options() space:
+  if(!missing(k_row) | !missing(k_col)) dendextend::assign_dendextend_options()
+  
   if(is.dendrogram(Rowv) & !missing(k_row)) {
     Rowv <- dendextend::color_branches(Rowv, k = k_row)
   }
