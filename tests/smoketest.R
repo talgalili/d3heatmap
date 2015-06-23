@@ -16,6 +16,10 @@ with(list(d3heatmap = mock_d3heatmap_record), {
   set.seed(1001)
   
   x <- mtcars[c(2:4,7),1:4]
+  
+  # Test colors when dendextend isn't loaded
+  d3heatmap(x, k_row = 3, k_col = 2)
+
   suppressPackageStartupMessages(library(dendextend))
   row_dend2 <- x %>% dist %>% hclust %>% as.dendrogram %>%
     color_branches(k = 3)

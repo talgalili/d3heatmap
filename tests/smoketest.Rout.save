@@ -33,6 +33,10 @@ Type 'q()' to quit R.
 +   set.seed(1001)
 +   
 +   x <- mtcars[c(2:4,7),1:4]
++   
++   # Test colors when dendextend isn't loaded
++   d3heatmap(x, k_row = 3, k_col = 2)
++ 
 +   suppressPackageStartupMessages(library(dendextend))
 +   row_dend2 <- x %>% dist %>% hclust %>% as.dendrogram %>%
 +     color_branches(k = 3)
@@ -133,7 +137,176 @@ Type 'q()' to quit R.
 +   
 +   
 + })
+d3heatmap(x, k_row = 3, k_col = 2) 
 Loading required namespace: colorspace
+{
+  "x": {
+    "rows": {
+      "members": 4,
+      "height": 294.442269384,
+      "edgePar": {
+        "col": ""
+      },
+      "children": [
+        {
+          "members": 3,
+          "height": 150.979998675321,
+          "edgePar": {
+            "col": ""
+          },
+          "children": [
+            {
+              "members": 2,
+              "height": 54.7744465969306,
+              "edgePar": {
+                "col": "#CC476B"
+              },
+              "children": [
+                {
+                  "members": 1,
+                  "height": 0,
+                  "label": "Mazda RX4 Wag",
+                  "edgePar": {
+                    "col": "#CC476B"
+                  }
+                },
+                {
+                  "members": 1,
+                  "height": 0,
+                  "label": "Datsun 710",
+                  "edgePar": {
+                    "col": "#CC476B"
+                  }
+                }
+              ]
+            },
+            {
+              "members": 1,
+              "height": 0,
+              "label": "Hornet 4 Drive",
+              "edgePar": {
+                "col": "#228B00"
+              }
+            }
+          ]
+        },
+        {
+          "members": 1,
+          "height": 0,
+          "label": "Duster 360",
+          "edgePar": {
+            "col": "#0082CE"
+          }
+        }
+      ]
+    },
+    "cols": {
+      "members": 4,
+      "height": 471.105083818886,
+      "edgePar": {
+        "col": ""
+      },
+      "children": [
+        {
+          "members": 2,
+          "height": 29.2453415093755,
+          "edgePar": {
+            "col": "#CC476B"
+          },
+          "children": [
+            {
+              "members": 1,
+              "height": 0,
+              "label": "cyl",
+              "edgePar": {
+                "col": "#CC476B"
+              }
+            },
+            {
+              "members": 1,
+              "height": 0,
+              "label": "mpg",
+              "edgePar": {
+                "col": "#CC476B"
+              }
+            }
+          ]
+        },
+        {
+          "members": 2,
+          "height": 194.561044405092,
+          "edgePar": {
+            "col": "#009681"
+          },
+          "children": [
+            {
+              "members": 1,
+              "height": 0,
+              "label": "hp",
+              "edgePar": {
+                "col": "#009681"
+              }
+            },
+            {
+              "members": 1,
+              "height": 0,
+              "label": "disp",
+              "edgePar": {
+                "col": "#009681"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "matrix": {
+      "data": ["6", "21", "110", "160", "4", "22.8", "93", "108", "6", "21.4", "110", "258", "8", "14.3", "245", "360"],
+      "dim": [4, 4],
+      "rows": ["Mazda RX4 Wag", "Datsun 710", "Hornet 4 Drive", "Duster 360"],
+      "cols": ["cyl", "mpg", "hp", "disp"]
+    },
+    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAT0lEQVQImQFEALv/AagEJv8VGAEAQJE5AAI/QgAC/fwAAAICAAD84vIA/r29AAQDBAAA/v4AAAQeDgCnJoYABAMDAAD29wAAuzKMAI1XqQCKgRNc7qaN0AAAAABJRU5ErkJggg==",
+    "theme": null,
+    "options": {
+      "xaxis_height": 80,
+      "yaxis_width": 120,
+      "xaxis_font_size": null,
+      "yaxis_font_size": null,
+      "brush_color": "#0000FF",
+      "show_grid": true,
+      "anim_duration": 500
+    }
+  },
+  "width": null,
+  "height": null,
+  "sizingPolicy": {
+    "defaultWidth": null,
+    "defaultHeight": null,
+    "padding": null,
+    "viewer": {
+      "defaultWidth": null,
+      "defaultHeight": null,
+      "padding": null,
+      "fill": true,
+      "suppress": false,
+      "paneHeight": null
+    },
+    "browser": {
+      "defaultWidth": null,
+      "defaultHeight": null,
+      "padding": null,
+      "fill": true
+    },
+    "knitr": {
+      "defaultWidth": null,
+      "defaultHeight": null,
+      "figure": true
+    }
+  },
+  "dependencies": null,
+  "elementId": null,
+  "preRenderHook": null
+} 
 d3heatmap(x, Rowv = row_dend2, Colv = col_dend2) 
 {
   "x": {
@@ -7621,4 +7794,4 @@ d3heatmap(cor(iris[, 2:3]))
 > 
 > proc.time()
    user  system elapsed 
-  1.023   0.044   1.055 
+  0.996   0.024   1.020 
