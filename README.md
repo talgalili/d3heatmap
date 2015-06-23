@@ -10,16 +10,16 @@ This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.o
 * Click and drag over colormap to zoom in (click on colormap to zoom out)
 * Optional clustering and dendrograms, courtesy of `base::heatmap`
 
-### Examples
+### Example
 
-http://rpubs.com/jcheng/d3heatmap  
-http://rpubs.com/jcheng/d3heatmap_large
+http://rpubs.com/jcheng/mtcars-heatmap
 
 ### Installation
 
+To install:
+
 ```r
-if (!require(devtools)) install.packages("devtools")
-devtools::install_github('hadley/scales')
+if (!require("devtools")) install.packages("devtools")
 devtools::install_github("rstudio/d3heatmap")
 ```
 
@@ -29,7 +29,7 @@ Like any htmlwidget, you can visualize a d3 heatmap directly from the R console:
 
 ```r
 library(d3heatmap)
-d3heatmap(mtcars, scale = "column", colors = "Blues")
+d3heatmap(mtcars, scale = "column", colors = "Spectral")
 ```
 
 You can also include them in R Markdown chunks, or use them in Shiny applications with the `d3heatmapOutput` and `renderD3heatmap` functions.
