@@ -285,8 +285,19 @@ function heatmap(selector, data, options) {
           tip.style("display", "block");
         })
         .on("mousemove", function() {
-          var col = Math.floor(x.invert(d3.event.offsetX));
-          var row = Math.floor(y.invert(d3.event.offsetY));
+          var e = d3.event;
+          var offsetX = d3.event.offsetX;
+          var offsetY = d3.event.offsetY;
+          if (typeof(offsetX) === "undefined") {
+            // Firefox 38 and earlier
+            var target = e.target || e.srcElement;
+            var rect = target.getBoundingClientRect();
+            offsetX = e.clientX - rect.left,
+            offsetY = e.clientY - rect.top;
+          }
+          
+          var col = Math.floor(x.invert(offsetX));
+          var row = Math.floor(y.invert(offsetY));
           var label = merged[row*cols + col].label;
           tip.show({col: col, row: row, label: label}).style({
             top: d3.event.clientY + 15 + "px",
