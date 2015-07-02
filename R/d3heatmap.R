@@ -239,6 +239,8 @@ d3heatmap <- function(x,
   ## reorder x (and others)
   ##=======================
   x <- x[rowInd, colInd]
+  if (!missing(cellnote))
+    cellnote <- cellnote[rowInd, colInd]
 
   
   ## Dendrograms - Update the labels and change to dendToTree
