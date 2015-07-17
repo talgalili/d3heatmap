@@ -213,7 +213,7 @@ d3heatmap <- function(x,
       stop("Col dendrogram is the wrong size")
   } else {
     if (!is.null(Colv) && !is.na(Colv) && !identical(Colv, FALSE))
-      warning("Invalid value for Rowv, ignoring")
+      warning("Invalid value for Colv, ignoring")
     Colv <- NULL
     colInd <- 1:nc
   }
