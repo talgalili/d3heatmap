@@ -1,7 +1,7 @@
 
 R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
 Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -6865,8 +6865,8 @@ d3heatmap(x, Rowv = row_dend3)
       "height": 294.442269384,
       "edgePar": {
         "col": "#000000",
-        "lty": "1",
-        "lwd": "4"
+        "lty": 1,
+        "lwd": 4
       },
       "children": [
         {
@@ -6874,8 +6874,8 @@ d3heatmap(x, Rowv = row_dend3)
           "height": 150.979998675321,
           "edgePar": {
             "col": "#00CD00",
-            "lty": "3",
-            "lwd": "4"
+            "lty": 3,
+            "lwd": 4
           },
           "children": [
             {
@@ -6883,8 +6883,8 @@ d3heatmap(x, Rowv = row_dend3)
               "height": 54.7744465969306,
               "edgePar": {
                 "col": "#FF0000",
-                "lty": "1",
-                "lwd": "4"
+                "lty": 1,
+                "lwd": 4
               },
               "children": [
                 {
@@ -6893,8 +6893,8 @@ d3heatmap(x, Rowv = row_dend3)
                   "label": "Datsun 710",
                   "edgePar": {
                     "col": "#000000",
-                    "lty": "1",
-                    "lwd": "4"
+                    "lty": 1,
+                    "lwd": 4
                   }
                 },
                 {
@@ -6903,8 +6903,8 @@ d3heatmap(x, Rowv = row_dend3)
                   "label": "Mazda RX4 Wag",
                   "edgePar": {
                     "col": "#00CD00",
-                    "lty": "3",
-                    "lwd": "1"
+                    "lty": 3,
+                    "lwd": 1
                   }
                 }
               ]
@@ -6915,8 +6915,8 @@ d3heatmap(x, Rowv = row_dend3)
               "label": "Hornet 4 Drive",
               "edgePar": {
                 "col": "#000000",
-                "lty": "1",
-                "lwd": "1"
+                "lty": 1,
+                "lwd": 1
               }
             }
           ]
@@ -6927,8 +6927,8 @@ d3heatmap(x, Rowv = row_dend3)
           "label": "Duster 360",
           "edgePar": {
             "col": "#FF0000",
-            "lty": "1",
-            "lwd": "1"
+            "lty": 1,
+            "lwd": 1
           }
         }
       ]
@@ -7048,8 +7048,8 @@ d3heatmap(x, Rowv = row_dend3)
       "height": 294.442269384,
       "edgePar": {
         "col": "#000000",
-        "lty": "1",
-        "lwd": "4"
+        "lty": 1,
+        "lwd": 4
       },
       "children": [
         {
@@ -7057,8 +7057,8 @@ d3heatmap(x, Rowv = row_dend3)
           "height": 150.979998675321,
           "edgePar": {
             "col": "#00CD00",
-            "lty": "3",
-            "lwd": "4"
+            "lty": 3,
+            "lwd": 4
           },
           "children": [
             {
@@ -7066,8 +7066,8 @@ d3heatmap(x, Rowv = row_dend3)
               "height": 54.7744465969306,
               "edgePar": {
                 "col": "#FF0000",
-                "lty": "1",
-                "lwd": "4"
+                "lty": 1,
+                "lwd": 4
               },
               "children": [
                 {
@@ -7076,8 +7076,8 @@ d3heatmap(x, Rowv = row_dend3)
                   "label": 4,
                   "edgePar": {
                     "col": "#000000",
-                    "lty": "1",
-                    "lwd": "4"
+                    "lty": 1,
+                    "lwd": 4
                   }
                 },
                 {
@@ -7086,8 +7086,8 @@ d3heatmap(x, Rowv = row_dend3)
                   "label": 3,
                   "edgePar": {
                     "col": "#00CD00",
-                    "lty": "3",
-                    "lwd": "1"
+                    "lty": 3,
+                    "lwd": 1
                   }
                 }
               ]
@@ -7098,8 +7098,8 @@ d3heatmap(x, Rowv = row_dend3)
               "label": 2,
               "edgePar": {
                 "col": "#000000",
-                "lty": "1",
-                "lwd": "1"
+                "lty": 1,
+                "lwd": 1
               }
             }
           ]
@@ -7110,8 +7110,8 @@ d3heatmap(x, Rowv = row_dend3)
           "label": 1,
           "edgePar": {
             "col": "#FF0000",
-            "lty": "1",
-            "lwd": "1"
+            "lty": 1,
+            "lwd": 1
           }
         }
       ]
@@ -7231,8 +7231,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
       "height": 294.442269384,
       "edgePar": {
         "col": "#000000",
-        "lty": "1",
-        "lwd": "4"
+        "lty": 1,
+        "lwd": 4
       },
       "children": [
         {
@@ -7240,8 +7240,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
           "height": 150.979998675321,
           "edgePar": {
             "col": "#00CD00",
-            "lty": "3",
-            "lwd": "4"
+            "lty": 3,
+            "lwd": 4
           },
           "children": [
             {
@@ -7249,8 +7249,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
               "height": 54.7744465969306,
               "edgePar": {
                 "col": "#FF0000",
-                "lty": "1",
-                "lwd": "4"
+                "lty": 1,
+                "lwd": 4
               },
               "children": [
                 {
@@ -7259,8 +7259,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
                   "label": 4,
                   "edgePar": {
                     "col": "#000000",
-                    "lty": "1",
-                    "lwd": "4"
+                    "lty": 1,
+                    "lwd": 4
                   }
                 },
                 {
@@ -7269,8 +7269,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
                   "label": 3,
                   "edgePar": {
                     "col": "#00CD00",
-                    "lty": "3",
-                    "lwd": "1"
+                    "lty": 3,
+                    "lwd": 1
                   }
                 }
               ]
@@ -7281,8 +7281,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
               "label": 2,
               "edgePar": {
                 "col": "#000000",
-                "lty": "1",
-                "lwd": "1"
+                "lty": 1,
+                "lwd": 1
               }
             }
           ]
@@ -7293,8 +7293,8 @@ d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30)
           "label": 1,
           "edgePar": {
             "col": "#FF0000",
-            "lty": "1",
-            "lwd": "1"
+            "lty": 1,
+            "lwd": 1
           }
         }
       ]
@@ -7414,8 +7414,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
       "height": 294.442269384,
       "edgePar": {
         "col": "#000000",
-        "lty": "1",
-        "lwd": "4"
+        "lty": 1,
+        "lwd": 4
       },
       "children": [
         {
@@ -7423,8 +7423,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
           "height": 150.979998675321,
           "edgePar": {
             "col": "#00CD00",
-            "lty": "3",
-            "lwd": "4"
+            "lty": 3,
+            "lwd": 4
           },
           "children": [
             {
@@ -7432,8 +7432,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
               "height": 54.7744465969306,
               "edgePar": {
                 "col": "#FF0000",
-                "lty": "1",
-                "lwd": "4"
+                "lty": 1,
+                "lwd": 4
               },
               "children": [
                 {
@@ -7442,8 +7442,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
                   "label": 4,
                   "edgePar": {
                     "col": "#000000",
-                    "lty": "1",
-                    "lwd": "4"
+                    "lty": 1,
+                    "lwd": 4
                   }
                 },
                 {
@@ -7452,8 +7452,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
                   "label": 3,
                   "edgePar": {
                     "col": "#00CD00",
-                    "lty": "3",
-                    "lwd": "1"
+                    "lty": 3,
+                    "lwd": 1
                   }
                 }
               ]
@@ -7464,8 +7464,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
               "label": 2,
               "edgePar": {
                 "col": "#000000",
-                "lty": "1",
-                "lwd": "1"
+                "lty": 1,
+                "lwd": 1
               }
             }
           ]
@@ -7476,8 +7476,8 @@ d3heatmap(x, Rowv = row_dend3, cexRow = 3)
           "label": 1,
           "edgePar": {
             "col": "#FF0000",
-            "lty": "1",
-            "lwd": "1"
+            "lty": 1,
+            "lwd": 1
           }
         }
       ]
@@ -7794,4 +7794,4 @@ d3heatmap(cor(iris[, 2:3]))
 > 
 > proc.time()
    user  system elapsed 
-  0.996   0.024   1.020 
+  1.255   0.036   1.282 

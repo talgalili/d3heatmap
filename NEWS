@@ -1,3 +1,10 @@
+d3heatmap 0.6.1 (2015-07-26)
+----------------------------------------
+
+* cellnote matrix was not being reordered properly
+* Update smoke test for new version of dendextend
+
+
 d3heatmap 0.6.0 (2015-06-22)
 ----------------------------------------
 
