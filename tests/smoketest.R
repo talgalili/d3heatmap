@@ -1,7 +1,7 @@
 test_root <- "testresults"
 
 serialize <- function(widget) {
-  htmlwidgets:::toJSON2(widget, pretty=TRUE)
+  htmlwidgets:::toJSON2(widget, pretty=TRUE, digits = 12)
 }
 
 mock_d3heatmap_record <- function(...) {
@@ -48,7 +48,7 @@ with(list(d3heatmap = mock_d3heatmap_record), {
   # str(unclass(row_dend2))
   
   
-  d3heatmap(matrix(rnorm(10), 2,5), digits = 20) # Works!
+  d3heatmap(matrix(rnorm(10), 2,5), digits = 12) # Works!
   d3heatmap(matrix(rnorm(10), 2,5), digits = 2) # Works!
   
   
