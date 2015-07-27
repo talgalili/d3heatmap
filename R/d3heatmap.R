@@ -1,4 +1,6 @@
 #' @import htmlwidgets
+#' @importFrom grDevices col2rgb rgb
+#' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
 NULL
 
 `%||%` <- function(a, b) {

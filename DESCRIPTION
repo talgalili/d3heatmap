@@ -21,7 +21,9 @@ Imports:
     htmlwidgets,
     png,
     base64enc,
-    dendextend (>= 0.18.0)
+    dendextend (>= 0.18.0),
+    stats,
+    grDevices
 Suggests:
     shiny,
     knitr
