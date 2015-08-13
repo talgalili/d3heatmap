@@ -11,11 +11,12 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
-  labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
-  cellnote, cellnote_scale = FALSE, theme = NULL, colors = "RdYlBu",
-  width = NULL, height = NULL, xaxis_height = 80, yaxis_width = 120,
-  xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
-  show_grid = TRUE, anim_duration = 500, ...)
+  ColSideColors, RowSideColors, labRow = rownames(x), labCol = colnames(x),
+  cexRow, cexCol, digits = 3L, cellnote, cellnote_scale = FALSE,
+  theme = NULL, colors = "RdYlBu", width = NULL, height = NULL,
+  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
+  yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
+  anim_duration = 500, ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -46,6 +47,14 @@ This is useful for cor matrix.}
 \item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
+
+\item{ColSideColors}{(optional) character vector of length ncol(x) containing
+the color names for a horizontal side bar that may be used to annotate the
+columns of x.}
+
+\item{RowSideColors}{(optional) character vector of length nrow(x) containing
+  the color names for a vertical side bar that may be used to annotate the
+  rows of x.}
 
 \item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
@@ -97,7 +106,7 @@ non-integer).}
 \item{anim_duration}{Number of milliseconds to animate zooming in and out.
   For large \code{x} it may help performance to set this value to \code{0}.}
 
-\item{...}{currently ignored}
+\item{...}{Undocumented/experimental options (currently \code{xcolors_height} and \code{ycolors_width})}
 }
 \description{
 Creates a D3.js-based heatmap widget.

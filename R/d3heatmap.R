@@ -69,10 +69,17 @@ NULL
 #' @param cexCol positive numbers. If not missing, it will override \code{yaxis_font_size}
 #' and will give it a value cexCol*14
 #'
+#' @param ColSideColors (optional) character vector of length ncol(x) containing
+#'   the color names for a horizontal side bar that may be used to annotate the
+#'   columns of x.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing
+#'   the color names for a vertical side bar that may be used to annotate the
+#'   rows of x.
+#'
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ... currently ignored
+#' @param ... Undocumented/experimental options (currently \code{xcolors_height} and \code{ycolors_width})
 #' 
 #' @import htmlwidgets
 #'   
@@ -108,6 +115,9 @@ d3heatmap <- function(x,
   scale = c("none", "row", "column"),
   na.rm = TRUE,
 
+  ColSideColors,
+  RowSideColors,
+  
   labRow = rownames(x), 
   labCol = colnames(x), 
 
@@ -243,7 +253,10 @@ d3heatmap <- function(x,
   x <- x[rowInd, colInd]
   if (!missing(cellnote))
     cellnote <- cellnote[rowInd, colInd]
-
+  if (!missing(RowSideColors))
+    RowSideColors <- RowSideColors[rowInd]
+  if (!missing(ColSideColors))
+    ColSideColors <- ColSideColors[colInd]
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
@@ -326,7 +339,7 @@ d3heatmap <- function(x,
   
   imgUri <- encodeAsPNG(t(x), colors)
 
-  options <- NULL
+  options <- list(...)
   
   options <- c(options, list(
     xaxis_height = xaxis_height,
@@ -346,6 +359,8 @@ d3heatmap <- function(x,
   }
   
   payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
+    rowcolors = if (!missing(RowSideColors)) RowSideColors,
+    colcolors = if (!missing(ColSideColors)) ColSideColors,
     theme = theme, options = options)
   
   # create widget

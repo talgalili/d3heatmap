@@ -2745,6 +2745,8 @@
             3.2116766170377
           ]
         },
+        "rowcolors": ["#B5D6E8", "#3881BA", "#970E27", "#053061", "#E8896B", "#2D73B3", "#F19E7D", "#F7B191", "#7E0623", "#67001F", "#DE725A", "#175291", "#E5EEF4", "#4190C2", "#C9E1EE", "#D8E8F1", "#FCD4BE", "#FAC3A7", "#FCE0D0", "#A1CCE2", "#8BC0DB", "#AF172B", "#C8483F", "#D45C4B", "#74B0D3", "#2064A9", "#5AA0CA", "#BD3234", "#FBE9E0", "#F8F2EF", "#F1F4F6", "#0E4178"],
+        "colcolors": ["#B2182B", "#4393C3", "#92C5DE", "#053061", "#F7F7F7", "#FDDBC7", "#2166AC", "#D1E5F0", "#67001F", "#F4A582", "#D6604D"],
         "theme": null,
         "options": {
           "xaxis_height": 120,
@@ -2761,7 +2763,7 @@
       ]
     };
     var el = document.getElementById("heatmap");
-    heatmap(el, data.x, {});
+    heatmap(el, data.x, data.x.options);
   </script>
 </body>
 </html>
