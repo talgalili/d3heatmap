@@ -253,10 +253,18 @@ d3heatmap <- function(x,
   x <- x[rowInd, colInd]
   if (!missing(cellnote))
     cellnote <- cellnote[rowInd, colInd]
-  if (!missing(RowSideColors))
-    RowSideColors <- RowSideColors[rowInd]
-  if (!missing(ColSideColors))
-    ColSideColors <- ColSideColors[colInd]
+  if (!missing(RowSideColors)) {
+    if (!is.matrix(RowSideColors)) {
+      RowSideColors <- matrix(RowSideColors, nrow = 1)
+    }
+    RowSideColors <- RowSideColors[, rowInd, drop = FALSE]
+  }
+  if (!missing(ColSideColors)) {
+    if (!is.matrix(ColSideColors)) {
+      ColSideColors <- matrix(ColSideColors, nrow = 1)
+    }
+    ColSideColors <- ColSideColors[, colInd, drop = FALSE]
+  }
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================

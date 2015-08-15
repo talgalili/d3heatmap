@@ -136,8 +136,8 @@ function heatmap(selector, data, options) {
   opts.link_color = opts.link_color || "#AAA";
   opts.xaxis_height = options.xaxis_height || 80;
   opts.yaxis_width = options.yaxis_width || 120;
-  opts.ycolors_width = options.ycolors_width || 22;
-  opts.xcolors_height = options.xcolors_height || 22;
+  opts.ycolors_width = options.ycolors_width;
+  opts.xcolors_height = options.xcolors_height;
   opts.axis_padding = options.axis_padding || 6;
   opts.show_grid = options.show_grid;
   if (typeof(opts.show_grid) === 'undefined') {
@@ -155,10 +155,16 @@ function heatmap(selector, data, options) {
     opts.yclust_width = 0;
   if (!data.cols)
     opts.xclust_height = 0;
-  if (!data.rowcolors)
+  if (!data.rowcolors) {
     opts.ycolors_width = 0;
-  if (!data.colcolors)
+  } else if (typeof(opts.ycolors_width) === 'undefined') {
+    opts.ycolors_width = data.rowcolors.length * 20;
+  }
+  if (!data.colcolors) {
     opts.xcolors_height = 0;
+  } else if (typeof(opts.xcolors_height) === 'undefined') {
+    opts.xcolors_height = data.colcolors.length * 20;
+  }
   
   if (typeof(opts.show_grid) === 'number') {
     opts.spacing = opts.show_grid;
@@ -524,46 +530,16 @@ function heatmap(selector, data, options) {
   function rowColorLabels(svg, data, width, height, padding) {
     svg = svg.append('g');
     
+    // Convert matrix to vector
+    var rows = data.length;
+    data = flattenMatrix(data);
+    var cols = data.length / rows;
+
     var x = d3.scale.linear()
-        .domain([0, 1])
-        .range([0, width]);
+        .domain([0, rows])
+        .range([0, width - padding]);
     var y = d3.scale.linear()
-        .domain([0, data.length])
-        .range([0, height]);
-    
-    var rect = svg.selectAll("rect").data(data);
-    rect.enter()
-        .append("rect")
-        .attr("fill", function(d, i) { return d; });
-    rect.exit()
-        .remove();
-    
-    function draw(selection) {
-      selection
-          .attr("x", 0)
-          .attr("y", function(d, i) {
-            return y(i);
-          })
-          .attr("width", x(1) - x(0) - padding)
-          .attr("height", y(1) - y(0) - opts.spacing);
-    }
-    draw(rect);
-
-    controller.on('transform.rowcolors', function(_) {
-      y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
-      draw(rect.transition().duration(opts.anim_duration).ease("linear"));
-    });
-
-  }
-
-  function colColorLabels(svg, data, width, height, padding) {
-    svg = svg.append('g');
-    
-    var x = d3.scale.linear()
-        .domain([0, data.length])
-        .range([0, width]);
-    var y = d3.scale.linear()
-        .domain([0, 1])
+        .domain([0, cols])
         .range([0, height]);
     
     var rect = svg.selectAll("rect").data(data);
@@ -576,11 +552,68 @@ function heatmap(selector, data, options) {
     function draw(selection) {
       selection
           .attr("x", function(d, i) {
-            return x(i);
+            return x(Math.floor(i / cols));
           })
-          .attr("y", 0)
+          .attr("y", function(d, i) {
+            return y(i % cols);
+          })
+          .attr("width", x(1) - x(0) - (rows > 1 ? opts.spacing : 0))
+          .attr("height", y(1) - y(0) - opts.spacing);
+    }
+    draw(rect);
+
+    controller.on('transform.rowcolors', function(_) {
+      y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
+      draw(rect.transition().duration(opts.anim_duration).ease("linear"));
+    });
+
+  }
+  
+  function flattenMatrix(m) {
+    var cols = m[0].length;
+    var vec = [];
+    for (var i = 0; i < m.length; i++) {
+      if (m[i].length !== cols)
+        throw new Error("Non-rectangular matrix");
+      for (var j = 0; j < m[i].length; j++) {
+        vec.push(m[i][j]);
+      }
+    }
+    return vec;
+  }
+
+  function colColorLabels(svg, data, width, height, padding) {
+    svg = svg.append('g');
+    
+    // Convert matrix to vector
+    var rows = data.length;
+    data = flattenMatrix(data);
+    var cols = data.length / rows;
+    
+    var x = d3.scale.linear()
+        .domain([0, cols])
+        .range([0, width]);
+    var y = d3.scale.linear()
+        .domain([0, rows])
+        .range([0, height - padding]);
+    
+    var rect = svg.selectAll("rect").data(data);
+    rect.enter()
+        .append("rect")
+        .attr("fill", function(d, i) { return d; });
+    rect.exit()
+        .remove();
+    
+    function draw(selection) {
+      selection
+          .attr("x", function(d, i) {
+            return x(i % cols);
+          })
+          .attr("y", function(d, i) {
+            return y(Math.floor(i / cols));
+          })
           .attr("width", x(1) - x(0) - opts.spacing)
-          .attr("height", y(1) - y(0) - padding);
+          .attr("height", y(1) - y(0) - (rows > 1 ? opts.spacing : 0));
     }
     draw(rect);
 
