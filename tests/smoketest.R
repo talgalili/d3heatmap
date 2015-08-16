@@ -110,8 +110,14 @@ with(list(d3heatmap = mock_d3heatmap_record), {
   d3heatmap(x, Rowv = row_dend3) 
   
   d3heatmap(x, Rowv = row_dend3, xaxis_font_size = 30) 
-  d3heatmap(x, Rowv = row_dend3, cexRow = 3) 
-  
+  d3heatmap(x, Rowv = row_dend3, cexRow = 3,
+    RowSideColors = matrix(scales::col_numeric("RdBu", NULL)(1:(nrow(x)*2)), nrow = 2),
+    ColSideColors = matrix(scales::col_numeric("RdBu", NULL)(runif(nrow(x)*2)), nrow = 2)
+  )
+  d3heatmap(x, Rowv = row_dend3, cexRow = 3,
+    RowSideColors = matrix(scales::col_numeric("RdBu", NULL)(1:(nrow(x))), nrow = 1),
+    ColSideColors = scales::col_numeric("RdBu", NULL)(runif(nrow(x)))
+  )
   
   
   d3heatmap(cor(iris[,2:3]), revC = TRUE)
