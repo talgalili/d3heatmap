@@ -148,7 +148,7 @@ d3heatmap <- function(x,
   nc <- dim(x)[2]
   
   # if there are no labels, need to append them anyway for JS function
-  if (labels == NULL) labels <- matrix(NA, nr, nc)
+  if (labels == NULL) labels <- matrix("", nr, nc)
   #labels must be the same dimensions as the input data
   if (dim(labels)[1] != nr) stop("labels must be the same dimensions as data: Issue Rows")
   if (dim(labels)[2] != nc) stop("labels must be the same dimensions as data: Issue Columns")
