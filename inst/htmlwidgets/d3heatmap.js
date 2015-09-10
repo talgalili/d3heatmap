@@ -48,7 +48,7 @@ HTMLWidgets.widget({
         var b = imgData[i*4+2];
         var a = imgData[i*4+3];
         merged.push({
-          label: x.matrix.data[i],
+          label: x.matrix.data[i] + " " + x.matrix.labels[i],
           color: "rgba(" + [r,g,b,a/255].join(",") + ")"
         })
       }
