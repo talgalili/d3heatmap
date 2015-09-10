@@ -91,7 +91,7 @@ NULL
 d3heatmap <- function(x,
   
   ## extra labels for final plot
-  labels,
+  labels = NULL,
   
   ## dendrogram control
   Rowv = TRUE,
@@ -147,11 +147,11 @@ d3heatmap <- function(x,
   nr <- dim(x)[1]
   nc <- dim(x)[2]
   
+  # if there are no labels, need to append them anyway for JS function
+  if (labels == NULL) labels <- matrix(NA, nr, nc)
   #labels must be the same dimensions as the input data
   if (dim(labels)[1] != nr) stop("labels must be the same dimensions as data: Issue Rows")
   if (dim(labels)[2] != nc) stop("labels must be the same dimensions as data: Issue Columns")
-  
-  
   
   ### TODO: debating if to include this or not:
   #   if(nr <= 1 || nc <= 1)
@@ -320,7 +320,7 @@ d3heatmap <- function(x,
               dim = dim(x),
               rows = rownames(x),
               cols = colnames(x),
-              labels = as.character(t(y))
+              labels = as.character(t(labels))
   )
   
     
