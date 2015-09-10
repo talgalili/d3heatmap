@@ -153,7 +153,7 @@ d3heatmap <- function(x,
   #labels must be the same dimensions as the input data
   if (!is.null(labels)){
     if(dim(labels)[1] != nr) stop("labels must be the same dimensions as data: Issue Rows")
-    dim(labels)[2] != nc) stop("labels must be the same dimensions as data: Issue Columns")
+    if(dim(labels)[2] != nc) stop("labels must be the same dimensions as data: Issue Columns")
   }
 
   
