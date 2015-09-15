@@ -72,6 +72,11 @@ NULL
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
+#' @param minVal minimum value for the color scale (only binding when less than the minimum 
+#' value in the matrix).
+#' @param maxVal maximum value for the color scale (only binding when greater than the maximum 
+#' value in the matrix).
+#'         
 #' @param ... currently ignored
 #' 
 #' @import htmlwidgets
@@ -118,6 +123,10 @@ d3heatmap <- function(x,
   digits = 3L,
   cellnote,
   cellnote_scale = FALSE,
+  
+  ## color scale limits
+  minVal = NULL,
+  maxVal = NULL,
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -317,6 +326,8 @@ d3heatmap <- function(x,
     colors <- scales::col_factor(colors, x, na.color = "transparent")
   } else {
     rng <- range(x, na.rm = TRUE)
+    rng[1] <- min(rng[1],minVal)
+    rng[2] <- max(rng[2],maxVal)
     if (scale %in% c("row", "column")) {
       rng <- c(max(abs(rng)), -max(abs(rng)))
     }
