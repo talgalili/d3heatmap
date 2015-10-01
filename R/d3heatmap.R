@@ -173,14 +173,12 @@ d3heatmap <- function(x,
   ##=======================
   dendrogram <- match.arg(dendrogram)
   
-  # Use dendrogram argument to set defaults for Rowv/Colv
-  if (missing(Rowv)) {
-    Rowv <- dendrogram %in% c("both", "row")
-  }
-  if (missing(Colv)) {
-    Colv <- dendrogram %in% c("both", "column")
-  }
-
+  if ( is.null(Rowv) || is.na(Rowv) )
+    Rowv <- FALSE
+  if ( is.null(Colv) || is.na(Colv) )
+    Colv <- FALSE
+  else if( all(Colv=="Rowv") )
+    Colv <- Rowv
 
   if (isTRUE(Rowv)) {
     Rowv <- rowMeans(x, na.rm = na.rm)
