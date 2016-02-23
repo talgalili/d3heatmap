@@ -7,7 +7,7 @@ serialize <- function(widget) {
 mock_d3heatmap_record <- function(...) {
   cat(format(sys.call(0)), "\n")
   d <- d3heatmap::d3heatmap(...)
-  json <- serialize(d)
+  json <- serialize(d$x)
   cat(json, "\n")
 }
 

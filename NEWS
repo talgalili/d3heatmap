@@ -1,3 +1,9 @@
+d3heatmap 0.6.1.1 (2015-02-23)
+----------------------------------------
+
+* Update smoke test so it doesn't break with next version of htmlwidgets
+
+
 d3heatmap 0.6.1 (2015-07-26)
 ----------------------------------------
 
