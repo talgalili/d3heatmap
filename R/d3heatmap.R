@@ -25,6 +25,7 @@ NULL
 #'   \code{\link[grDevices]{colorRamp}}.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
+#' @param na.color Color for cells with NA (default: transparent)
 #' 
 #' @param xaxis_height Size of axes, in pixels.
 #' @param yaxis_width Size of axes, in pixels.
@@ -136,6 +137,7 @@ d3heatmap <- function(x,
   show_grid = TRUE,
   anim_duration = 500,
   rng = NULL,
+  na.color = "transparent",
   
   ...
 ) {
@@ -320,7 +322,7 @@ d3heatmap <- function(x,
   
     
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x, na.color = "transparent")
+    colors <- scales::col_factor(colors, x, na.color = na.color)
   } else {
     if (is.null(rng)) {
       rng <- range(x, na.rm = TRUE)
@@ -328,7 +330,7 @@ d3heatmap <- function(x,
         rng <- c(max(abs(rng)), -max(abs(rng)))
       }
     }
-    colors <- scales::col_numeric(colors, rng, na.color = "transparent")
+    colors <- scales::col_numeric(colors, rng, na.color = na.color)
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
