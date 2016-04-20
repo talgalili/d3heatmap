@@ -405,6 +405,7 @@ d3heatmap <- function(x
 	)
 	
   
+<<<<<<< HEAD
 	## the big call to create the heatmap
   ##==============================
 	## inserting new call to the refactored heatmap function, which does everything up to 
@@ -423,6 +424,13 @@ d3heatmap <- function(x
 								, params$breaks
 								, params$symbreaks
 							)
+=======
+  ## reorder x (and others)
+  ##=======================
+  x <- x[rowInd, colInd, drop=F]
+  if (!missing(cellnote))
+    cellnote <- cellnote[rowInd, colInd, drop=F]
+>>>>>>> 018024a (add drop=F to reordering)
 
 	## axis and cellnote labels sync
   ##==============================

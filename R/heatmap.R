@@ -126,10 +126,10 @@ heatmap <- function(
   
   ## reorder x and side color annotations
   ##=======================
-  x <- x[rowInd, colInd]
-  if (!is.null(cellnote))
-    cellnote <- cellnote[rowInd, colInd]
- 
+  x <- x[rowInd, colInd, drop=F]
+  if (!missing(cellnote))
+    cellnote <- cellnote[rowInd, colInd, drop=F]
+
   ## side colors objects
   ##=======================
   RowSideColors = misc$RowSideColors
