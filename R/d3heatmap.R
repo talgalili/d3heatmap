@@ -308,8 +308,8 @@ d3heatmap <- function(x,
 
   mtx <- list(data = as.character(t(cellnote)),
               dim = dim(x),
-              rows = rownames(x),
-              cols = colnames(x)
+              rows = as.list(rownames(x)),
+              cols = as.list(colnames(x))
   )
   
     
