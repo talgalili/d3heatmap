@@ -257,7 +257,7 @@ d3heatmap <- function(x,
     if (!is.matrix(RowSideColors)) {
       RowSideColors <- matrix(RowSideColors, nrow = 1)
     }
-    RowSideColors <- RowSideColors[, rowInd, drop = FALSE]
+    RowSideColors <- RowSideColors[rowInd, , drop = FALSE]
   }
   if (!missing(ColSideColors)) {
     if (!is.matrix(ColSideColors)) {
