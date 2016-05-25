@@ -12,7 +12,7 @@ output:
 %\VignetteIndexEntry{Introduction to d3heatmap}
 -->
 
-Exampels
+Examples
 =========
 
 ```{r}
