@@ -27,7 +27,7 @@ body.theme-dark {
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
-.d3heatmap .axis text, .d3heatmap-tip {
+.d3heatmap .axis text, .d3heatmap-tip{
   font-size: 15px;
   font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }
@@ -97,4 +97,14 @@ body.theme-dark {
 }
 .d3heatmap-tip th, .d3heatmap-tip td {
   padding: 0 1px;
+}
+.xtitle {
+  position: absolute;
+  overflow: hidden;
+  font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
+}
+.ytitle {
+  position: absolute;
+  overflow: hidden;
+  font-family: Ubuntu Sans, Segoe UI, Lucida Grande, sans-serif;
 }

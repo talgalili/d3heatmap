@@ -14,8 +14,11 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
   cellnote, cellnote_scale = FALSE, theme = NULL, colors = "RdYlBu",
   width = NULL, height = NULL, xaxis_height = 80, yaxis_width = 120,
-  xaxis_font_size = NULL, yaxis_font_size = NULL, brush_color = "#0000FF",
-  show_grid = TRUE, anim_duration = 500, ...)
+  xaxis_font_size = NULL, yaxis_font_size = NULL,
+  xaxis_location = "bottom", yaxis_location = "right", xaxis_title = NULL,
+  yaxis_title = NULL, xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14, brush_color = "#0000FF", show_grid = TRUE,
+  anim_duration = 500, ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -85,6 +88,18 @@ standalone visualizations, not R Markdown or Shiny.}
 \item{xaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
 
 \item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+
+\item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".}
+
+\item{yaxis_location}{Location of the y axis, either "right" or "left". Defaults to "right".}
+
+\item{xaxis_title}{Title text of x axis}
+
+\item{yaxis_title}{Title text of y axis}
+
+\item{xaxis_title_font_size}{Font size of x axis title in pixels. Defaults to 14.}
+
+\item{yaxis_title_font_size}{Font size of y axis title in pixels. Defaults to 14.}
 
 \item{brush_color}{The base color to be used for the brush. The brush will be
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format

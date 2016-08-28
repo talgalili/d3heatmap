@@ -30,6 +30,12 @@ NULL
 #' @param yaxis_width Size of axes, in pixels.
 #' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
+#' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
+#' @param xaxis_title Title text of x axis
+#' @param yaxis_title Title text of y axis
+#' @param xaxis_title_font_size Font size of x axis title in pixels. Defaults to 14.
+#' @param yaxis_title_font_size Font size of y axis title in pixels. Defaults to 14.
 #' 
 #' @param brush_color The base color to be used for the brush. The brush will be
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
@@ -127,6 +133,12 @@ d3heatmap <- function(x,
   yaxis_width = 120,
   xaxis_font_size = NULL,
   yaxis_font_size = NULL,
+  xaxis_location = "bottom",
+  yaxis_location = "right",
+  xaxis_title = NULL,
+  yaxis_title = NULL,
+  xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14,
   brush_color = "#0000FF",
   show_grid = TRUE,
   anim_duration = 500,
@@ -156,6 +168,7 @@ d3heatmap <- function(x,
   if(!missing(cexRow)) {
     if(is.numeric(cexRow)) {
       xaxis_font_size <- cexRow * 14
+      xtitle_font_size <- xaxis_font_size + 4
     } else {
       warning("cexRow is not numeric. It is ignored")
     }
@@ -163,6 +176,7 @@ d3heatmap <- function(x,
   if(!missing(cexCol)) {
     if(is.numeric(cexCol)) {
       yaxis_font_size <- cexCol * 14
+      ytitle_font_size <- yaxis_font_size + 4
     } else {
       warning("cexCol is not numeric. It is ignored")
     }
@@ -333,16 +347,22 @@ d3heatmap <- function(x,
     yaxis_width = yaxis_width,
     xaxis_font_size = xaxis_font_size,
     yaxis_font_size = yaxis_font_size,
+    xaxis_location = xaxis_location,
+    yaxis_location = yaxis_location,
+    xaxis_title = xaxis_title,
+    yaxis_title = yaxis_title,
+    xaxis_title_font_size = xaxis_title_font_size,
+    yaxis_title_font_size = yaxis_title_font_size,
     brush_color = brush_color,
     show_grid = show_grid,
     anim_duration = anim_duration
   ))
 
   if (is.null(rowDend)) {
-    c(options, list(yclust_width = 0))
+    options <- c(options, list(yclust_width = 0))
   }
   if (is.null(colDend)) {
-    c(options, list(xclust_height = 0))
+    options <- c(options, list(xclust_height = 0))
   }
   
   payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
