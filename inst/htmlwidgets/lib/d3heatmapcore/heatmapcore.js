@@ -299,9 +299,11 @@ function heatmap(selector, data, options) {
     var tip = d3.tip()
         .attr('class', 'd3heatmap-tip')
         .html(function(d, i) {
+          var rowTitle = opts.yaxis_title ? opts.yaxis_title : "Row";
+          var colTitle = opts.xaxis_title ? opts.xaxis_title : "Column";
           return "<table>" + 
-            "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
-            "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
+            "<tr><th align=\"right\">" + rowTitle + "</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
+            "<tr><th align=\"right\">" + colTitle + "</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
             "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
             "</table>";
         })
