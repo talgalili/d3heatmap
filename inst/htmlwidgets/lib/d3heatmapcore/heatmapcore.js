@@ -180,23 +180,43 @@ function heatmap(selector, data, options) {
     opts.xaxis_location = "bottom";
   }
   
-  opts.ytitle_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
-  opts.xtitle_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+
+  opts.leftTitle_width = 0;
+  opts.rightTitle_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
+  if (opts.yaxis_location === "left" && !data.rows) {
+    opts.rightTitle_width = 0;
+    opts.leftTitle_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
+  }
+  
+  opts.topTitle_height = 0;
+  opts.bottomTitle_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+  if (opts.xaxis_location === "top" && !data.cols) {
+    opts.bottomTitle_height = 0;
+    opts.topTitle_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+  }
   
   var gridSizer = new GridSizer(
-    [opts.ytitle_width, opts.leftEl_width, "*", opts.rightEl_width],
-    [opts.xtitle_height, opts.topEl_height, "*", opts.bottomEl_height],
+    [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
+    [opts.topTitle_height, opts.topEl_height, "*", opts.bottomEl_height, opts.bottomTitle_height],
     opts.width,
     opts.height
   );
 
   var colormapBounds = gridSizer.getCellBounds(2, 2);
-  //var xtitleBounds = gridSizer.getCellBounds(1, 0);
-  //var ytitleBounds = gridSizer.getCellBounds(0, 1);
   var topElBounds = gridSizer.getCellBounds(2, 1);
   var leftElBounds = gridSizer.getCellBounds(1, 2);
   var rightElBounds = gridSizer.getCellBounds(3, 2);
   var bottomElBounds = gridSizer.getCellBounds(2, 3);
+  
+  var xtitleBounds = gridSizer.getCellBounds(2, 4);
+  var ytitleBounds = gridSizer.getCellBounds(4, 2);
+  if (opts.yaxis_location === "left" && !data.rows) {
+    ytitleBounds = gridSizer.getCellBounds(0, 2);
+  }
+  
+  if (opts.xaxis_location === "top" && !data.cols) {
+    xtitleBounds = gridSizer.getCellBounds(2, 0);
+  }
   
   var colDendBounds, rowDendBounds, yaxisBounds, xaxisBounds;
   if (!data.rows) {
@@ -240,8 +260,8 @@ function heatmap(selector, data, options) {
   (function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
-    var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true);
-    var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true);
+    var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true).style(cssify(xtitleBounds));
+    var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true).style(cssify(ytitleBounds));
     var colDend = !data.cols ? null : inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
     var rowDend = !data.rows ? null : inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
     var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
@@ -277,8 +297,8 @@ function heatmap(selector, data, options) {
   var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
   var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, opts.xaxis_location);
   var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
-  var xtitle = !opts.xaxis_title? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, opts.width, opts.xtitle_height);
-  var ytitle = !opts.yaxis_title? null : title(el.select('svg.ytitle'), opts.yaxis_title, true, opts.ytitle_width, opts.height);
+  var xtitle = !opts.xaxis_title? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, xtitleBounds);
+  var ytitle = !opts.yaxis_title? null : title(el.select('svg.ytitle'), opts.yaxis_title, true, ytitleBounds);
   
   function colormap(svg, data, width, height) {
     // Check for no data
@@ -438,14 +458,9 @@ function heatmap(selector, data, options) {
     });
   }
   
-  function title(svg, data, rotated, width, height) {
+  function title(svg, data, rotated, bounds) {
     
     // rotated is y, unrotated is x
-    
-    svg.style("top", 0)
-        .style("left", 0)
-        .style("width", width)
-        .style("height", height)
     
     svg = svg.append('g');
     
@@ -453,7 +468,8 @@ function heatmap(selector, data, options) {
       .text(data)
       .attr("x", 0)
       .attr("y", 0)
-      .attr("transform", rotated ? "translate(" + width/2 + "," + height/2 + "),rotate(-90)" : "translate(" + width/2 + "," + height/2 + ")")
+      .attr("transform", rotated ? "translate(" + (bounds.width/2) + "," + (bounds.height/2) + "),rotate(-90)" : 
+                                    "translate(" + (bounds.width/2) + "," + (bounds.height/2) + ")")
       .style("font-weight", "bold")
       .style("font-size", rotated ? opts.yaxis_title_font_size : opts.xaxis_title_font_size)
       .style("text-anchor", "middle");
