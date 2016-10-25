@@ -389,24 +389,37 @@ function heatmap(selector, data, options) {
       leaves = data;
     }
     
+    // make key value pairs for items in leaves
+    var locs = [];
+    for (var i = 0; i < leaves.length; ++i) locs.push({"key":leaves[i], "value":i})
+    
     // Define scale, axis
-    var scale = d3.scale.ordinal()
-        .domain(leaves)
-        .rangeBands([0, rotated ? width : height]);
+    var scale = d3.scale.linear()
+        .domain([0, locs.length])
+        .range([0, rotated ? width : height]);
+        
     var axis = d3.svg.axis()
         .scale(scale)
         .orient(rotated ? "bottom" : "right")
         .outerTickSize(0)
         .tickPadding(padding)
-        .tickValues(leaves);
+        .tickValues(d3.range(0, locs.length));
 
     // Create the actual axis
     var axisNodes = svg.append("g")
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
+
+    var bandwidth = Math.abs(scale(2) - scale(1));
     var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']
-        || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
-    axisNodes.selectAll("text").style("font-size", fontSize);
+        || Math.min(18, Math.max(9, bandwidth - (rotated ? 11: 8))) + "px";
+        
+    axisNodes.selectAll("text")
+    .data(locs)
+			.text(function(d){ return d.key; })
+			.attr("transform", rotated ? "rotate(-65)" : "")
+      .style("font-size", fontSize);
+
     
     var mouseTargets = svg.append("g")
       .selectAll("g").data(leaves);
