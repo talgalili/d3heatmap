@@ -410,15 +410,20 @@ function heatmap(selector, data, options) {
         .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
         .call(axis);
 
-    var bandwidth = Math.abs(scale(2) - scale(1));
+    var bandwidth = function() { return Math.abs(scale(2) - scale(1)); };
     var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']
-        || Math.min(18, Math.max(9, bandwidth - (rotated ? 11: 8))) + "px";
+        || Math.min(18, Math.max(9, bandwidth() - (rotated ? 11: 8))) + "px";
         
     axisNodes.selectAll("text")
     .data(locs)
 			.text(function(d){ return d.key; })
-			.attr("transform", rotated ? "rotate(-65)" : "")
-      .style("font-size", fontSize);
+			.attr("transform", function(d, i) {
+            var y = rotated ? -bandwidth() : bandwidth()/2;
+            var r = rotated ? "rotate(45)," : "";
+            return r + "translate(6," + y + ")";
+          })
+      .style("font-size", fontSize)
+      .style("text-anchor", "start");
 
     
     var mouseTargets = svg.append("g")
@@ -444,21 +449,15 @@ function heatmap(selector, data, options) {
     function layoutMouseTargets(selection) {
       selection
           .attr("transform", function(d, i) {
-            var x = rotated ? scale(i) + bandwidth/2 : 0;
+            var x = rotated ? scale(i) + bandwidth()/2 : 0;
             var y = rotated ? padding + 6 : scale(i);
             return "translate(" + x + "," + y + ")";
           })
         .selectAll("rect")
-          .attr("height", bandwidth / (rotated ? 1.414 : 1))
+          .attr("height", bandwidth() / (rotated ? 1.414 : 1))
           .attr("width", rotated ? height * 1.414 * 1.2 : width);
     }
     layoutMouseTargets(mouseTargets);
-
-    if (rotated) {
-      axisNodes.selectAll("text")
-        .attr("transform", "rotate(45),translate(6, 0)")
-        .style("text-anchor", "start");
-    }
     
     controller.on('highlight.axis-' + (rotated ? 'x' : 'y'), function(hl) {
       var ticks = axisNodes.selectAll('.tick');
@@ -481,9 +480,16 @@ function heatmap(selector, data, options) {
       tAxisNodes.call(axis);
       // Set text-anchor on the non-transitioned node to prevent jumpiness
       // in RStudio Viewer pane
+      // console.log(bandwidth())
       axisNodes.selectAll("text")
         .data(leaves)
         .text(function (d) {return d;})
+        .attr("transform", function(d, i) {
+            var x = rotated ? bandwidth() * 0.707/2 : 6;
+            var y = rotated ? -bandwidth() * 0.707/2 : bandwidth()/2;
+            var r = rotated ? "rotate(45)," : "";
+            return r + "translate(" + x + "," + y + ")";
+          })
         .style("text-anchor", "start");
       tAxisNodes.selectAll("g")
           .style("opacity", function(d, i) {
