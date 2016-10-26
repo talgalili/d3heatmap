@@ -444,12 +444,12 @@ function heatmap(selector, data, options) {
     function layoutMouseTargets(selection) {
       selection
           .attr("transform", function(d, i) {
-            var x = rotated ? scale(d) + scale.rangeBand()/2 : 0;
-            var y = rotated ? padding + 6 : scale(d);
+            var x = rotated ? scale(i) + bandwidth/2 : 0;
+            var y = rotated ? padding + 6 : scale(i);
             return "translate(" + x + "," + y + ")";
           })
         .selectAll("rect")
-          .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
+          .attr("height", bandwidth / (rotated ? 1.414 : 1))
           .attr("width", rotated ? height * 1.414 * 1.2 : width);
     }
     layoutMouseTargets(mouseTargets);
