@@ -388,14 +388,10 @@ function heatmap(selector, data, options) {
     } else if (data.length) {
       leaves = data;
     }
-    
-    // make key value pairs for items in leaves
-    var locs = [];
-    for (var i = 0; i < leaves.length; ++i) locs.push({"key":leaves[i], "value":i})
-    
+
     // Define scale, axis
     var scale = d3.scale.linear()
-        .domain([0, locs.length])
+        .domain([0, leaves.length])
         .range([0, rotated ? width : height]);
         
     var axis = d3.svg.axis()
@@ -403,7 +399,7 @@ function heatmap(selector, data, options) {
         .orient(rotated ? "bottom" : "right")
         .outerTickSize(0)
         .tickPadding(padding)
-        .tickValues(d3.range(0, locs.length));
+        .tickValues(d3.range(0, leaves.length));
 
     // Create the actual axis
     var axisNodes = svg.append("g")
@@ -415,8 +411,8 @@ function heatmap(selector, data, options) {
         || Math.min(18, Math.max(9, bandwidth() - (rotated ? 11: 8))) + "px";
         
     axisNodes.selectAll("text")
-    .data(locs)
-			.text(function(d){ return d.key; })
+    .data(leaves)
+			.text(function(d){ return d; })
 			.attr("transform", function(d, i) {
             var y = rotated ? -bandwidth() : bandwidth()/2;
             var r = rotated ? "rotate(45)," : "";
