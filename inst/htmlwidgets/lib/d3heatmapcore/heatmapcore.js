@@ -476,12 +476,15 @@ function heatmap(selector, data, options) {
       var dim = rotated ? 0 : 1;
       //scale.domain(leaves.slice(_.extent[0][dim], _.extent[1][dim]));
       var rb = [_.translate[dim], (rotated ? width : height) * _.scale[dim] + _.translate[dim]];
-      scale.rangeBands(rb);
+      scale.range(rb);
       var tAxisNodes = axisNodes.transition().duration(opts.anim_duration).ease('linear');
       tAxisNodes.call(axis);
       // Set text-anchor on the non-transitioned node to prevent jumpiness
       // in RStudio Viewer pane
-      axisNodes.selectAll("text").style("text-anchor", "start");
+      axisNodes.selectAll("text")
+        .data(leaves)
+        .text(function (d) {return d;})
+        .style("text-anchor", "start");
       tAxisNodes.selectAll("g")
           .style("opacity", function(d, i) {
             if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
