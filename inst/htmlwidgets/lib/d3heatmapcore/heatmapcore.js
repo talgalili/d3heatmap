@@ -414,9 +414,10 @@ function heatmap(selector, data, options) {
     .data(leaves)
 			.text(function(d){ return d; })
 			.attr("transform", function(d, i) {
-            var y = rotated ? -bandwidth() : bandwidth()/2;
+			      var x = rotated ? 6 + padding : 6;
+            var y = rotated ? -(6 + padding) : bandwidth()/2;
             var r = rotated ? "rotate(45)," : "";
-            return r + "translate(6," + y + ")";
+            return r + "translate(" + x + "," + y + ")";
           })
       .style("font-size", fontSize)
       .style("text-anchor", "start");
@@ -481,8 +482,8 @@ function heatmap(selector, data, options) {
         .data(leaves)
         .text(function (d) {return d;})
         .attr("transform", function(d, i) {
-            var x = rotated ? bandwidth() * 0.707/2 : 6;
-            var y = rotated ? -bandwidth() * 0.707/2 : bandwidth()/2;
+            var x = rotated ? bandwidth() * 0.707/2 + padding : 6;
+            var y = rotated ? -(bandwidth() * 0.707/2 + padding) : bandwidth()/2;
             var r = rotated ? "rotate(45)," : "";
             return r + "translate(" + x + "," + y + ")";
           })
