@@ -1,3 +1,5 @@
+* Fix [rstudio/shinydashboard#75](https://github.com/rstudio/shinydashboard/issues/75): make the css rules in heatmap.css a bit more specific, so there's no name conflicts with other packages/code.
+
 d3heatmap 0.6.1.1 (2015-02-23)
 ----------------------------------------
 
