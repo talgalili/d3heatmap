@@ -25,6 +25,7 @@ NULL
 #'   \code{\link[grDevices]{colorRamp}}.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
+#' @param na.color Color for cells with NA (default: transparent)
 #' 
 #' @param xaxis_height Size of axes, in pixels.
 #' @param yaxis_width Size of axes, in pixels.
@@ -58,6 +59,11 @@ NULL
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
+#' @param rng A vector of two numbers, namely the minimum and maximum value
+#'   to use when determining the mapping from values to colors. This is useful
+#'   when the range of values changes between heatmaps, but colors should be the
+#'   same (optional, defaults to using the minimum and maximum of \code{x}).
+#'   
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
@@ -130,6 +136,8 @@ d3heatmap <- function(x,
   brush_color = "#0000FF",
   show_grid = TRUE,
   anim_duration = 500,
+  rng = NULL,
+  na.color = "transparent",
   
   ...
 ) {
@@ -314,14 +322,15 @@ d3heatmap <- function(x,
   
     
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x, na.color = "transparent")
+    colors <- scales::col_factor(colors, x, na.color = na.color)
   } else {
-    rng <- range(x, na.rm = TRUE)
-    if (scale %in% c("row", "column")) {
-      rng <- c(max(abs(rng)), -max(abs(rng)))
+    if (is.null(rng)) {
+      rng <- range(x, na.rm = TRUE)
+      if (scale %in% c("row", "column")) {
+        rng <- c(max(abs(rng)), -max(abs(rng)))
+      }
     }
-    
-    colors <- scales::col_numeric(colors, rng, na.color = "transparent")
+    colors <- scales::col_numeric(colors, rng, na.color = na.color)
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
