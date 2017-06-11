@@ -138,6 +138,7 @@ function heatmap(selector, data, options) {
   opts.yaxis_width = options.yaxis_width || 120;
   opts.axis_padding = options.axis_padding || 6;
   opts.show_grid = options.show_grid;
+  opts.cellnote_var = options.cellnote_var; 
   if (typeof(opts.show_grid) === 'undefined') {
     opts.show_grid = true;
   }
@@ -145,6 +146,7 @@ function heatmap(selector, data, options) {
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
   opts.anim_duration = options.anim_duration;
+  opts.cellnote_label = options.cellnote_label;
   if (typeof(opts.anim_duration) === 'undefined') {
     opts.anim_duration = 500;
   }
@@ -241,7 +243,7 @@ function heatmap(selector, data, options) {
           return "<table>" + 
             "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
             "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
-            "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
+            "<tr><th align=\"right\">" + opts.cellnote_label + "</th><td>" + htmlEscape(d.label) + "</td></tr>" +
             "</table>";
         })
         .direction("se")

@@ -64,6 +64,7 @@ NULL
 #'   same (optional, defaults to using the minimum and maximum of \code{x}).
 #'   
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
+#' @param cellnote_label character Label to display next to the cell value when the user hovers over the cell
 #' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #' @param cellnote_scale logical (default is FALSE). IF cellnote is missing and x is used, 
@@ -123,6 +124,7 @@ d3heatmap <- function(x,
   digits = 3L,
   cellnote,
   cellnote_scale = FALSE,
+  cellnote_label = "Value", 
   
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
@@ -342,6 +344,7 @@ d3heatmap <- function(x,
     yaxis_font_size = yaxis_font_size,
     brush_color = brush_color,
     show_grid = show_grid,
+    cellnote_label = cellnote_label,
     anim_duration = anim_duration
   ))
 

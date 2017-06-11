@@ -33,3 +33,4 @@ BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
     'd3heatmap.R'
     'dendrogram.R'
+RoxygenNote: 6.0.1
