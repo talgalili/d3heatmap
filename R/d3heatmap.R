@@ -34,6 +34,7 @@ NULL
 #' @param brush_color The base color to be used for the brush. The brush will be
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 #'   expected.
+#' @param na_color Color of NA values in heatmap. Defaults to neutral gray
 #' @param show_grid \code{TRUE} to show gridlines, \code{FALSE} to hide them, or
 #'   a numeric value to specify the gridline thickness in pixels (can be a 
 #'   non-integer).
@@ -133,7 +134,9 @@ d3heatmap <- function(x,
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
-  width = NULL, height = NULL,
+  na_color = "#777777",
+  width = NULL, 
+  height = NULL,
   xaxis_height = 80,
   yaxis_width = 120,
   xaxis_font_size = NULL,
@@ -347,6 +350,7 @@ d3heatmap <- function(x,
     xaxis_font_size = xaxis_font_size,
     yaxis_font_size = yaxis_font_size,
     brush_color = brush_color,
+    na_color = na_color,
     show_grid = show_grid,
     cellnote_row = cellnote_row,
     cellnote_col = cellnote_col,

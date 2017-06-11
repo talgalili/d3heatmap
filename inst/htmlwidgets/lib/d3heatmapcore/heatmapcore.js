@@ -145,6 +145,7 @@ function heatmap(selector, data, options) {
     opts.show_grid = true;
   }
   opts.brush_color = options.brush_color || "#0000FF";
+  opts.na_color = options.na_color;
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
   opts.anim_duration = options.anim_duration;
@@ -299,7 +300,7 @@ function heatmap(selector, data, options) {
         .property("value", function(d, i) { return d.value; })
         .attr("fill", function(d) {
           if (!d.color) {
-            return "transparent";
+            return opts.na_color;
           }
           return d.color;
         });
