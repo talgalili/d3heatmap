@@ -12,11 +12,12 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
   labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
-  cellnote, cellnote_scale = FALSE, cellnote_label = "Value",
-  theme = NULL, colors = "RdYlBu", width = NULL, height = NULL,
-  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
-  yaxis_font_size = NULL, brush_color = "#0000FF", show_grid = TRUE,
-  anim_duration = 500, rng = NULL, ...)
+  cellnote, cellnote_scale = FALSE, cellnote_row = "Row",
+  cellnote_col = "Column", cellnote_val = "Value", theme = NULL,
+  colors = "RdYlBu", width = NULL, height = NULL, xaxis_height = 80,
+  yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
+  brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500,
+  rng = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -66,7 +67,11 @@ If missing, it will use \code{x}, after rounding it based on the \code{digits} p
 \item{cellnote_scale}{logical (default is FALSE). IF cellnote is missing and x is used, 
 should cellnote be scaled if x is also scaled?}
 
-\item{cellnote_label}{character Label to display next to the cell value when the user hovers of the cell}
+\item{cellnote_row}{character Label to display next to the row value when the user hovers over the cell}
+
+\item{cellnote_col}{character Label to display next to the column value when the user hovers over the cell}
+
+\item{cellnote_val}{character Label to display next to the cell value when the user hovers over the cell}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are 
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
