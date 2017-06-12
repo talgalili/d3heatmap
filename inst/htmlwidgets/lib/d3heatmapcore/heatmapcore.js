@@ -478,7 +478,7 @@ function heatmap(selector, data, options) {
                                     "translate(" + (bounds.width/2) + "," + (bounds.height/2) + ")")
 
       .style("font-weight", "bold")
-      .style("font-size", rotated ? opts.yaxis_title_font_size : opts.xaxis_title_font_size)
+      .style("font-size", rotated ? opts.xaxis_title_font_size : opts.yaxis_title_font_size)
       .style("text-anchor", "middle");
   }
 
@@ -526,9 +526,8 @@ function heatmap(selector, data, options) {
         })
         .call(axis);
     var yfontSize = opts['yaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (8))) + "px";
-    yfontSize = Math.min(yfontSize.match(/\d+/)[0], Math.min(18, Math.max(9, scale.rangeBand() - (8)))) + "px";
     var xfontSize = opts['xaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (11))) + "px";
-    var fontSize = (rotated ? xfontSize : yfontSize); 
+    var fontSize = (rotated ? yfontSize : xfontSize); 
       axisNodes.selectAll("text").style("font-size", fontSize);
     
     var mouseTargets = svg.append("g")
@@ -609,9 +608,7 @@ function heatmap(selector, data, options) {
               return 0;
             }
           });
-      tAxisNodes
-        .selectAll("text")
-          .style("text-anchor", rotated ? "start" : axis_location === "right" ? "start" : "end");
+      tAxisNodes.selectAll("text").style("text-anchor", rotated ? "start" : axis_location === "right" ? "start" : "end");
       mouseTargets.transition().duration(opts.anim_duration).ease('linear')
           .call(layoutMouseTargets)
           .style("opacity", function(d, i) {
