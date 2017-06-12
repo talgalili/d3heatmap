@@ -30,6 +30,7 @@ NULL
 #' @param yaxis_width Size of axes, in pixels.
 #' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' @param xaxis_angle Angle of axis labels. Defaults to 60.
 #' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
 #'  Dendogram location takes priority over xaxis_location
 #' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
@@ -48,7 +49,7 @@ NULL
 #'   non-integer).
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
-#'   
+#'  
 #' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
 #' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.
 #' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
@@ -152,6 +153,7 @@ d3heatmap <- function(x,
   yaxis_width = 120,
   xaxis_font_size = NULL,
   yaxis_font_size = NULL,
+  xaxis_angle = 60,
   xaxis_location = "bottom",
   yaxis_location = "right",
   xaxis_title = NULL,
@@ -368,6 +370,7 @@ d3heatmap <- function(x,
     yaxis_width = yaxis_width,
     xaxis_font_size = xaxis_font_size,
     yaxis_font_size = yaxis_font_size,
+    xaxis_angle = xaxis_angle,
     xaxis_location = xaxis_location,
     yaxis_location = yaxis_location,
     xaxis_title = xaxis_title,

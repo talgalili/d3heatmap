@@ -16,7 +16,7 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   cellnote_col = NULL, cellnote_val = "Value", theme = NULL,
   colors = "RdYlBu", na_color = "#777777", width = NULL, height = NULL,
   xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
-  yaxis_font_size = NULL, xaxis_location = "bottom",
+  yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
   yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
   xaxis_title_font_size = 14, yaxis_title_font_size = 14,
   brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500,
@@ -101,6 +101,8 @@ standalone visualizations, not R Markdown or Shiny.}
 \item{xaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
 
 \item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+
+\item{xaxis_angle}{Angle of axis labels. Defaults to 60.}
 
 \item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".
 Dendogram location takes priority over xaxis_location}

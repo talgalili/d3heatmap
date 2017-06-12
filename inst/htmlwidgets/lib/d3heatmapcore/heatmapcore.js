@@ -146,6 +146,7 @@ function heatmap(selector, data, options) {
   opts.na_color = options.na_color;
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
+  opts.xaxis_angle = options.xaxis_angle;
   opts.xaxis_location = options.xaxis_location;
   opts.yaxis_location = options.yaxis_location;
   opts.xaxis_title = options.xaxis_title;
@@ -535,7 +536,7 @@ function heatmap(selector, data, options) {
     mouseTargets
       .enter()
         .append("g").append("rect")
-          .attr("transform", rotated ? (axis_location === "bottom" ? "rotate(45),translate(0,0)": "rotate(-45),translate(0,0)") : "")
+          .attr("transform", rotated ? (axis_location === "bottom" ? "rotate(" + opts.xaxis_angle + "),translate(0,0)": "rotate(-" + opts.xaxis_angle + "),translate(0,0)") : "")
           .attr("fill", "transparent")
           .on("click", function(d, i) {
             var dim = rotated ? 'x' : 'y';
@@ -570,9 +571,9 @@ function heatmap(selector, data, options) {
       axisNodes.selectAll("text")
         .attr("transform", function() {
           if (axis_location === "bottom") {
-            return "rotate(45),translate(" + padding + ", 0)";
+            return "rotate(" + opts.xaxis_angle + "),translate(" + padding + ", -10)";
           } else if (axis_location === "top") {
-            return "rotate(-45),translate(" + (padding) + ", 0)";
+            return "rotate(-" + opts.xaxis_angle + "),translate(" + (padding) + ", 10)";
           }
         })
         .style("text-anchor", "start");
