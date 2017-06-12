@@ -12,10 +12,13 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
   labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
-  cellnote, cellnote_scale = FALSE, cellnote_row = "Row",
-  cellnote_col = "Column", cellnote_val = "Value", theme = NULL,
-  colors = "RdYlBu", width = NULL, height = NULL, xaxis_height = 80,
-  yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
+  cellnote, cellnote_scale = FALSE, cellnote_row = NULL,
+  cellnote_col = NULL, cellnote_val = "Value", theme = NULL,
+  colors = "RdYlBu", na_color = "#777777", width = NULL, height = NULL,
+  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
+  yaxis_font_size = NULL, xaxis_location = "bottom",
+  yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
+  xaxis_title_font_size = 14, yaxis_title_font_size = 14,
   brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500,
   rng = NULL, ...)
 }
@@ -67,11 +70,14 @@ If missing, it will use \code{x}, after rounding it based on the \code{digits} p
 \item{cellnote_scale}{logical (default is FALSE). IF cellnote is missing and x is used, 
 should cellnote be scaled if x is also scaled?}
 
-\item{cellnote_row}{character Label to display next to the row value when the user hovers over the cell}
+\item{cellnote_row}{character Label to display next to the row value when the user hovers over the cell.
+If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
 
-\item{cellnote_col}{character Label to display next to the column value when the user hovers over the cell}
+\item{cellnote_col}{character Label to display next to the column value when the user hovers over the cell
+If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
 
-\item{cellnote_val}{character Label to display next to the cell value when the user hovers over the cell}
+\item{cellnote_val}{character Label to display next to the cell value when the user hovers over the cell.
+Defaults to "Value".}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are 
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
@@ -81,6 +87,8 @@ standalone visualizations, not R Markdown or Shiny.}
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
+
+\item{na_color}{Color of NA values in heatmap. Defaults to neutral gray}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing).}
 
@@ -93,6 +101,20 @@ standalone visualizations, not R Markdown or Shiny.}
 \item{xaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
 
 \item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+
+\item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".
+Dendogram location takes priority over xaxis_location}
+
+\item{yaxis_location}{Location of the y axis, either "right" or "left". Defaults to "right".
+Dendogram location takes priority over yaxis_location}
+
+\item{xaxis_title}{Title text of x axis}
+
+\item{yaxis_title}{Title text of y axis}
+
+\item{xaxis_title_font_size}{Font size of x axis title in pixels. Defaults to 14.}
+
+\item{yaxis_title_font_size}{Font size of y axis title in pixels. Defaults to 14.}
 
 \item{brush_color}{The base color to be used for the brush. The brush will be
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format 

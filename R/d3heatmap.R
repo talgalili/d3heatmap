@@ -30,6 +30,14 @@ NULL
 #' @param yaxis_width Size of axes, in pixels.
 #' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
+#'  Dendogram location takes priority over xaxis_location
+#' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
+#'  Dendogram location takes priority over yaxis_location
+#' @param xaxis_title Title text of x axis
+#' @param yaxis_title Title text of y axis
+#' @param xaxis_title_font_size Font size of x axis title in pixels. Defaults to 14.
+#' @param yaxis_title_font_size Font size of y axis title in pixels. Defaults to 14. 
 #' 
 #' @param brush_color The base color to be used for the brush. The brush will be
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
@@ -65,9 +73,12 @@ NULL
 #'   same (optional, defaults to using the minimum and maximum of \code{x}).
 #'   
 #' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
-#' @param cellnote_row character Label to display next to the row value when the user hovers over the cell
+#' @param cellnote_row character Label to display next to the row value when the user hovers over the cell.
+#'  If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".
 #' @param cellnote_col character Label to display next to the column value when the user hovers over the cell
-#' @param cellnote_val character Label to display next to the cell value when the user hovers over the cell
+#'  If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
+#' @param cellnote_val character Label to display next to the cell value when the user hovers over the cell.
+#'  Defaults to "Value".
 #' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #' @param cellnote_scale logical (default is FALSE). IF cellnote is missing and x is used, 
@@ -127,8 +138,8 @@ d3heatmap <- function(x,
   digits = 3L,
   cellnote,
   cellnote_scale = FALSE,
-  cellnote_row = "Row",
-  cellnote_col = "Column", 
+  cellnote_row = NULL,
+  cellnote_col = NULL, 
   cellnote_val = "Value", 
   
   ##TODO: decide later which names/conventions to keep
@@ -141,6 +152,12 @@ d3heatmap <- function(x,
   yaxis_width = 120,
   xaxis_font_size = NULL,
   yaxis_font_size = NULL,
+  xaxis_location = "bottom",
+  yaxis_location = "right",
+  xaxis_title = NULL,
+  yaxis_title = NULL,
+  xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14, 
   brush_color = "#0000FF",
   show_grid = TRUE,
   anim_duration = 500,
@@ -171,6 +188,7 @@ d3heatmap <- function(x,
   if(!missing(cexRow)) {
     if(is.numeric(cexRow)) {
       xaxis_font_size <- cexRow * 14
+      xaxis_title_font_size <- xaxis_font_size + 4
     } else {
       warning("cexRow is not numeric. It is ignored")
     }
@@ -178,6 +196,7 @@ d3heatmap <- function(x,
   if(!missing(cexCol)) {
     if(is.numeric(cexCol)) {
       yaxis_font_size <- cexCol * 14
+      yaxis_title_font_size <- yaxis_font_size + 4
     } else {
       warning("cexCol is not numeric. It is ignored")
     }
@@ -349,6 +368,12 @@ d3heatmap <- function(x,
     yaxis_width = yaxis_width,
     xaxis_font_size = xaxis_font_size,
     yaxis_font_size = yaxis_font_size,
+    xaxis_location = xaxis_location,
+    yaxis_location = yaxis_location,
+    xaxis_title = xaxis_title,
+    yaxis_title = yaxis_title,
+    xaxis_title_font_size = xaxis_title_font_size,
+    yaxis_title_font_size = yaxis_title_font_size, 
     brush_color = brush_color,
     na_color = na_color,
     show_grid = show_grid,

@@ -131,8 +131,6 @@ function heatmap(selector, data, options) {
   options = options || {};
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
-  opts.xclust_height = options.xclust_height || opts.height * 0.12;
-  opts.yclust_width = options.yclust_width || opts.width * 0.12;
   opts.link_color = opts.link_color || "#AAA";
   opts.xaxis_height = options.xaxis_height || 80;
   opts.yaxis_width = options.yaxis_width || 120;
@@ -148,31 +146,109 @@ function heatmap(selector, data, options) {
   opts.na_color = options.na_color;
   opts.xaxis_font_size = options.xaxis_font_size;
   opts.yaxis_font_size = options.yaxis_font_size;
+  opts.xaxis_location = options.xaxis_location;
+  opts.yaxis_location = options.yaxis_location;
+  opts.xaxis_title = options.xaxis_title;
+  opts.yaxis_title = options.yaxis_title;
+  opts.xaxis_title_font_size = options.xaxis_title_font_size;
+  opts.yaxis_title_font_size = options.yaxis_title_font_size; 
+  opts.topEl_height = opts.xclust_height;
+  opts.leftEl_width = opts.yclust_width; 
   opts.anim_duration = options.anim_duration;
   opts.cellnote_val = options.cellnote_val;
   if (typeof(opts.anim_duration) === 'undefined') {
     opts.anim_duration = 500;
   }
+  
+  opts.xclust_height = options.xclust_height || opts.height * 0.12;
+  opts.yclust_width = options.yclust_width || opts.width * 0.12;
+  opts.topEl_height = opts.xclust_height;
+  opts.leftEl_width = opts.yclust_width;
+  opts.bottomEl_height = options.xaxis_height || 80;
+  opts.rightEl_width = options.yaxis_width || 120;
 
   if (!data.rows) {
     opts.yclust_width = 0;
-  }
-  if (!data.cols) {
-    opts.xclust_height = 0;
+    opts.leftEl_width = 0;
+    if (opts.yaxis_location === "left") {
+      opts.leftEl_width = options.yaxis_width || 120;
+      opts.rightEl_width = 0;
+    }
+  } else {
+    opts.yaxis_location = "right"; 
   }
   
+  if (!data.cols) {
+    opts.xclust_height = 0;
+    opts.topEl_height = 0;
+    if (opts.xaxis_location === "top") {
+      opts.topEl_height = options.xaxis_height || 80;
+      opts.bottomEl_height = 0;
+    }
+  } else {
+    opts.xaxis_location = "bottom";
+  }
+ 
+
+  opts.leftTitle_width = 0;
+  opts.rightTitle_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
+  if (opts.yaxis_location === "left" && !data.rows) {
+    opts.rightTitle_width = 0;
+    opts.leftTitle_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
+  }
+  
+  opts.topTitle_height = 0;
+  opts.bottomTitle_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+  if (opts.xaxis_location === "top" && !data.cols) {
+    opts.bottomTitle_height = 0;
+    opts.topTitle_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+  }
+ 
   var gridSizer = new GridSizer(
-    [opts.yclust_width, "*", opts.yaxis_width],
-    [opts.xclust_height, "*", opts.xaxis_height],
+    [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
+    [opts.topTitle_height, opts.topEl_height, "*", opts.bottomEl_height, opts.bottomTitle_height],
     opts.width,
     opts.height
   );
 
-  var colormapBounds = gridSizer.getCellBounds(1, 1);
-  var colDendBounds = gridSizer.getCellBounds(1, 0);
-  var rowDendBounds = gridSizer.getCellBounds(0, 1);
-  var yaxisBounds = gridSizer.getCellBounds(2, 1);
-  var xaxisBounds = gridSizer.getCellBounds(1, 2);
+  var colormapBounds = gridSizer.getCellBounds(2, 2);
+  var topElBounds = gridSizer.getCellBounds(2, 1);
+  var leftElBounds = gridSizer.getCellBounds(1, 2);
+  var rightElBounds = gridSizer.getCellBounds(3, 2);
+  var bottomElBounds = gridSizer.getCellBounds(2, 3);
+ 
+  var xtitleBounds = gridSizer.getCellBounds(2, 4);
+  var ytitleBounds = gridSizer.getCellBounds(4, 2);
+  if (opts.yaxis_location === "left" && !data.rows) {
+    ytitleBounds = gridSizer.getCellBounds(0, 2);
+  }
+  
+  if (opts.xaxis_location === "top" && !data.cols) {
+    xtitleBounds = gridSizer.getCellBounds(2, 0);
+  }
+  
+  var colDendBounds, rowDendBounds, yaxisBounds, xaxisBounds;
+  if (!data.rows) {
+    if (opts.yaxis_location === "right") {
+      yaxisBounds = rightElBounds;
+    } else {
+      yaxisBounds = leftElBounds;
+    }
+  } else {
+    yaxisBounds = rightElBounds;
+    rowDendBounds = leftElBounds;
+  }
+  
+  if (!data.cols) {
+    if (opts.xaxis_location === "bottom") {
+      xaxisBounds = bottomElBounds;
+    } else {
+      xaxisBounds = topElBounds;
+    }
+  } else {
+    xaxisBounds = bottomElBounds;
+    colDendBounds = topElBounds;
+  }
 
   function cssify(styles) {
     return {
@@ -188,8 +264,10 @@ function heatmap(selector, data, options) {
   (function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
-    var colDend = inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
-    var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
+    var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true).style(cssify(xtitleBounds));
+    var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true).style(cssify(ytitleBounds));
+    var colDend = !data.cols ? null : inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
+    var rowDend = !data.rows ? null : inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
     var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
     var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
@@ -221,8 +299,11 @@ function heatmap(selector, data, options) {
   var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
   var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
   var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
-  var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
-  var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
+  var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, opts.xaxis_location);
+  var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
+  var xtitle = !opts.xaxis_title? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, xtitleBounds);
+  var ytitle = !opts.yaxis_title? null : title(el.select('svg.ytitle'), opts.yaxis_title, true, ytitleBounds);
+
   
   function colormap(svg, data, width, height) {
     // Check for no data
@@ -243,9 +324,11 @@ function heatmap(selector, data, options) {
     var tip = d3.tip()
         .attr('class', 'd3heatmap-tip')
         .html(function(d, i) {
+          var rowTitle = opts.cellnote_row ? opts.cellnote_row : opts.yaxis_title ? opts.yaxis_title : "Row";
+          var colTitle = opts.cellnote_col ? opts.cellnote_col : opts.xaxis_title ? opts.xaxis_title : "Column"; 
           return "<table>" + 
-            "<tr><th align=\"right\">" + opts.cellnote_row + "</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
-            "<tr><th align=\"right\">" + opts.cellnote_col + "</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
+            "<tr><th align=\"right\">" + rowTitle + "</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
+            "<tr><th align=\"right\">" + colTitle + "</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
             "<tr><th align=\"right\">" + opts.cellnote_val + "</th><td>" + htmlEscape(d.label) + "</td></tr>" +
             "</table>";
         })
@@ -380,7 +463,25 @@ function heatmap(selector, data, options) {
     });
   }
 
-  function axisLabels(svg, data, rotated, width, height, padding) {
+  function title(svg, data, rotated, bounds) {
+    
+    // rotated is y, unrotated is x
+    
+    svg = svg.append('g');
+    
+    svg.append("text")
+      .text(data)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("transform", rotated ? "translate(" + (bounds.width/2) + "," + (bounds.height/2) + "),rotate(-90)" : 
+                                    "translate(" + (bounds.width/2) + "," + (bounds.height/2) + ")")
+
+      .style("font-weight", "bold")
+      .style("font-size", rotated ? opts.yaxis_title_font_size : opts.xaxis_title_font_size)
+      .style("text-anchor", "middle");
+  }
+
+  function axisLabels(svg, data, rotated, width, height, padding, axis_location) {
     svg = svg.append('g');
 
     // The data variable is either cluster info, or a flat list of names.
@@ -400,14 +501,28 @@ function heatmap(selector, data, options) {
         .rangeBands([0, rotated ? width : height]);
     var axis = d3.svg.axis()
         .scale(scale)
-        .orient(rotated ? "bottom" : "right")
+        .orient(axis_location)
         .outerTickSize(0)
         .tickPadding(padding)
         .tickValues(leaves);
 
     // Create the actual axis
     var axisNodes = svg.append("g")
-        .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
+        .attr("transform", function() {
+          if (rotated) {
+            if (axis_location === "bottom") {
+              return "translate(0," + padding + ")";
+            } else if (axis_location === "top") {
+              return "translate(0," + (xaxisBounds.height - padding) + ")";
+            }
+          } else {
+            if (axis_location === "right") {
+              return "translate(" + padding + ",0)";
+            } else if (axis_location === "left") {
+              return "translate(" + (yaxisBounds.width - padding) + ",0)";
+            }
+          }
+        })
         .call(axis);
     var yfontSize = opts['yaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (8))) + "px";
     yfontSize = Math.min(yfontSize.match(/\d+/)[0], Math.min(18, Math.max(9, scale.rangeBand() - (8)))) + "px";
@@ -420,7 +535,7 @@ function heatmap(selector, data, options) {
     mouseTargets
       .enter()
         .append("g").append("rect")
-          .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
+          .attr("transform", rotated ? (axis_location === "bottom" ? "rotate(45),translate(0,0)": "rotate(-45),translate(0,0)") : "")
           .attr("fill", "transparent")
           .on("click", function(d, i) {
             var dim = rotated ? 'x' : 'y';
@@ -436,21 +551,30 @@ function heatmap(selector, data, options) {
             d3.event.stopPropagation();
           });
     function layoutMouseTargets(selection) {
+      var _h = scale.rangeBand() / (rotated ? 1.414 : 1);
+      var _w = rotated ? height * 1.414 * 1.2 : width;
+ 
       selection
           .attr("transform", function(d, i) {
-            var x = rotated ? scale(d) + scale.rangeBand()/2 : 0;
-            var y = rotated ? padding + 6 : scale(d);
+            var x = rotated ? (axis_location === "bottom" ? scale(d) + scale.rangeBand()/2 : scale(d)) : 0;
+            var y = rotated ? (axis_location === "bottom" ? padding + 6 : height - _h/1.414 - padding - 6): scale(d);
             return "translate(" + x + "," + y + ")";
           })
         .selectAll("rect")
-          .attr("height", scale.rangeBand() / (rotated ? 1.414 : 1))
-          .attr("width", rotated ? height * 1.414 * 1.2 : width);
+          .attr("height", _h)
+          .attr("width", _w);
     }
     layoutMouseTargets(mouseTargets);
 
     if (rotated) {
       axisNodes.selectAll("text")
-        .attr("transform", "rotate(45),translate(6, 0)")
+        .attr("transform", function() {
+          if (axis_location === "bottom") {
+            return "rotate(45),translate(" + padding + ", 0)";
+          } else if (axis_location === "top") {
+            return "rotate(-45),translate(" + (padding) + ", 0)";
+          }
+        })
         .style("text-anchor", "start");
     }
     
@@ -475,7 +599,7 @@ function heatmap(selector, data, options) {
       tAxisNodes.call(axis);
       // Set text-anchor on the non-transitioned node to prevent jumpiness
       // in RStudio Viewer pane
-      axisNodes.selectAll("text").style("text-anchor", "start");
+      axisNodes.selectAll("text").style("text-anchor", rotated ? "start" : axis_location === "right" ? "start" : "end");
       tAxisNodes.selectAll("g")
           .style("opacity", function(d, i) {
             if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
@@ -486,7 +610,7 @@ function heatmap(selector, data, options) {
           });
       tAxisNodes
         .selectAll("text")
-          .style("text-anchor", "start");
+          .style("text-anchor", rotated ? "start" : axis_location === "right" ? "start" : "end");
       mouseTargets.transition().duration(opts.anim_duration).ease('linear')
           .call(layoutMouseTargets)
           .style("opacity", function(d, i) {
