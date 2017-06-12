@@ -11,16 +11,16 @@ d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
-  labRow = rownames(x), labCol = colnames(x), cexRow, cexCol, digits = 3L,
-  cellnote, cellnote_scale = FALSE, cellnote_row = NULL,
-  cellnote_col = NULL, cellnote_val = "Value", theme = NULL,
-  colors = "RdYlBu", na_color = "#777777", width = NULL, height = NULL,
-  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
-  yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
-  yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14,
-  brush_color = "#0000FF", show_grid = TRUE, anim_duration = 500,
-  rng = NULL, ...)
+  na_color = "#777777", na_value = NA, labRow = rownames(x),
+  labCol = colnames(x), cexRow, cexCol, digits = 3L, cellnote,
+  cellnote_scale = FALSE, cellnote_row = NULL, cellnote_col = NULL,
+  cellnote_val = "Value", theme = NULL, colors = "RdYlBu", width = NULL,
+  height = NULL, xaxis_height = 80, yaxis_width = 120,
+  xaxis_font_size = NULL, yaxis_font_size = NULL, xaxis_angle = 60,
+  xaxis_location = "bottom", yaxis_location = "right", xaxis_title = NULL,
+  yaxis_title = NULL, xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14, brush_color = "#0000FF", show_grid = TRUE,
+  anim_duration = 500, rng = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -51,6 +51,10 @@ This is useful for cor matrix.}
 \item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
+
+\item{na_color}{Color of NA values in heatmap. Defaults to neutral gray.}
+
+\item{na_value}{numeric indicating where NA's should be substituted to trigger the NA color.}
 
 \item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
@@ -87,8 +91,6 @@ standalone visualizations, not R Markdown or Shiny.}
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
-
-\item{na_color}{Color of NA values in heatmap. Defaults to neutral gray}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing).}
 

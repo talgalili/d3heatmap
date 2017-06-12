@@ -43,7 +43,6 @@ NULL
 #' @param brush_color The base color to be used for the brush. The brush will be
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 #'   expected.
-#' @param na_color Color of NA values in heatmap. Defaults to neutral gray
 #' @param show_grid \code{TRUE} to show gridlines, \code{FALSE} to hide them, or
 #'   a numeric value to specify the gridline thickness in pixels (can be a 
 #'   non-integer).
@@ -67,6 +66,8 @@ NULL
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
+#' @param na_value numeric indicating where NA's should be substituted to trigger the NA color.
+#' @param na_color Color of NA values in heatmap. Defaults to neutral gray.
 #' 
 #' @param rng A vector of two numbers, namely the minimum and maximum value
 #'   to use when determining the mapping from values to colors. This is useful
@@ -128,6 +129,8 @@ d3heatmap <- function(x,
   ## data scaling
   scale = c("none", "row", "column"),
   na.rm = TRUE,
+  na_color = "#777777",
+  na_value = NA,
 
   labRow = rownames(x), 
   labCol = colnames(x), 
@@ -146,7 +149,6 @@ d3heatmap <- function(x,
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
-  na_color = "#777777",
   width = NULL, 
   height = NULL,
   xaxis_height = 80,
@@ -305,6 +307,11 @@ d3heatmap <- function(x,
   ##====================
   scale <- match.arg(scale) 
   
+  if (!is.na(na_value)) {
+    na.rm <- TRUE 
+    x[which(x == na_value)] <- NA
+  }
+  
   if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
   
   if(scale == "row") {
@@ -350,7 +357,7 @@ d3heatmap <- function(x,
   
     
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x, na.color = "transparent")
+    colors <- scales::col_factor(colors, x, na.color = na_color)
   } else {
       if (is.null(rng)) {
           rng <- range(x, na.rm = TRUE)
@@ -358,7 +365,7 @@ d3heatmap <- function(x,
               rng <- c(max(abs(rng)), -max(abs(rng)))
           }
     }
-    colors <- scales::col_numeric(colors, rng, na.color = "transparent")
+    colors <- scales::col_numeric(colors, rng, na.color = na_color)
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
