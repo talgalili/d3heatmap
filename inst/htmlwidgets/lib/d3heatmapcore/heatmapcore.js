@@ -336,6 +336,8 @@ function heatmap(selector, data, options) {
         .direction("se")
         .style("position", "fixed");
     
+    var current_origin;    
+    
     var brush = d3.svg.brush()
         .x(x)
         .y(y)
@@ -351,6 +353,7 @@ function heatmap(selector, data, options) {
         .on('brushend', function() {
 
           if (brush.empty()) {
+            current_origin = [0,0];
             controller.transform({
               scale: [1,1],
               translate: [0,0],
@@ -359,6 +362,7 @@ function heatmap(selector, data, options) {
           } else {
             var tf = controller.transform();
             var ex = brush.extent();
+            current_origin = ex[0];
             var scale = [
               cols / (ex[1][0] - ex[0][0]),
               rows / (ex[1][1] - ex[0][1])
@@ -445,6 +449,16 @@ function heatmap(selector, data, options) {
           var col = Math.floor(x.invert(offsetX));
           var row = Math.floor(y.invert(offsetY));
           var label = merged[row*cols + col].label;
+         
+          var isFirefox = typeof InstallTrigger !== 'undefined';         
+          var origin_col = current_origin[0];
+          var origin_row = current_origin[1];
+          
+          if (isFirefox) {
+            row = row - origin_row;
+            col = col - origin_col;
+          }
+          
           tip.show({col: col, row: row, label: label}).style({
             top: d3.event.clientY + 15 + "px",
             left: d3.event.clientX + 15 + "px",
