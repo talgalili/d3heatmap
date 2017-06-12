@@ -1,4 +1,4 @@
-**If you are using a version of d3heatmap older than 0.4.0, please upgrade now! Previous versions put row and column names in the incorrect order!**
+**d3heatmap is not actively maintained. You might consider using a newer heatmap package like [heatmaply](https://github.com/talgalili/heatmaply).**
 
 ___
 
