@@ -83,16 +83,16 @@ NULL
 #'   when the range of values changes between heatmaps, but colors should be the
 #'   same (optional, defaults to using the minimum and maximum of \code{x}).
 #'   
-#' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
-#' @param cellnote_row character Label to display next to the row value when the user hovers over the cell.
+#' @param digits \emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.
+#' @param cellnote_row \emph{character} Label to display next to the row value when the user hovers over the cell.
 #'  If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".
-#' @param cellnote_col character Label to display next to the column value when the user hovers over the cell
+#' @param cellnote_col \emph{character} Label to display next to the column value when the user hovers over the cell
 #'  If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
-#' @param cellnote_val character Label to display next to the cell value when the user hovers over the cell.
+#' @param cellnote_val \emph{character} Label to display next to the cell value when the user hovers over the cell.
 #'  Defaults to "Value".
-#' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+#' @param cellnote \emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
-#' @param cellnote_scale logical (default is FALSE). IF cellnote is missing and x is used, 
+#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
 #' should cellnote be scaled if x is also scaled?
 #' 
 #' @param cexRow positive numbers. If not missing, it will override \code{xaxis_font_size}
@@ -103,8 +103,6 @@ NULL
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ... currently ignored
-#' 
 #' @import htmlwidgets
 #'   
 #' @export
@@ -174,9 +172,8 @@ d3heatmap <- function(x,
   brush_color = "#0000FF",
   show_grid = TRUE,
   anim_duration = 500,
-  rng = NULL,
+  rng = NULL
   
-  ...
 ) {
   
   ## x is a matrix!
@@ -291,6 +288,10 @@ d3heatmap <- function(x,
   if (!missing(cellnote))
     cellnote <- cellnote[rowInd, colInd]
 
+  ## axis and cellnote labels sync
+  ##==============================
+  if(is.null(cellnote_row)) cellnote_row <- yaxis_title
+  if(is.null(cellnote_col)) cellnote_col <- xaxis_title
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
