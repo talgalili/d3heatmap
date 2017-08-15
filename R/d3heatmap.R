@@ -49,8 +49,17 @@ NULL
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
 #'  
-#' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
-#' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.
+#' @param Rowv determines if and how the row dendrogram 
+#' should be reordered.	By default, it is TRUE, which implies 
+#' dendrogram is computed and reordered based on row means. 
+#' If NULL or FALSE, then no dendrogram is computed and no reordering 
+#' is done. If a dendrogram, then it is used "as-is", ie without any 
+#' reordering. If a vector of integers, then dendrogram is computed 
+#' and reordered based on the order of the vector.
+#' @param Colv determines if and how the column dendrogram should be 
+#' reordered.	Has the options as the Rowv argument above and additionally 
+#' when x is a square matrix, Colv = "Rowv" means that columns should be 
+#' treated identically to the rows.
 #' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
 #' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
 #' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
@@ -307,21 +316,28 @@ d3heatmap <- function(x,
   ##====================
   scale <- match.arg(scale) 
   
+  if(!cellnote_scale) x_unscaled <- x # keeps a backup for cellnote
+  
   if (!is.na(na_value)) {
     na.rm <- TRUE 
     x[which(x == na_value)] <- NA
   }
   
-  if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
-  
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
     x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+    
   }
   else if(scale == "column") {
     x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
     x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
+  
+  # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
+  # mtcars$am when na_value == 0 and scaling by column), the functions above
+  # will return NaN, which will be translated to NA... 
+  # therefor we will replace all NaN's with .5)
+  x[is.nan(x)] <- .5
   
   
   ## cellnote
