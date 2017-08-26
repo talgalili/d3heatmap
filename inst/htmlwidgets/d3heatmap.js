@@ -26,6 +26,8 @@ HTMLWidgets.widget({
     
     instance.lastValue = x;
     
+    d3.selectAll(".d3heatmap-tip").remove();
+    
     if (instance.lastTheme && instance.lastTheme != x.theme) {
       d3.select(document.body).classed("theme-" + instance.lastTheme, false);
     }

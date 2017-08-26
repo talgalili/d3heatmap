@@ -16,6 +16,7 @@ NULL
 #' 
 #' @param x A numeric matrix
 #'   Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.
+#' @param main \emph{string} Plot title. Defaults to \code{NULL}.
 #' @param theme A custom CSS theme to use. Currently the only valid values are 
 #'   \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 #'   standalone visualizations, not R Markdown or Shiny.
@@ -118,7 +119,7 @@ NULL
 #' 
 #' 
 d3heatmap <- function(x,
-
+	main = NULL,
   ## dendrogram control
   Rowv = TRUE,
   Colv = if (symm) "Rowv" else TRUE,
@@ -419,8 +420,13 @@ d3heatmap <- function(x,
     c(options, list(xclust_height = 0))
   }
   
-  payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
-    theme = theme, options = options)
+  payload <- list(rows = rowDend, 
+		cols = colDend, 
+		matrix = mtx, 
+		title = main,
+		image = imgUri,
+    theme = theme, 
+		options = options)
   
   # create widget
   htmlwidgets::createWidget(
