@@ -479,7 +479,6 @@ function heatmap(selector, data, options) {
   }
 
   function title(svg, data, rotated, bounds) {
-    
     // rotated is y, unrotated is x
     
     svg = svg.append('g');
@@ -521,7 +520,8 @@ function heatmap(selector, data, options) {
         .tickPadding(padding)
         .tickValues(leaves);
 
-    // Create the actual axis
+    
+		// Create the actual axis
     var axisNodes = svg.append("g")
         .attr("transform", function() {
           if (rotated) {
@@ -580,13 +580,20 @@ function heatmap(selector, data, options) {
     }
     layoutMouseTargets(mouseTargets);
 
+		var xAxisLabelOffset_x = 10 + 10 * (opts.xaxis_angle - 25)/65;
+		var xAxisLabelOffset_y = padding + 2 * (opts.xaxis_angle - 25)/65;
+
     if (rotated) {
       axisNodes.selectAll("text")
         .attr("transform", function() {
           if (axis_location === "bottom") {
-            return "rotate(" + opts.xaxis_angle + "),translate(" + padding + ", -10)";
+            return "rotate(" + opts.xaxis_angle + 
+													"),translate(" + 
+													xAxisLabelOffset_y + ",-" + xAxisLabelOffset_x + ")";
           } else if (axis_location === "top") {
-            return "rotate(-" + opts.xaxis_angle + "),translate(" + (padding) + ", 10)";
+            return "rotate(-" + opts.xaxis_angle + 
+													"),translate(" + 
+													xAxisLabelOffset_y + "," + xAxisLabelOffset_x + ")";
           }
         })
         .style("text-anchor", "start");

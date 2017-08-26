@@ -30,7 +30,7 @@ NULL
 #' @param yaxis_width Size of axes, in pixels.
 #' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
-#' @param xaxis_angle Angle of axis labels. Defaults to 60.
+#' @param xaxis_angle Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.
 #' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
 #'  Dendogram location takes priority over xaxis_location
 #' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
@@ -386,6 +386,8 @@ d3heatmap <- function(x,
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
+
+	xaxis_angle <- min(90, max(xaxis_angle, 25))
 
   options <- NULL
   
