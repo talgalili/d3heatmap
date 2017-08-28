@@ -1,8 +1,15 @@
-**If you are using a version of d3heatmap older than 0.4.0, please upgrade now! Previous versions put row and column names in the incorrect order!**
+### This is a fork of d3Heatmap for purposes of incorporating community PRs and issues logged in the main repo. 
 
+### As the main repo is not currently being actively maintained, feel free to offer PRs and issues here. I actively use heatmaps in my projects and like this implementation over other non-d3 based heatmaps, so I will be active in maintaining this repo.
+
+### Please note, my time is constrained (like most of us), so I will have limited time to implement major new features on my own; I appreciate all assistance from the community for processing issues and new features.
+
+### In the future I hope to offer an updated version back to Rstudio for pulling into the main repo, and then hopefully an udpated CRAN submission.
 ___
 
-# D3 Heatmap for R
+### Checkout the Rebuild branch of this fork for current status of development. Developments there will soon be merged into the main branch
+___
+## D3 Heatmap for R
 
 This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.org). It has the following features:
 
