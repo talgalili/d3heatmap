@@ -11,6 +11,8 @@ function heatmap(selector, data, options) {
       position: "absolute",
       top: styles.top + "px",
       left: styles.left + "px",
+      right: styles.right + "px",
+      bottom: styles.bottom + "px",
       width: styles.width + "px",
       height: styles.height + "px"
     };
@@ -206,6 +208,11 @@ function heatmap(selector, data, options) {
   opts.leftEl_width = opts.yclust_width; 
   opts.anim_duration = options.anim_duration;
   opts.cellnote_val = options.cellnote_val;
+	opts.show_legend = options.show_legend;
+	opts.legend_title = options.legend_title;
+	opts.legend_colors = options.legend_colors;
+	opts.bins = options.bins;
+	opts.symmetrical = options.symmetrical;
   if (typeof(opts.anim_duration) === 'undefined') {
     opts.anim_duration = 500;
   }
@@ -244,7 +251,6 @@ function heatmap(selector, data, options) {
   } else {
     opts.xaxis_location = "bottom";
   }
- 
 
   opts.leftTitle_width = 0;
   opts.rightTitle_width = yaxis_title_width;
@@ -308,6 +314,14 @@ function heatmap(selector, data, options) {
     colDendBounds = topElBounds;
   }
 
+	if(opts.show_legend) {
+			var legendStyle = {};
+      opts.xaxis_location === "top" ? legendStyle.top = 0 : legendStyle.bottom = 0;
+      opts.yaxis_location === "left" ? legendStyle.left = 0 : legendStyle.right = 0;
+		  legendStyle.width = opts.yaxis_width;
+			legendStyle.height = opts.xaxis_height;
+	}
+
   // Create DOM structure
   (function() {
 
@@ -318,7 +332,8 @@ function heatmap(selector, data, options) {
     var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
     var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
-    
+		var legd = !opts.show_legend ? null : inner.append("svg").classed("legend", true).style(cssify(legendStyle));
+   
     // Hack the width of the x-axis to allow x-overflow of rotated labels; the
     // QtWebkit viewer won't allow svg elements to overflow:visible.
     xaxis.style("width", (opts.width - opts.yclust_width) + "px");
@@ -350,22 +365,22 @@ function heatmap(selector, data, options) {
   var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
   var xtitle = !opts.xaxis_title ? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, xtitleBounds);
   var ytitle = !opts.yaxis_title ? null : title(el.select('svg.ytitle'), opts.yaxis_title, true, ytitleBounds);
+	var legend = !opts.show_legend ? null : legend(el.select('svg.legend'), data.matrix, opts, 
+					opts.xaxis_height * .9, opts.yaxis_width * .9); 
 
-  
   function colormap(svg, data, width, height) {
     // Check for no data
     if (data.length === 0)
       return function() {};
 
-	if (!opts.show_grid) {
-      svg.style("shape-rendering", "crispEdges");
-	}
+		if (!opts.show_grid) {
+  	    svg.style("shape-rendering", "crispEdges");
+		}
  
     var cols = data.dim[1];
     var rows = data.dim[0];
     
     var merged = data.merged;
-    
     var x = d3.scale.linear().domain([0, cols]).range([0, width]);
     var y = d3.scale.linear().domain([0, rows]).range([0, height]);
     var tip = d3.tip()
@@ -471,7 +486,6 @@ function heatmap(selector, data, options) {
       draw(rect.transition().duration(opts.anim_duration).ease("linear"));
     });
     
-
     var brushG = svg.append("g")
         .attr('class', 'brush')
         .call(brush)
@@ -686,6 +700,107 @@ function heatmap(selector, data, options) {
     });
 
   }
+ 
+	function legend(svg, data, options, height, width) {
+    if (data.length === 0)
+      return function() {};
+
+		var legend_title = options.legend_title;
+
+    var max = d3.max(data.x);
+    var min = d3.min(data.x);
+		if(options.symmetrical) {
+      min = Math.abs(max) > Math.abs(min) ? (0 - max) : min
+      max = Math.abs(min) >= Math.abs(max) ? max : min
+    }
+    
+		var interval = (max - min) / options.bins;
+    var n = min;
+    var intervals = [];
+    while(n <= max) {
+      intervals.push(n);
+      n += interval;
+    }     
+    
+		var colorscale = d3.scale.linear()
+      .domain(intervals)
+      .range(options.legend_colors);
+
+    var hist = d3.layout.histogram(data.x)
+      .bins(options.bins);
+
+    var blockwidth = width / options.bins;
+
+    var legendscale = d3.scale.linear()
+      .domain([min, max])
+      .range([0, (width - blockwidth - 1)]);
+
+    var xAxis = d3.svg.axis()
+      .ticks(5)
+      .scale(legendscale)
+      .orient("bottom")
+      .tickSize(10);
+
+	 if(legend_title) {
+  		d3.select('.legend')
+				.append('text')
+  		  .classed('legend_title', true)
+  		  .text(legend_title)
+  		  .attr('x', '50%')
+  		  .attr('padding-top', '1px')
+      	.attr("transform", "translate(0, 10)");
+		}
+
+    var legend_key = d3.select('.legend')
+      .append("g")
+      .attr("class", "legend_key")
+      .attr("transform", "translate(0, 45)")
+      .attr('width', '100%');
+
+    var histdata = d3.layout.histogram()
+      .bins(intervals)(data.x);
+
+    var histy = d3.scale.linear()
+      .domain([0, d3.max(histdata, function(d) { return d.y; })])
+      .range([0, height / 2]);
+
+  	var bar = legend_key.selectAll(".bar")
+      .data(histdata)
+    	.enter().append("rect")
+      .attr("class", "bar")
+      .attr("y", function(d) {
+        return(-histy(d.y))
+      })
+      .attr("x", function(d) {
+        return(legendscale(d.x));
+      })
+      .attr("width", blockwidth)
+      .attr("height", function(d) {
+        return(histy(d.y))})
+      .attr("fill", function(d) {
+        return(colorscale(d.x))
+      });
+
+  	legend_key.append("rect")
+  	  .attr("width", width)
+  	  .attr("height", 8)
+  	  .attr("fill", "transparent")
+  	  .classed("legendbox", true);
+
+  	legend_key.selectAll(".legend")
+  	  .data(intervals)
+  	  .enter().append("rect")
+  	  .attr("height", 8)
+  	  .attr("x", function(d) {
+  	    return (legendscale(d)); 
+  	  })
+  	  .attr("width", blockwidth)
+  	  .attr("fill", function(d) { 
+  	    return(colorscale(d)); 
+  	  });
+    
+			legend_key.call(xAxis);
+	}
   
   function edgeStrokeWidth(node) {
     if (node.edgePar && node.edgePar.lwd)

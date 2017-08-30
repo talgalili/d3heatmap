@@ -26,6 +26,9 @@ NULL
 #'   \code{\link[grDevices]{colorRamp}}.
 #' @param bins \emph{integer} The number of colors to generate from the palette.
 #' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
+#' @param show.legend Show color key and density
+#'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
+#' @param legend.title Separate title for legend. Defaults to \code{NULL}.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' 
@@ -47,8 +50,7 @@ NULL
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 #'   expected.
 #' @param show_grid \code{TRUE} to show gridlines, \code{FALSE} to hide them, or
-#'   a numeric value to specify the gridline thickness in pixels (can be a 
-#'   non-integer).
+#'   a numeric value to specify the gridline thickness in pixels (can be a non-integer).
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
 #'  
@@ -156,11 +158,12 @@ d3heatmap <- function(x,
   cellnote_col = NULL, 
   cellnote_val = "Value", 
   
-  ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
   bins = NULL,
   symmetrical = FALSE,
+  legend.title = NULL,
+  show.legend = FALSE,
   width = NULL, 
   height = NULL,
   xaxis_height = 80,
@@ -372,6 +375,7 @@ d3heatmap <- function(x,
   ##=======================
 
   mtx <- list(data = as.character(t(cellnote)),
+							x = as.numeric(t(round(x, digits = digits))),
               dim = dim(x),
               rows = rownames(x),
               cols = colnames(x)
@@ -391,12 +395,12 @@ d3heatmap <- function(x,
     }
   
     if(is.null(bins)) {
-      legend_colors <- scales::col_bin(colors, domain = 1:50, na.color = na.color)(1:50)
+      bins <- 50
       colors <- scales::col_numeric(colors, rng, na.color = na.color)
     } else {
-      legend_colors <- scales::col_bin(colors, domain = 1:bins, na.color = na.color)(1:bins)
       colors <- scales::col_bin(colors, rng, bins = bins, na.color = na.color)
     }
+    legend_colors <- scales::col_bin(colors, domain = 1:bins, bins = bins, na.color = na.color)(1:bins)
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
@@ -419,6 +423,8 @@ d3heatmap <- function(x,
     yaxis_title_font_size = yaxis_title_font_size, 
     bins = bins,
     symmetrical = symmetrical,
+    show_legend = show.legend,
+    legend_title = legend.title,
 		legend_colors = legend_colors,
     brush_color = brush_color,
     na_color = na.color,
