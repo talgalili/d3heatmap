@@ -24,6 +24,8 @@ NULL
 #'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 #'   \code{"#RRGGBB"} format, or a color interpolation function like
 #'   \code{\link[grDevices]{colorRamp}}.
+#' @param bins \emph{integer} The number of colors to generate from the palette.
+#' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' 
@@ -76,13 +78,13 @@ NULL
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
-#' @param na_value numeric indicating where NA's should be substituted to trigger the NA color.
-#' @param na_color Color of NA values in heatmap. Defaults to neutral gray.
+#' @param na.value numeric indicating where NA's should be substituted to trigger the NA color.
+#' @param na.color Color of NA values in heatmap. Defaults to neutral gray.
 #' 
 #' @param rng A vector of two numbers, namely the minimum and maximum value
 #'   to use when determining the mapping from values to colors. This is useful
 #'   when the range of values changes between heatmaps, but colors should be the
-#'   same (optional, defaults to using the minimum and maximum of \code{x}).
+#'   same (optional, defaults to the minimum and maximum of \code{x}).
 #'   
 #' @param digits \emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param cellnote_row \emph{character} Label to display next to the row value when the user hovers over the cell.
@@ -137,8 +139,8 @@ d3heatmap <- function(x,
   ## data scaling
   scale = c("none", "row", "column"),
   na.rm = TRUE,
-  na_color = "#777777",
-  na_value = NA,
+  na.color = "#777777",
+  na.value = NA,
 
   labRow = rownames(x), 
   labCol = colnames(x), 
@@ -157,6 +159,8 @@ d3heatmap <- function(x,
   ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
+  bins = NULL,
+  symmetrical = FALSE,
   width = NULL, 
   height = NULL,
   xaxis_height = 80,
@@ -320,9 +324,9 @@ d3heatmap <- function(x,
   
   if(!cellnote_scale) x_unscaled <- x # keeps a backup for cellnote
   
-  if (!is.na(na_value)) {
+  if (!is.na(na.value)) {
     na.rm <- TRUE 
-    x[which(x == na_value)] <- NA
+    x[which(x == na.value)] <- NA
   }
   
   if(scale == "row") {
@@ -336,7 +340,7 @@ d3heatmap <- function(x,
   }
   
   # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
-  # mtcars$am when na_value == 0 and scaling by column), the functions above
+  # mtcars$am when na.value == 0 and scaling by column), the functions above
   # will return NaN, which will be translated to NA... 
   # therefor we will replace all NaN's with .5)
   x[is.nan(x)] <- .5
@@ -372,18 +376,27 @@ d3heatmap <- function(x,
               rows = rownames(x),
               cols = colnames(x)
   )
-  
-    
+ 
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x, na.color = na_color)
+    legend_colors <- scales::col_bin(colors, domain = 1:length(factor(x)), 
+                                     na.color = na.color)(1:length(factor(x)))
+    colors <- scales::col_factor(colors, x, na.color = na.color)
+    
   } else {
-      if (is.null(rng)) {
+    if (is.null(rng)) {
           rng <- range(x, na.rm = TRUE)
           if (scale %in% c("row", "column")) {
               rng <- c(max(abs(rng)), -max(abs(rng)))
           }
     }
-    colors <- scales::col_numeric(colors, rng, na.color = na_color)
+  
+    if(is.null(bins)) {
+      legend_colors <- scales::col_bin(colors, domain = 1:50, na.color = na.color)(1:50)
+      colors <- scales::col_numeric(colors, rng, na.color = na.color)
+    } else {
+      legend_colors <- scales::col_bin(colors, domain = 1:bins, na.color = na.color)(1:bins)
+      colors <- scales::col_bin(colors, rng, bins = bins, na.color = na.color)
+    }
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
@@ -404,8 +417,11 @@ d3heatmap <- function(x,
     yaxis_title = yaxis_title,
     xaxis_title_font_size = xaxis_title_font_size,
     yaxis_title_font_size = yaxis_title_font_size, 
+    bins = bins,
+    symmetrical = symmetrical,
+		legend_colors = legend_colors,
     brush_color = brush_color,
-    na_color = na_color,
+    na_color = na.color,
     show_grid = show_grid,
     cellnote_row = cellnote_row,
     cellnote_col = cellnote_col,
