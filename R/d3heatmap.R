@@ -26,6 +26,7 @@ NULL
 #'   \code{\link[grDevices]{colorRamp}}.
 #' @param bins \emph{integer} The number of colors to generate from the palette.
 #' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
+#' @param print.values \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
 #' @param show.legend Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
 #' @param legend.title Separate title for legend. Defaults to \code{NULL}.
@@ -162,6 +163,7 @@ d3heatmap <- function(x,
   colors = "RdYlBu",
   bins = NULL,
   symmetrical = FALSE,
+	print.values = FALSE,
   legend.title = NULL,
   show.legend = FALSE,
   width = NULL, 
@@ -423,6 +425,7 @@ d3heatmap <- function(x,
     yaxis_title_font_size = yaxis_title_font_size, 
     bins = bins,
     symmetrical = symmetrical,
+    print_values = print.values,
     show_legend = show.legend,
     legend_title = legend.title,
 		legend_colors = legend_colors,

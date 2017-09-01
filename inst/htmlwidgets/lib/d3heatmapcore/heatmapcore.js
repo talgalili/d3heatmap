@@ -18,6 +18,10 @@ function heatmap(selector, data, options) {
     };
   }
 
+	function numDigits(x) {
+		return String(x).replace('.', '').length;
+	}
+
   d3.selectAll(".outer").remove();
 
         // Opera 8.0+
@@ -208,6 +212,7 @@ function heatmap(selector, data, options) {
   opts.leftEl_width = opts.yclust_width; 
   opts.anim_duration = options.anim_duration;
   opts.cellnote_val = options.cellnote_val;
+	opts.print_values = options.print_values;
 	opts.show_legend = options.show_legend;
 	opts.legend_title = options.legend_title;
 	opts.legend_colors = options.legend_colors;
@@ -360,7 +365,7 @@ function heatmap(selector, data, options) {
   
   var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
   var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
-  var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
+  var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, yaxisBounds.height);
   var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, opts.xaxis_location);
   var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
   var xtitle = !opts.xaxis_title ? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, xtitleBounds);
@@ -368,7 +373,7 @@ function heatmap(selector, data, options) {
 	var legend = !opts.show_legend ? null : legend(el.select('svg.legend'), data.matrix, opts, 
 					opts.xaxis_height * .9, opts.yaxis_width * .9); 
 
-  function colormap(svg, data, width, height) {
+  function colormap(svg, data, width, height, yaxis_height) {
     // Check for no data
     if (data.length === 0)
       return function() {};
@@ -477,13 +482,52 @@ function heatmap(selector, data, options) {
           .attr("width", (x(1) - x(0)) - spacing)
           .attr("height", (y(1) - y(0)) - spacing);
     }
-
     draw(rect);
 
+    if(opts.print_values){
+  		var cellLabels = svg.selectAll("text").data(merged);
+  		cellLabels.enter().append("text")
+  			.property("colIndex", function(d, i) { return i % cols; }) .property("rowIndex", function(d, i) { return Math.floor(i / cols); })
+  			.property("value", function(d, i) { return d.value; })
+  			.text(function(d, i) { return d.label; });
+  		cellLabels.exit().remove();
+  
+  		//TODO - make sure that this works with the Firefox issue
+  		function drawCellLabels(selection) {
+  			var cellHeight = (y(1) - y(0)) - spacing;
+  			var cellWidth = (x(1) - x(0)) - spacing;
+  
+      	var leaves = data.rows || data.matrix.rows;
+      	if (data.children) {
+      	  leaves = d3.layout.cluster().nodes(data)
+      	      .filter(function(x) { return !x.children; })
+      	      .map(function(x) { return x.label + ""; });
+      	} else if (data.length) {
+      	  leaves = data;
+      	}
+      	var scale = d3.scale.ordinal()
+          .domain(leaves)
+          .rangeBands([0, yaxis_height]);
+  
+        var fontSize = opts.yaxis_font_size || Math.min(18, Math.max(9, scale.rangeBand() - (8)));
+  
+  			selection
+  				.attr("x", function(d, i) {
+  					return x(i % cols) + cellWidth/2 - 1 - ((numDigits(d.label) - 1) * fontSize/2);
+  				})
+  				.attr("y", function(d, i) {
+  					return y(Math.floor(i / cols)) + cellHeight/2 + fontSize/2;
+  				})
+  				.attr("font-size",fontSize + "px");
+  		}
+  		drawCellLabels(cellLabels);
+    }
+      
     controller.on('transform.colormap', function(_) {
       x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
       y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
       draw(rect.transition().duration(opts.anim_duration).ease("linear"));
+			!opts.print_values ? null : drawCellLabels(cellLabels.transition().duration(opts.anim_duration).ease("linear"));
     });
     
     var brushG = svg.append("g")
