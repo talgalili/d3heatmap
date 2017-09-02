@@ -208,8 +208,6 @@ function heatmap(selector, data, options) {
   opts.yaxis_title = options.yaxis_title;
   opts.xaxis_title_font_size = options.xaxis_title_font_size;
   opts.yaxis_title_font_size = options.yaxis_title_font_size; 
-  opts.topEl_height = opts.xclust_height;
-  opts.leftEl_width = opts.yclust_width; 
   opts.anim_duration = options.anim_duration;
   opts.cellnote_val = options.cellnote_val;
 	opts.print_values = options.print_values;
@@ -226,54 +224,34 @@ function heatmap(selector, data, options) {
 	var yaxis_title_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
   
 	// modify for presence of main title bar and for presence of xaxis title
-	opts.height = opts.height - innerPos.top - xaxis_title_height;
+	opts.height = opts.height - innerPos.top;
 
   opts.xclust_height = options.xclust_height || opts.height * 0.12;
   opts.yclust_width = options.yclust_width || opts.width * 0.12;
-  opts.topEl_height = opts.xclust_height;
-  opts.leftEl_width = opts.yclust_width;
-  opts.bottomEl_height = opts.xaxis_height + xaxis_title_height;
-  opts.rightEl_width = opts.yaxis_width + yaxis_title_width;
-
-  if (!data.rows) {
-    opts.yclust_width = 0;
-    opts.leftEl_width = 0;
-    if (opts.yaxis_location === "left") {
-      opts.leftEl_width = options.yaxis_width || 120;
-      opts.rightEl_width = 0;
-    }
-  } else {
-    opts.yaxis_location = "right"; 
-  }
+  opts.topEl_height = !data.cols ? 0 : opts.xclust_height;
+  opts.leftEl_width = !data.rows ? 0 : opts.yclust_width;
+  opts.bottomEl_height = opts.xaxis_height;
+  opts.rightEl_width = opts.yaxis_width;
+ 
+  var tmpEl;
   
-  if (!data.cols) {
-    opts.xclust_height = 0;
-    opts.topEl_height = 0;
-    if (opts.xaxis_location === "top") {
-      opts.topEl_height = options.xaxis_height || 80;
-      opts.bottomEl_height = 0;
-    }
-  } else {
-    opts.xaxis_location = "bottom";
-  }
-
   opts.leftTitle_width = 0;
   opts.rightTitle_width = yaxis_title_width;
-
-  if (opts.yaxis_location === "left" && !data.rows) {
+  
+  opts.yclust_width = !data.rows ? 0 : opts.yclust_width;
+  if (opts.yaxis_location === "left") {
+    tmpEl = opts.leftEl_width;
+    opts.leftEl_width = opts.yaxis_width;
+    opts.rightEl_width = tmpEl;
+    
     opts.rightTitle_width = 0;
     opts.leftTitle_width = yaxis_title_width;  
-	}
+  }
   
   opts.topTitle_height = 0;
   opts.bottomTitle_height = xaxis_title_height;
-
-  if (opts.xaxis_location === "top" && !data.cols) {
-    opts.bottomTitle_height = 0;
-    opts.topTitle_height = xaxis_title_height;
-  }
- 
-  var gridSizer = new GridSizer(
+  
+  gridSizer = new GridSizer(
     [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
     [opts.topTitle_height, opts.topEl_height, "*", opts.bottomEl_height, opts.bottomTitle_height],
     opts.width,
@@ -287,57 +265,51 @@ function heatmap(selector, data, options) {
   var bottomElBounds = gridSizer.getCellBounds(2, 3);
  
   var xtitleBounds = gridSizer.getCellBounds(2, 4);
-  if (opts.xaxis_location === "top" && !data.cols) {
+  if (opts.xaxis_location === "top") {
     xtitleBounds = gridSizer.getCellBounds(2, 0);
   }
 
   var ytitleBounds = gridSizer.getCellBounds(4, 2);
-  if (opts.yaxis_location === "left" && !data.rows) {
+  if (opts.yaxis_location === "left") {
     ytitleBounds = gridSizer.getCellBounds(0, 2);
   }
   
   var colDendBounds, rowDendBounds, yaxisBounds, xaxisBounds;
-  if (!data.rows) {
-    if (opts.yaxis_location === "right") {
-      yaxisBounds = rightElBounds;
-    } else {
-      yaxisBounds = leftElBounds;
-    }
-  } else {
+  if (opts.yaxis_location === "right") {
     yaxisBounds = rightElBounds;
-    rowDendBounds = leftElBounds;
+  	rowDendBounds = leftElBounds;
+  } else {
+    yaxisBounds = leftElBounds;
+  	rowDendBounds = rightElBounds;
   }
   
-  if (!data.cols) {
-    if (opts.xaxis_location === "bottom") {
-      xaxisBounds = bottomElBounds;
-    } else {
-      xaxisBounds = topElBounds;
-    }
-  } else {
+  if (opts.xaxis_location === "bottom") {
     xaxisBounds = bottomElBounds;
-    colDendBounds = topElBounds;
+		colDendBounds = topElBounds;
+  } else {
+    xaxisBounds = topElBounds;
+		colDendBounds = bottomElBounds;
   }
 
+	var legdBounds = gridSizer.getCellBounds(3, 3);
 	if(opts.show_legend) {
-			var legendStyle = {};
-      opts.xaxis_location === "top" ? legendStyle.top = 0 : legendStyle.bottom = 0;
-      opts.yaxis_location === "left" ? legendStyle.left = 0 : legendStyle.right = 0;
-		  legendStyle.width = opts.yaxis_width;
-			legendStyle.height = opts.xaxis_height;
+			var legdX, legdY;
+			legdX = opts.yaxis_location === "left" ? 1 : 3;
+			legdY = opts.xaxis_location === "top" ? 1 : 3;
+			legdBounds = gridSizer.getCellBounds(legdX, legdY);
 	}
 
   // Create DOM structure
   (function() {
 
-    var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true).style(cssify(xtitleBounds));
-    var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true).style(cssify(ytitleBounds));
+		var legd = !opts.show_legend ? null : inner.append("svg").classed("legend", true).style(cssify(legdBounds));
     var colDend = !data.cols ? null : inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
     var rowDend = !data.rows ? null : inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-    var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
+    var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true).style(cssify(xtitleBounds));
+    var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true).style(cssify(ytitleBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
     var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
-		var legd = !opts.show_legend ? null : inner.append("svg").classed("legend", true).style(cssify(legendStyle));
+    var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
    
     // Hack the width of the x-axis to allow x-overflow of rotated labels; the
     // QtWebkit viewer won't allow svg elements to overflow:visible.
@@ -363,8 +335,8 @@ function heatmap(selector, data, options) {
     });
   })();
   
-  var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
-  var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
+  var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding, opts.yaxis_location === "left");
+  var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding, opts.xaxis_location === "top");
   var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, yaxisBounds.height);
   var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, opts.xaxis_location);
   var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
@@ -864,7 +836,8 @@ function heatmap(selector, data, options) {
     return max;
   }
   
-  function dendrogram(svg, data, rotated, width, height, padding) {
+  function dendrogram(svg, data, rotated, width, height, padding, flip) {
+		flip = flip || false;
     var topLineWidth = maxChildStrokeWidth(data, false);
     
     var x = d3.scale.linear()
@@ -877,19 +850,25 @@ function heatmap(selector, data, options) {
     var cluster = d3.layout.cluster()
         .separation(function(a, b) { return 1; })
         .size([rotated ? width : height, NaN]);
-    
-    var transform = "translate(1,0)";
+   
+    var transform;
     if (rotated) {
       // Flip dendrogram vertically
       x.range([topLineWidth/2, -height+padding+2]);
       // Rotate
       transform = "rotate(-90) translate(-2,0)";
-    }
+			if (flip) transform = "rotate(-90) translate(-" + (height - 2) + ",0) scale(-1, 1)";
+
+    } else {
+    	transform = "translate(1,0)";
+			if (flip) transform = "translate(" + (width - 2) + ",0) scale(-1, 1)";
+
+		}
 
     var dendrG = svg
         .attr("width", width)
         .attr("height", height)
-      .append("g")
+      	.append("g")
         .attr("transform", transform);
     
     var nodes = cluster.nodes(data),

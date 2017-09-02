@@ -39,9 +39,7 @@ NULL
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param xaxis_angle Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.
 #' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
-#'  Dendogram location takes priority over xaxis_location
 #' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
-#'  Dendogram location takes priority over yaxis_location
 #' @param xaxis_title Title text of x axis
 #' @param yaxis_title Title text of y axis
 #' @param xaxis_title_font_size Font size of x axis title in pixels. Defaults to 14.
