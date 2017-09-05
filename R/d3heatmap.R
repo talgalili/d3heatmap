@@ -16,6 +16,7 @@ NULL
 #' 
 #' @param x A numeric matrix
 #'   Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.
+#' @param main \emph{string} Plot title. Defaults to \code{NULL}.
 #' @param theme A custom CSS theme to use. Currently the only valid values are 
 #'   \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 #'   standalone visualizations, not R Markdown or Shiny.
@@ -23,6 +24,12 @@ NULL
 #'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 #'   \code{"#RRGGBB"} format, or a color interpolation function like
 #'   \code{\link[grDevices]{colorRamp}}.
+#' @param bins \emph{integer} The number of colors to generate from the palette.
+#' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
+#' @param print.values \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
+#' @param show.legend Show color key and density
+#'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
+#' @param legend.title Separate title for legend. Defaults to \code{NULL}.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' 
@@ -30,11 +37,9 @@ NULL
 #' @param yaxis_width Size of axes, in pixels.
 #' @param xaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
 #' @param yaxis_font_size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
-#' @param xaxis_angle Angle of axis labels. Defaults to 60.
+#' @param xaxis_angle Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.
 #' @param xaxis_location Location of the x axis, either "bottom" or "top". Defaults to "bottom".
-#'  Dendogram location takes priority over xaxis_location
 #' @param yaxis_location Location of the y axis, either "right" or "left". Defaults to "right".
-#'  Dendogram location takes priority over yaxis_location
 #' @param xaxis_title Title text of x axis
 #' @param yaxis_title Title text of y axis
 #' @param xaxis_title_font_size Font size of x axis title in pixels. Defaults to 14.
@@ -44,13 +49,21 @@ NULL
 #'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 #'   expected.
 #' @param show_grid \code{TRUE} to show gridlines, \code{FALSE} to hide them, or
-#'   a numeric value to specify the gridline thickness in pixels (can be a 
-#'   non-integer).
+#'   a numeric value to specify the gridline thickness in pixels (can be a non-integer).
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
 #'  
-#' @param Rowv determines if and how the row dendrogram should be reordered.	By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.
-#' @param Colv determines if and how the column dendrogram should be reordered.	Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.
+#' @param Rowv determines if and how the row dendrogram 
+#' should be reordered.	By default, it is TRUE, which implies 
+#' dendrogram is computed and reordered based on row means. 
+#' If NULL or FALSE, then no dendrogram is computed and no reordering 
+#' is done. If a dendrogram, then it is used "as-is", ie without any 
+#' reordering. If a vector of integers, then dendrogram is computed 
+#' and reordered based on the order of the vector.
+#' @param Colv determines if and how the column dendrogram should be 
+#' reordered.	Has the options as the Rowv argument above and additionally 
+#' when x is a square matrix, Colv = "Rowv" means that columns should be 
+#' treated identically to the rows.
 #' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
 #' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
 #' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
@@ -66,24 +79,24 @@ NULL
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".
 #' @param na.rm logical indicating whether NA's should be removed.
-#' @param na_value numeric indicating where NA's should be substituted to trigger the NA color.
-#' @param na_color Color of NA values in heatmap. Defaults to neutral gray.
+#' @param na.value numeric indicating where NA's should be substituted to trigger the NA color.
+#' @param na.color Color of NA values in heatmap. Defaults to neutral gray.
 #' 
 #' @param rng A vector of two numbers, namely the minimum and maximum value
 #'   to use when determining the mapping from values to colors. This is useful
 #'   when the range of values changes between heatmaps, but colors should be the
-#'   same (optional, defaults to using the minimum and maximum of \code{x}).
+#'   same (optional, defaults to the minimum and maximum of \code{x}).
 #'   
-#' @param digits integer indicating the number of decimal places to be used by \link{round} for 'label'.
-#' @param cellnote_row character Label to display next to the row value when the user hovers over the cell.
+#' @param digits \emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.
+#' @param cellnote_row \emph{character} Label to display next to the row value when the user hovers over the cell.
 #'  If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".
-#' @param cellnote_col character Label to display next to the column value when the user hovers over the cell
+#' @param cellnote_col \emph{character} Label to display next to the column value when the user hovers over the cell
 #'  If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
-#' @param cellnote_val character Label to display next to the cell value when the user hovers over the cell.
+#' @param cellnote_val \emph{character} Label to display next to the cell value when the user hovers over the cell.
 #'  Defaults to "Value".
-#' @param cellnote (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+#' @param cellnote \emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
-#' @param cellnote_scale logical (default is FALSE). IF cellnote is missing and x is used, 
+#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
 #' should cellnote be scaled if x is also scaled?
 #' 
 #' @param cexRow positive numbers. If not missing, it will override \code{xaxis_font_size}
@@ -94,8 +107,6 @@ NULL
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ... currently ignored
-#' 
 #' @import htmlwidgets
 #'   
 #' @export
@@ -111,7 +122,7 @@ NULL
 #' 
 #' 
 d3heatmap <- function(x,
-
+	main = NULL,
   ## dendrogram control
   Rowv = TRUE,
   Colv = if (symm) "Rowv" else TRUE,
@@ -129,8 +140,8 @@ d3heatmap <- function(x,
   ## data scaling
   scale = c("none", "row", "column"),
   na.rm = TRUE,
-  na_color = "#777777",
-  na_value = NA,
+  na.color = "#777777",
+  na.value = NA,
 
   labRow = rownames(x), 
   labCol = colnames(x), 
@@ -146,9 +157,13 @@ d3heatmap <- function(x,
   cellnote_col = NULL, 
   cellnote_val = "Value", 
   
-  ##TODO: decide later which names/conventions to keep
   theme = NULL,
   colors = "RdYlBu",
+  bins = NULL,
+  symmetrical = FALSE,
+	print.values = FALSE,
+  legend.title = NULL,
+  show.legend = FALSE,
   width = NULL, 
   height = NULL,
   xaxis_height = 80,
@@ -165,9 +180,8 @@ d3heatmap <- function(x,
   brush_color = "#0000FF",
   show_grid = TRUE,
   anim_duration = 500,
-  rng = NULL,
+  rng = NULL
   
-  ...
 ) {
   
   ## x is a matrix!
@@ -282,6 +296,10 @@ d3heatmap <- function(x,
   if (!missing(cellnote))
     cellnote <- cellnote[rowInd, colInd]
 
+  ## axis and cellnote labels sync
+  ##==============================
+  if(is.null(cellnote_row)) cellnote_row <- yaxis_title
+  if(is.null(cellnote_col)) cellnote_col <- xaxis_title
   
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
@@ -307,21 +325,28 @@ d3heatmap <- function(x,
   ##====================
   scale <- match.arg(scale) 
   
-  if (!is.na(na_value)) {
-    na.rm <- TRUE 
-    x[which(x == na_value)] <- NA
-  }
+  if(!cellnote_scale) x_unscaled <- x # keeps a backup for cellnote
   
-  if(!cellnote_scale) x_unscaled <- x #keeps a backup for cellnote
+  if (!is.na(na.value)) {
+    na.rm <- TRUE 
+    x[which(x == na.value)] <- NA
+  }
   
   if(scale == "row") {
     x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
     x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+    
   }
   else if(scale == "column") {
     x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
     x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
   }
+  
+  # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
+  # mtcars$am when na.value == 0 and scaling by column), the functions above
+  # will return NaN, which will be translated to NA... 
+  # therefor we will replace all NaN's with .5)
+  x[is.nan(x)] <- .5
   
   
   ## cellnote
@@ -350,25 +375,37 @@ d3heatmap <- function(x,
   ##=======================
 
   mtx <- list(data = as.character(t(cellnote)),
+							x = as.numeric(t(round(x, digits = digits))),
               dim = dim(x),
               rows = rownames(x),
               cols = colnames(x)
   )
-  
-    
+ 
   if (is.factor(x)) {
-    colors <- scales::col_factor(colors, x, na.color = na_color)
+    legend_colors <- scales::col_bin(colors, domain = 1:length(factor(x)), 
+                                     na.color = na.color)(1:length(factor(x)))
+    colors <- scales::col_factor(colors, x, na.color = na.color)
+    
   } else {
-      if (is.null(rng)) {
+    if (is.null(rng)) {
           rng <- range(x, na.rm = TRUE)
           if (scale %in% c("row", "column")) {
               rng <- c(max(abs(rng)), -max(abs(rng)))
           }
     }
-    colors <- scales::col_numeric(colors, rng, na.color = na_color)
+  
+    if(is.null(bins)) {
+      bins <- 50
+      colors <- scales::col_numeric(colors, rng, na.color = na.color)
+    } else {
+      colors <- scales::col_bin(colors, rng, bins = bins, na.color = na.color)
+    }
+    legend_colors <- scales::col_bin(colors, domain = 1:bins, bins = bins, na.color = na.color)(1:bins)
   }
   
   imgUri <- encodeAsPNG(t(x), colors)
+
+	xaxis_angle <- min(90, max(xaxis_angle, 25))
 
   options <- NULL
   
@@ -384,8 +421,14 @@ d3heatmap <- function(x,
     yaxis_title = yaxis_title,
     xaxis_title_font_size = xaxis_title_font_size,
     yaxis_title_font_size = yaxis_title_font_size, 
+    bins = bins,
+    symmetrical = symmetrical,
+    print_values = print.values,
+    show_legend = show.legend,
+    legend_title = legend.title,
+		legend_colors = legend_colors,
     brush_color = brush_color,
-    na_color = na_color,
+    na_color = na.color,
     show_grid = show_grid,
     cellnote_row = cellnote_row,
     cellnote_col = cellnote_col,
@@ -400,8 +443,13 @@ d3heatmap <- function(x,
     c(options, list(xclust_height = 0))
   }
   
-  payload <- list(rows = rowDend, cols = colDend, matrix = mtx, image = imgUri,
-    theme = theme, options = options)
+  payload <- list(rows = rowDend, 
+		cols = colDend, 
+		matrix = mtx, 
+		title = main,
+		image = imgUri,
+    theme = theme, 
+		options = options)
   
   # create widget
   htmlwidgets::createWidget(

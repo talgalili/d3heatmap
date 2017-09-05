@@ -7,28 +7,40 @@
 The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 }
 \usage{
-d3heatmap(x, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
+d3heatmap(x, main = NULL, Rowv = TRUE, Colv = if (symm) "Rowv" else TRUE,
   distfun = dist, hclustfun = hclust, dendrogram = c("both", "row",
   "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row, k_col,
   symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
-  na_color = "#777777", na_value = NA, labRow = rownames(x),
+  na.color = "#777777", na.value = NA, labRow = rownames(x),
   labCol = colnames(x), cexRow, cexCol, digits = 3L, cellnote,
   cellnote_scale = FALSE, cellnote_row = NULL, cellnote_col = NULL,
-  cellnote_val = "Value", theme = NULL, colors = "RdYlBu", width = NULL,
-  height = NULL, xaxis_height = 80, yaxis_width = 120,
-  xaxis_font_size = NULL, yaxis_font_size = NULL, xaxis_angle = 60,
-  xaxis_location = "bottom", yaxis_location = "right", xaxis_title = NULL,
-  yaxis_title = NULL, xaxis_title_font_size = 14,
+  cellnote_val = "Value", theme = NULL, colors = "RdYlBu", bins = NULL,
+  symmetrical = FALSE, print.values = FALSE, legend.title = NULL,
+  show.legend = FALSE, width = NULL, height = NULL, xaxis_height = 80,
+  yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
+  xaxis_angle = 60, xaxis_location = "bottom", yaxis_location = "right",
+  xaxis_title = NULL, yaxis_title = NULL, xaxis_title_font_size = 14,
   yaxis_title_font_size = 14, brush_color = "#0000FF", show_grid = TRUE,
-  anim_duration = 500, rng = NULL, ...)
+  anim_duration = 500, rng = NULL)
 }
 \arguments{
 \item{x}{A numeric matrix
 Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
 
-\item{Rowv}{determines if and how the row dendrogram should be reordered.    By default, it is TRUE, which implies dendrogram is computed and reordered based on row means. If NULL or FALSE, then no dendrogram is computed and no reordering is done. If a dendrogram, then it is used "as-is", ie without any reordering. If a vector of integers, then dendrogram is computed and reordered based on the order of the vector.}
+\item{main}{\emph{string} Plot title. Defaults to \code{NULL}.}
 
-\item{Colv}{determines if and how the column dendrogram should be reordered.    Has the options as the Rowv argument above and additionally when x is a square matrix, Colv = "Rowv" means that columns should be treated identically to the rows.}
+\item{Rowv}{determines if and how the row dendrogram 
+should be reordered.    By default, it is TRUE, which implies 
+dendrogram is computed and reordered based on row means. 
+If NULL or FALSE, then no dendrogram is computed and no reordering 
+is done. If a dendrogram, then it is used "as-is", ie without any 
+reordering. If a vector of integers, then dendrogram is computed 
+and reordered based on the order of the vector.}
+
+\item{Colv}{determines if and how the column dendrogram should be 
+reordered.    Has the options as the Rowv argument above and additionally 
+when x is a square matrix, Colv = "Rowv" means that columns should be 
+treated identically to the rows.}
 
 \item{distfun}{function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.}
 
@@ -52,9 +64,9 @@ This is useful for cor matrix.}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 
-\item{na_color}{Color of NA values in heatmap. Defaults to neutral gray.}
+\item{na.color}{Color of NA values in heatmap. Defaults to neutral gray.}
 
-\item{na_value}{numeric indicating where NA's should be substituted to trigger the NA color.}
+\item{na.value}{numeric indicating where NA's should be substituted to trigger the NA color.}
 
 \item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
@@ -66,21 +78,21 @@ and will give it a value cexRow*14}
 \item{cexCol}{positive numbers. If not missing, it will override \code{yaxis_font_size}
 and will give it a value cexCol*14}
 
-\item{digits}{integer indicating the number of decimal places to be used by \link{round} for 'label'.}
+\item{digits}{\emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.}
 
-\item{cellnote}{(optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
+\item{cellnote}{\emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
 
-\item{cellnote_scale}{logical (default is FALSE). IF cellnote is missing and x is used, 
+\item{cellnote_scale}{\emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
 should cellnote be scaled if x is also scaled?}
 
-\item{cellnote_row}{character Label to display next to the row value when the user hovers over the cell.
+\item{cellnote_row}{\emph{character} Label to display next to the row value when the user hovers over the cell.
 If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
 
-\item{cellnote_col}{character Label to display next to the column value when the user hovers over the cell
+\item{cellnote_col}{\emph{character} Label to display next to the column value when the user hovers over the cell
 If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
 
-\item{cellnote_val}{character Label to display next to the cell value when the user hovers over the cell.
+\item{cellnote_val}{\emph{character} Label to display next to the cell value when the user hovers over the cell.
 Defaults to "Value".}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values are 
@@ -91,6 +103,15 @@ standalone visualizations, not R Markdown or Shiny.}
 \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
+
+\item{bins}{\emph{integer} The number of colors to generate from the palette.}
+
+\item{print.values}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
+
+\item{legend.title}{Separate title for legend. Defaults to \code{NULL}.}
+
+\item{show.legend}{Show color key and density
+information? \code{TRUE/FALSE}. Defaults to \code{FALSE}}
 
 \item{width}{Width in pixels (optional, defaults to automatic sizing).}
 
@@ -104,13 +125,11 @@ standalone visualizations, not R Markdown or Shiny.}
 
 \item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
 
-\item{xaxis_angle}{Angle of axis labels. Defaults to 60.}
+\item{xaxis_angle}{Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.}
 
-\item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".
-Dendogram location takes priority over xaxis_location}
+\item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".}
 
-\item{yaxis_location}{Location of the y axis, either "right" or "left". Defaults to "right".
-Dendogram location takes priority over yaxis_location}
+\item{yaxis_location}{Location of the y axis, either "right" or "left". Defaults to "right".}
 
 \item{xaxis_title}{Title text of x axis}
 
@@ -125,8 +144,7 @@ filled with a low-opacity version of this color. \code{"#RRGGBB"} format
 expected.}
 
 \item{show_grid}{\code{TRUE} to show gridlines, \code{FALSE} to hide them, or
-a numeric value to specify the gridline thickness in pixels (can be a 
-non-integer).}
+a numeric value to specify the gridline thickness in pixels (can be a non-integer).}
 
 \item{anim_duration}{Number of milliseconds to animate zooming in and out.
 For large \code{x} it may help performance to set this value to \code{0}.}
@@ -134,9 +152,9 @@ For large \code{x} it may help performance to set this value to \code{0}.}
 \item{rng}{A vector of two numbers, namely the minimum and maximum value
 to use when determining the mapping from values to colors. This is useful
 when the range of values changes between heatmaps, but colors should be the
-same (optional, defaults to using the minimum and maximum of \code{x}).}
+same (optional, defaults to the minimum and maximum of \code{x}).}
 
-\item{...}{currently ignored}
+\item{symbreaks}{\emph{logical} Arrange color bins symmetrically around zero?}
 }
 \description{
 Creates a D3.js-based heatmap widget.
