@@ -33,4 +33,9 @@ BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
     'd3heatmap.R'
     'dendrogram.R'
+    'colors.R'
+    'axis.R'
+    'cellnote.R'
+    'legend.R'
+    'utils.R'
 RoxygenNote: 6.0.1

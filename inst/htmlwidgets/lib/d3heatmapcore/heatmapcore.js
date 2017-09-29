@@ -212,6 +212,7 @@ function heatmap(selector, data, options) {
   opts.cellnote_val = options.cellnote_val;
 	opts.print_values = options.print_values;
 	opts.show_legend = options.show_legend;
+	opts.legend_location = options.legend_location;
 	opts.legend_title = options.legend_title;
 	opts.legend_colors = options.legend_colors;
 	opts.bins = options.bins;
@@ -232,13 +233,15 @@ function heatmap(selector, data, options) {
   opts.leftEl_width = !data.rows ? 0 : opts.yclust_width;
   opts.bottomEl_height = opts.xaxis_height;
   opts.rightEl_width = opts.yaxis_width;
+  opts.yclust_width = opts.leftEl_width; // need this for later
  
-  var tmpEl;
   
   opts.leftTitle_width = 0;
   opts.rightTitle_width = yaxis_title_width;
+  opts.topTitle_height = 0;
+  opts.bottomTitle_height = xaxis_title_height;
   
-  opts.yclust_width = !data.rows ? 0 : opts.yclust_width;
+  var tmpEl;
   if (opts.yaxis_location === "left") {
     tmpEl = opts.leftEl_width;
     opts.leftEl_width = opts.yaxis_width;
@@ -248,8 +251,14 @@ function heatmap(selector, data, options) {
     opts.leftTitle_width = yaxis_title_width;  
   }
   
-  opts.topTitle_height = 0;
-  opts.bottomTitle_height = xaxis_title_height;
+  if (opts.xaxis_location === "top") {
+    tmpEl = opts.topEl_height;
+    opts.topEl_height = opts.xaxis_height;
+    opts.bottomEl_height = tmpEl;
+    
+    opts.bottomTitle_height = 0;
+    opts.topTitle_height = xaxis_title_height;  
+  }
   
   gridSizer = new GridSizer(
     [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
@@ -291,12 +300,27 @@ function heatmap(selector, data, options) {
 		colDendBounds = bottomElBounds;
   }
 
-	var legdBounds = gridSizer.getCellBounds(3, 3);
+	var legdBounds;
 	if(opts.show_legend) {
 			var legdX, legdY;
-			legdX = opts.yaxis_location === "left" ? 1 : 3;
-			legdY = opts.xaxis_location === "top" ? 1 : 3;
-			legdBounds = gridSizer.getCellBounds(legdX, legdY);
+			switch (opts.legend_location) {
+				case "br":
+						legdBounds = gridSizer.getCellBounds(3, 3);
+						break;
+				case "tr":
+						legdBounds = gridSizer.getCellBounds(3, 1);
+						break;
+				case "tl":
+						legdBounds = gridSizer.getCellBounds(1, 1);
+						break;
+				case "bl":
+						legdBounds = gridSizer.getCellBounds(1, 3);
+						break;
+				default:
+						legdX = opts.yaxis_location === "left" ? 1 : 3;
+						legdY = opts.xaxis_location === "top" ? 1 : 3;
+						legdBounds = gridSizer.getCellBounds(legdX, legdY);
+			}
 	}
 
   // Create DOM structure

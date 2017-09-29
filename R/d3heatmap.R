@@ -30,6 +30,9 @@ NULL
 #' @param show.legend Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
 #' @param legend.title Separate title for legend. Defaults to \code{NULL}.
+#' @param legend.location \emph{Required, character} Location for legend, either \code{"fl", "br", "tr"
+#' "tl", or "bl"} for "float", "bottom right", "top right", "top left", and "bottom left". 
+#' Defaults to \code{"fl"}, which follows the location of the axis labels.
 #' @param width Width in pixels (optional, defaults to automatic sizing).
 #' @param height Height in pixels (optional, defaults to automatic sizing).
 #' 
@@ -123,17 +126,21 @@ NULL
 #' 
 d3heatmap <- function(x,
 	main = NULL,
-  ## dendrogram control
+  width = NULL, 
+  height = NULL,
+  show_grid = TRUE,
+  anim_duration = 500,
+  rng = NULL,
+  
+	## dendrogram control
   Rowv = TRUE,
   Colv = if (symm) "Rowv" else TRUE,
   distfun = dist,
   hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"),
   reorderfun = function(d, w) reorder(d, w),
-  
   k_row,
   k_col,
-  
   symm = FALSE,
   revC,
   
@@ -143,29 +150,30 @@ d3heatmap <- function(x,
   na.color = "#777777",
   na.value = NA,
 
-  labRow = rownames(x), 
-  labCol = colnames(x), 
-
-  cexRow,
-  cexCol,
-
-  ## value formatting
+  ## legend 
+  legend.title = NULL,
+  show.legend = FALSE,
+  legend.location = c("fl", "br", "tr", "tl", "tr"),
+	
+  ## cellnote formatting
   digits = 3L,
   cellnote,
   cellnote_scale = FALSE,
   cellnote_row = NULL,
   cellnote_col = NULL, 
   cellnote_val = "Value", 
-  
+  brush_color = "#0000FF",
+	print.values = FALSE,
+
+	## color controls  
   theme = NULL,
   colors = "RdYlBu",
   bins = NULL,
   symmetrical = FALSE,
-	print.values = FALSE,
-  legend.title = NULL,
-  show.legend = FALSE,
-  width = NULL, 
-  height = NULL,
+	
+	## axis controls
+  labRow = rownames(x), 
+  labCol = colnames(x), 
   xaxis_height = 80,
   yaxis_width = 120,
   xaxis_font_size = NULL,
@@ -177,11 +185,10 @@ d3heatmap <- function(x,
   yaxis_title = NULL,
   xaxis_title_font_size = 14,
   yaxis_title_font_size = 14, 
-  brush_color = "#0000FF",
-  show_grid = TRUE,
-  anim_duration = 500,
-  rng = NULL
-  
+	  ## deprecate these
+  cexRow,
+  cexCol
+
 ) {
   
   ## x is a matrix!
@@ -406,10 +413,14 @@ d3heatmap <- function(x,
   imgUri <- encodeAsPNG(t(x), colors)
 
 	xaxis_angle <- min(90, max(xaxis_angle, 25))
+	
+	legend.location <- match.arg(legend.location)
 
   options <- NULL
   
   options <- c(options, list(
+    hm_width = width,
+    hm_height = height,
     xaxis_height = xaxis_height,
     yaxis_width = yaxis_width,
     xaxis_font_size = xaxis_font_size,
@@ -426,6 +437,7 @@ d3heatmap <- function(x,
     print_values = print.values,
     show_legend = show.legend,
     legend_title = legend.title,
+    legend_location = legend.location,
 		legend_colors = legend_colors,
     brush_color = brush_color,
     na_color = na.color,
