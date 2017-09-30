@@ -2,6 +2,8 @@
 
 export(d3heatmap)
 export(d3heatmapOutput)
+export(hmAxis)
+export(hmLegend)
 export(renderD3heatmap)
 import(base64enc)
 import(htmlwidgets)
