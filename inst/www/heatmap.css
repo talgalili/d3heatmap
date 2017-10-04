@@ -22,11 +22,13 @@
   border: 1px solid #CCC;
   overflow: hidden;
 }
-.inner {
+
+.d3-heatmap .inner {
   position: relative;
   top: -70px;
 }
-.info {
+
+.d3-heatmap .info {
   position: absolute;
   left: 20px;
   top: 90px;
@@ -36,21 +38,24 @@
   font-size: 40px;
   padding-top: 118px;
 }
-.colDend {
+
+.d3-heatmap .colDend {
   position: absolute;
   top: 0;
   left: 200px;
   width: 600px;
   height: 250px;
 }
-.rowDend {
+
+.d3-heatmap .rowDend {
   position: absolute;
   left: 0;
   top: 250px;
   height: 500px;
   width: 200px;
 }
-.colormap {
+
+.d3-heatmap .colormap {
   position: absolute;
   left: 200px;
   top: 250px;
@@ -58,9 +63,11 @@
   height: 500px;
   shape-rendering: crispEdges;
 }
+
 .highlighting text {
   fill: rgba(0, 0, 0, 0.25);
 }
+
 .highlighting text.active {
   fill: black;
 }
