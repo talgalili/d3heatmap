@@ -33,6 +33,7 @@ BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
     'd3heatmap.R'
     'dendrogram.R'
+    'heatmap.R'
     'colors.R'
     'axis.R'
     'cellnote.R'

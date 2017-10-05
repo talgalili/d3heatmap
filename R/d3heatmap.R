@@ -3,13 +3,6 @@
 #' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
 NULL
 
-`%||%` <- function(a, b) {
-  if (!is.null(a))
-    a
-  else
-    b
-}
-
 #' D3 Heatmap widget
 #' 
 #' Creates a D3.js-based heatmap widget.
@@ -139,10 +132,10 @@ d3heatmap <- function(x,
   hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"),
   reorderfun = function(d, w) reorder(d, w),
-  k_row,
-  k_col,
+  k_row = NULL,
+  k_col = NULL,
   symm = FALSE,
-  revC,
+  revC = NULL,
   
   ## data scaling
   scale = c("none", "row", "column"),
@@ -157,7 +150,7 @@ d3heatmap <- function(x,
 	
   ## cellnote formatting
   digits = 3L,
-  cellnote,
+  cellnote = NULL,
   cellnote_scale = FALSE,
   cellnote_row = NULL,
   cellnote_col = NULL, 
@@ -185,209 +178,70 @@ d3heatmap <- function(x,
   yaxis_title = NULL,
   xaxis_title_font_size = 14,
   yaxis_title_font_size = 14, 
-	  ## deprecate these
+	## deprecate these
   cexRow,
   cexCol
 
 ) {
-  
-  ## x is a matrix!
-  ##====================
-  if(!is.matrix(x)) {
-    x <- as.matrix(x)
-  }
-  if(!is.matrix(x)) stop("x must be a matrix")
-  
-  nr <- dim(x)[1]
-  nc <- dim(x)[2]
-  ### TODO: debating if to include this or not:
-  #   if(nr <= 1 || nc <= 1)
-  #     stop("`x' must have at least 2 rows and 2 columns")
-
-
-  ## Labels for Row/Column 
-  ##======================
-  rownames(x) <- labRow %||% paste(1:nrow(x))
-  colnames(x) <- labCol %||% paste(1:ncol(x))
-
-  if(!missing(cexRow)) {
-    if(is.numeric(cexRow)) {
-      xaxis_font_size <- cexRow * 14
-      xaxis_title_font_size <- xaxis_font_size + 4
-    } else {
-      warning("cexRow is not numeric. It is ignored")
-    }
-  }
-  if(!missing(cexCol)) {
-    if(is.numeric(cexCol)) {
-      yaxis_font_size <- cexCol * 14
-      yaxis_title_font_size <- yaxis_font_size + 4
-    } else {
-      warning("cexCol is not numeric. It is ignored")
-    }
-  }
-  
-
-  ## Dendrograms for Row/Column 
-  ##=======================
-  dendrogram <- match.arg(dendrogram)
-  
-  # Use dendrogram argument to set defaults for Rowv/Colv
-  if (missing(Rowv)) {
-    Rowv <- dendrogram %in% c("both", "row")
-  }
-  if (missing(Colv)) {
-    Colv <- dendrogram %in% c("both", "column")
-  }
-
-
-  if (isTRUE(Rowv)) {
-    Rowv <- rowMeans(x, na.rm = na.rm)
-  }
-  if (is.numeric(Rowv)) {
-    Rowv <- reorderfun(as.dendrogram(hclustfun(distfun(x))), Rowv)
-  }
-  if (is.dendrogram(Rowv)) {
-    Rowv <- rev(Rowv)
-    rowInd <- order.dendrogram(Rowv)
-    if(nr != length(rowInd))
-      stop("Row dendrogram is the wrong size")
-  } else {
-    if (!is.null(Rowv) && !is.na(Rowv) && !identical(Rowv, FALSE))
-      warning("Invalid value for Rowv, ignoring")
-    Rowv <- NULL
-    rowInd <- 1:nr
-  }
-  
-  if (identical(Colv, "Rowv")) {
-    Colv <- Rowv
-  }
-  if (isTRUE(Colv)) {
-    Colv <- colMeans(x, na.rm = na.rm)
-  }
-  if (is.numeric(Colv)) {
-    Colv <- reorderfun(as.dendrogram(hclustfun(distfun(t(x)))), Colv)
-  }
-  if (is.dendrogram(Colv)) {
-    colInd <- order.dendrogram(Colv)
-    if (nc != length(colInd))
-      stop("Col dendrogram is the wrong size")
-  } else {
-    if (!is.null(Colv) && !is.na(Colv) && !identical(Colv, FALSE))
-      warning("Invalid value for Colv, ignoring")
-    Colv <- NULL
-    colInd <- 1:nc
-  }
-  
-    
-  # TODO:  We may wish to change the defaults a bit in the future
-  ## revC
-  ##=======================
-  if(missing(revC)) {
-    if (symm) {
-      revC <- TRUE
-    } else if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, rev(Colv))) {
-      revC <- TRUE
-    } else {
-      revC <- FALSE
-    }
-  }
-  if(revC) {
-    Colv <- rev(Colv)
-    colInd <- rev(colInd)
-  }
-  
-  ## reorder x (and others)
-  ##=======================
-  x <- x[rowInd, colInd]
-  if (!missing(cellnote))
-    cellnote <- cellnote[rowInd, colInd]
-
-  ## axis and cellnote labels sync
-  ##==============================
-  if(is.null(cellnote_row)) cellnote_row <- yaxis_title
-  if(is.null(cellnote_col)) cellnote_col <- xaxis_title
-  
-  ## Dendrograms - Update the labels and change to dendToTree
-  ##=======================
-
-  # color branches?
-  #----------------
-    # Due to the internal working of dendextend, in order to use it we first need
-      # to populate the dendextend::dendextend_options() space:
-  if(!missing(k_row) | !missing(k_col)) dendextend::assign_dendextend_options()
-  
-  if(is.dendrogram(Rowv) & !missing(k_row)) {
-    Rowv <- dendextend::color_branches(Rowv, k = k_row)
-  }
-  if(is.dendrogram(Colv) & !missing(k_col)) {
-    Colv <- dendextend::color_branches(Colv, k = k_col)
-  }
-  
-  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
-  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
-
-  
-  ## Scale the data?
-  ##====================
-  scale <- match.arg(scale) 
-  
-  if(!cellnote_scale) x_unscaled <- x # keeps a backup for cellnote
-  
-  if (!is.na(na.value)) {
-    na.rm <- TRUE 
-    x[which(x == na.value)] <- NA
-  }
-  
-  if(scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-    
-  }
-  else if(scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-  }
-  
-  # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
-  # mtcars$am when na.value == 0 and scaling by column), the functions above
-  # will return NaN, which will be translated to NA... 
-  # therefor we will replace all NaN's with .5)
-  x[is.nan(x)] <- .5
-  
-  
-  ## cellnote
-  ##====================
-  if(missing(cellnote)) {
-    if(cellnote_scale) {
-      cellnote <- round(x, digits = digits)
-    } else { # default
-      cellnote <- round(x_unscaled, digits = digits)
-    }
-  }
-  
-  # Check that cellnote is o.k.:
-  if (is.null(dim(cellnote))) {
-    if (length(cellnote) != nr*nc) {
-      stop("Incorrect number of cellnote values")
-    }
-    dim(cellnote) <- dim(x)
-  }
-  if (!identical(dim(x), dim(cellnote))) {
-    stop("cellnote matrix must have same dimensions as x")
-  }  
-  
-  
-  ## Final touches before htmlwidgets
-  ##=======================
-
-  mtx <- list(data = as.character(t(cellnote)),
-							x = as.numeric(t(round(x, digits = digits))),
-              dim = dim(x),
-              rows = rownames(x),
-              cols = colnames(x)
-  )
  
+  scale <- match.arg(scale)
+   
+	## Save the parameters for later API calls
+  ##===========================================================
+	## For the updated API, we need to be able to access stuff passed into
+	## the original call to d3heatmap before everything is processed (and there is
+	## a lot of processing going on here
+	params <- list(
+		x = x
+		, Rowv = Rowv
+		, Colv = Colv
+		, distfun = distfun
+		, hclustfun = hclustfun
+		, dendrogram = dendrogram
+		, reorderfun = reorderfun
+		, k_row = k_row
+		, k_col = k_col
+		, symm = symm
+		, revC = revC
+		, scale = scale
+		, na.rm = na.rm
+		, na.value = na.value
+		, digits = digits
+		, cellnote = cellnote
+		, cellnote_scale = cellnote_scale
+		, labrow = labRow
+		, labCol = labCol
+	)
+	
+  
+	## the big call to create the heatmap
+  ##==============================
+	## inserting new call to the heatmap function, which does everything up to 
+	## this point in d3heatmap
+	hm <- heatmap(x = x
+					, Rowv = Rowv
+					, Colv = Colv
+					, distfun = distfun
+					, hclustfun = hclustfun
+					, dendrogram = dendrogram
+					, reorderfun = reorderfun
+					, k_row = k_row
+					, k_col = k_col
+					, symm = symm
+					, revC = revC
+					, scale = scale
+					, na.rm = na.rm
+					, na.value = na.value
+					, digits = digits
+					, cellnote = cellnote
+					, cellnote_scale = cellnote_scale
+					, labRow = labRow
+					, labCol = labCol)
+
+	x <- hm$x
+	
+	## Colors for the heatmap and the legend
+  ##===========================================
   if (is.factor(x)) {
     legend_colors <- scales::col_bin(colors, domain = 1:length(factor(x)), 
                                      na.color = na.color)(1:length(factor(x)))
@@ -410,67 +264,73 @@ d3heatmap <- function(x,
     legend_colors <- scales::col_bin(colors, domain = 1:bins, bins = bins, na.color = na.color)(1:bins)
   }
   
-  imgUri <- encodeAsPNG(t(x), colors)
 
+	## axis and cellnote labels sync
+  ##==============================
+  if(is.null(cellnote_row)) cellnote_row <- yaxis_title
+  if(is.null(cellnote_col)) cellnote_col <- xaxis_title
+
+	## bundling the options
+  ##==============================================
 	xaxis_angle <- min(90, max(xaxis_angle, 25))
-	
 	legend.location <- match.arg(legend.location)
 
-  options <- NULL
-  
-  options <- c(options, list(
-    hm_width = width,
-    hm_height = height,
-    xaxis_height = xaxis_height,
-    yaxis_width = yaxis_width,
-    xaxis_font_size = xaxis_font_size,
-    yaxis_font_size = yaxis_font_size,
-    xaxis_angle = xaxis_angle,
-    xaxis_location = xaxis_location,
-    yaxis_location = yaxis_location,
-    xaxis_title = xaxis_title,
-    yaxis_title = yaxis_title,
-    xaxis_title_font_size = xaxis_title_font_size,
-    yaxis_title_font_size = yaxis_title_font_size, 
-    bins = bins,
-    symmetrical = symmetrical,
-    print_values = print.values,
-    show_legend = show.legend,
-    legend_title = legend.title,
-    legend_location = legend.location,
-		legend_colors = legend_colors,
-    brush_color = brush_color,
-    na_color = na.color,
-    show_grid = show_grid,
-    cellnote_row = cellnote_row,
-    cellnote_col = cellnote_col,
-    cellnote_val = cellnote_val,
-    anim_duration = anim_duration
-  ))
+  options <- list(
+    hm_width = width
+    , hm_height = height
+    , xaxis_height = xaxis_height
+    , yaxis_width = yaxis_width
+    , xaxis_font_size = xaxis_font_size
+    , yaxis_font_size = yaxis_font_size
+    , xaxis_angle = xaxis_angle
+    , xaxis_location = xaxis_location
+    , yaxis_location = yaxis_location
+    , xaxis_title = xaxis_title
+    , yaxis_title = yaxis_title
+    , xaxis_title_font_size = xaxis_title_font_size
+    , yaxis_title_font_size = yaxis_title_font_size 
+    , bins = bins
+    , symmetrical = symmetrical
+    , print_values = print.values
+    , show_legend = show.legend
+    , legend_title = legend.title
+    , legend_location = legend.location
+		, legend_colors = legend_colors
+    , brush_color = brush_color
+    , na_color = na.color
+    , show_grid = show_grid
+    , cellnote_row = cellnote_row
+    , cellnote_col = cellnote_col
+    , cellnote_val = cellnote_val
+    , anim_duration = anim_duration
+  )
 
-  if (is.null(rowDend)) {
-    c(options, list(yclust_width = 0))
-  }
-  if (is.null(colDend)) {
-    c(options, list(xclust_height = 0))
-  }
-  
-  payload <- list(rows = rowDend, 
-		cols = colDend, 
-		matrix = mtx, 
-		title = main,
-		image = imgUri,
-    theme = theme, 
-		options = options)
+  if (is.null(hm$rowDend)) c(options, list(yclust_width = 0))
+  if (is.null(hm$colDend)) c(options, list(xclust_height = 0))
+ 
+ 	## proceed to the widget
+	##=======================================	
+  imgUri <- encodeAsPNG(t(x), colors)
+	
+  payload <- list(
+    rows = hm$rowDend 
+		, cols = hm$colDend
+		, matrix = hm$mtx
+		, title = main
+		, image = imgUri
+    , theme = theme 
+		, options = options
+		, params = params
+	)
   
   # create widget
   htmlwidgets::createWidget(
-    name = 'd3heatmap',
-    payload,
-    width = width,
-    height = height,
-    package = 'd3heatmap',
-    sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
+    name = 'd3heatmap'
+    , payload
+    , width = width
+    , height = height
+    , package = 'd3heatmap'
+    , sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
 }
 

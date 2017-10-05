@@ -19,3 +19,11 @@ mergeLists <- function (base_list, overlay_list, recursive = TRUE) {
     merged_list
   }
 }
+
+`%||%` <- function(a, b) {
+  if (!is.null(a))
+    a
+  else
+    b
+}
+

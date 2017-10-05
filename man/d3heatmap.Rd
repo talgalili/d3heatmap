@@ -10,19 +10,19 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   anim_duration = 500, rng = NULL, Rowv = TRUE, Colv = if (symm) "Rowv"
   else TRUE, distfun = dist, hclustfun = hclust, dendrogram = c("both",
-  "row", "column", "none"), reorderfun = function(d, w) reorder(d, w), k_row,
-  k_col, symm = FALSE, revC, scale = c("none", "row", "column"),
-  na.rm = TRUE, na.color = "#777777", na.value = NA,
-  legend.title = NULL, show.legend = FALSE, legend.location = c("fl",
-  "br", "tr", "tl", "tr"), digits = 3L, cellnote, cellnote_scale = FALSE,
-  cellnote_row = NULL, cellnote_col = NULL, cellnote_val = "Value",
-  brush_color = "#0000FF", print.values = FALSE, theme = NULL,
-  colors = "RdYlBu", bins = NULL, symmetrical = FALSE,
-  labRow = rownames(x), labCol = colnames(x), xaxis_height = 80,
-  yaxis_width = 120, xaxis_font_size = NULL, yaxis_font_size = NULL,
-  xaxis_angle = 60, xaxis_location = "bottom", yaxis_location = "right",
-  xaxis_title = NULL, yaxis_title = NULL, xaxis_title_font_size = 14,
-  yaxis_title_font_size = 14, cexRow, cexCol)
+  "row", "column", "none"), reorderfun = function(d, w) reorder(d, w),
+  k_row = NULL, k_col = NULL, symm = FALSE, revC = NULL,
+  scale = c("none", "row", "column"), na.rm = TRUE, na.color = "#777777",
+  na.value = NA, legend.title = NULL, show.legend = FALSE,
+  legend.location = c("fl", "br", "tr", "tl", "tr"), digits = 3L,
+  cellnote = NULL, cellnote_scale = FALSE, cellnote_row = NULL,
+  cellnote_col = NULL, cellnote_val = "Value", brush_color = "#0000FF",
+  print.values = FALSE, theme = NULL, colors = "RdYlBu", bins = NULL,
+  symmetrical = FALSE, labRow = rownames(x), labCol = colnames(x),
+  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
+  yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
+  yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
+  xaxis_title_font_size = 14, yaxis_title_font_size = 14, cexRow, cexCol)
 }
 \arguments{
 \item{x}{A numeric matrix
