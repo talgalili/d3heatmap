@@ -464,7 +464,6 @@ function heatmap(selector, data, options) {
   			.text(function(d, i) { return d.label; });
   		cellLabels.exit().remove();
   
-  		//TODO - make sure that this works with the Firefox issue
   		function drawCellLabels(selection) {
   			var cellHeight = (y(1) - y(0)) - spacing;
   			var cellWidth = (x(1) - x(0)) - spacing;
@@ -480,8 +479,12 @@ function heatmap(selector, data, options) {
       	var scale = d3.scale.ordinal()
           .domain(leaves)
           .rangeBands([0, yaxis_height]);
+
+   			// take the minimum of the calculate y and x font sizes 
+				var yfontSize = opts['yaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (8)));
+		    var xfontSize = opts['xaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (11)));
   
-        var fontSize = opts.yaxis_font_size || Math.min(18, Math.max(9, scale.rangeBand() - (8)));
+        var fontSize = Math.min(yfontSize, xfontSize);
   
   			selection
   				.attr("x", function(d, i) {
