@@ -14,16 +14,15 @@
 #' @param title.font.size Font size of axis title in pixels. Defaults to 14.
 #' 
 #' @export
-hmAxis <- function(
-  heatmap,
-  axis = c("x", "y", "row", "column"),
-  size = NULL,
-  labels,
-  font.size = NULL,
-  angle = NULL,
-  location = c("bottom", "top", "right", "left"),
-  title = NULL,
-  title.font.size = NULL
+hmAxis <- function(heatmap
+  , axis = c("x", "y", "row", "column")
+  , size = NULL
+  , labels
+  , font.size = NULL
+  , angle = NULL
+  , location = c("bottom", "top", "right", "left")
+  , title = NULL
+  , title.font.size = NULL
 ) {
   
   if(missing(axis)) {

@@ -31,7 +31,7 @@ hmCells <- function(heatmap
 	opts <- list(
     cellnote_row = row.label
     , cellnote_col = col.label
-    , cellnote_val = cellnote_val
+    , cellnote_val = value.label
     , print_values = print
     , brush_color = brush.color
 	)
