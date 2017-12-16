@@ -26,7 +26,10 @@ hmCells <- function(heatmap
   , print = FALSE
   , brush.color = "#0000FF"
 ) {
-  if(missing(heatmap)) stop("d3heatpmap::hmLegend... no heatmap provided")
+  if(missing(heatmap)) {
+		message("hmLegend: no heatmap provided... returning NULL")
+		return(NULL)
+	}
   
 	opts <- list(
     cellnote_row = row.label

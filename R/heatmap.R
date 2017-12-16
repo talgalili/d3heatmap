@@ -1,34 +1,41 @@
-## This contains the primary routines to create the d3heatmap.  These used to sit in the d3heatmap.R file, but needed to be extracted for the new API. Some paramaters in separate functions in the new API have cascading affects on how the heatmap is created, so extracting those interlinked parts and placing in a separate function - called by the main d3heatmap creator - will hopefully shorten processing time when adding options through the new API
+## This contains the primary routines to create the d3heatmap.  
+## These used to sit in the d3heatmap.R file in the main d3heatmap() 
+## call, but needed to be extracted for the new API. Some paramaters 
+## in separate functions in the new API have cascading affects on how 
+## the heatmap is created, so extracting those interlinked parts and 
+## placing in a separate function - called by the main d3heatmap 
+## creator - will hopefully shorten processing time when adding 
+## options through the new API
 
 heatmap <- function(
 	## matrix of data									
 	x
 
 	## dendrogram control
-  , Rowv = TRUE
-  , Colv = if (symm) "Rowv" else TRUE
-  , distfun = dist
-  , hclustfun = hclust
-  , dendrogram = c("both", "row", "column", "none")
-  , reorderfun = function(d, w) reorder(d, w)
+  , Rowv
+  , Colv
+  , distfun
+  , hclustfun
+  , dendrogram
+  , reorderfun 
   , k_row
   , k_col
-  , symm = FALSE
+  , symm
   , revC
   
   ## data scaling
-  , scale = c("none", "row", "column")
-  , na.rm = TRUE
-  , na.value = NA
+  , scale
+  , na.rm
+  , na.value
 
   ## cellnote formatting
   , digits
   , cellnote
-  , cellnote_scale = FALSE
+  , cellnote_scale
 
 	## axis controls
-  , labRow = rownames(x) 
-  , labCol = colnames(x)
+  , labRow
+  , labCol
 	  
 ) {
   
@@ -101,7 +108,6 @@ heatmap <- function(
     colInd <- 1:nc
   }
   
-	# TODO:  We may wish to change the defaults a bit in the future
   ## revC
   ##=======================
   if(is.null(revC)) {

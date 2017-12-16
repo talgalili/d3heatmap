@@ -19,6 +19,40 @@ NULL
 #'   \code{\link[grDevices]{colorRamp}}.
 #' @param bins \emph{integer} The number of colors to generate from the palette.
 #' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
+#' @param Rowv determines if and how the row dendrogram 
+#' should be reordered.	By default, it is TRUE, which implies 
+#' dendrogram is computed and reordered based on row means. 
+#' If NULL or FALSE, then no dendrogram is computed and no reordering 
+#' is done. If a dendrogram, then it is used "as-is", ie without any 
+#' reordering. If a vector of integers, then dendrogram is computed 
+#' and reordered based on the order of the vector.
+#' 
+#' @param Colv determines if and how the column dendrogram should be 
+#' reordered.	Has the options as the Rowv argument above and additionally 
+#' when x is a square matrix, Colv = "Rowv" means that columns should be 
+#' treated identically to the rows.
+#' 
+#' @param distfun function used to compute the distance (dissimilarity) 
+#' between both rows and columns. Defaults to dist.
+#' 
+#' @param hclustfun function used to compute the hierarchical clustering 
+#' when Rowv or Colv are not dendrograms. Defaults to hclust.
+#' 
+#' @param dendrogram character string indicating whether to draw 'none', 
+#' 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if 
+#' Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning 
+#' is issued and Rowv (or Colv) arguments are honoured.
+#' 
+#' @param reorderfun function(d, w) of dendrogram and weights for reordering 
+#' the row and column dendrograms. The default uses stats{reorder.dendrogram}
+#' 
+#' @param k_row an integer scalar with the desired number of groups by which 
+#' to color the dendrogram's branches in the rows 
+#' (uses \link[dendextend]{color_branches})
+#' 
+#' @param k_col an integer scalar with the desired number of groups by which 
+#' to color the dendrogram's branches in the columns 
+#' (uses \link[dendextend]{color_branches})
 #' @param print.values \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
 #' @param show.legend Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
@@ -49,24 +83,6 @@ NULL
 #' @param anim_duration Number of milliseconds to animate zooming in and out.
 #'   For large \code{x} it may help performance to set this value to \code{0}.
 #'  
-#' @param Rowv determines if and how the row dendrogram 
-#' should be reordered.	By default, it is TRUE, which implies 
-#' dendrogram is computed and reordered based on row means. 
-#' If NULL or FALSE, then no dendrogram is computed and no reordering 
-#' is done. If a dendrogram, then it is used "as-is", ie without any 
-#' reordering. If a vector of integers, then dendrogram is computed 
-#' and reordered based on the order of the vector.
-#' @param Colv determines if and how the column dendrogram should be 
-#' reordered.	Has the options as the Rowv argument above and additionally 
-#' when x is a square matrix, Colv = "Rowv" means that columns should be 
-#' treated identically to the rows.
-#' @param distfun function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.
-#' @param hclustfun function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
-#' @param dendrogram character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.
-#' @param reorderfun function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}
-#' 
-#' @param k_row an integer scalar with the desired number of groups by which to color the dendrogram's branches in the rows (uses \link[dendextend]{color_branches})
-#' @param k_col an integer scalar with the desired number of groups by which to color the dendrogram's branches in the columns (uses \link[dendextend]{color_branches})
 #' 
 #' @param symm logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
 #' @param revC logical indicating if the column order should be reversed for plotting.
@@ -86,8 +102,8 @@ NULL
 #' @param digits \emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.
 #' @param cellnote_row \emph{character} Label to display next to the row value when the user hovers over the cell.
 #'  If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".
-#' @param cellnote_col \emph{character} Label to display next to the column value when the user hovers over the cell
-#'  If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
+#' @param cellnote_col \emph{character} Label to display next to the column value when the user hovers over the cell. 
+#' If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
 #' @param cellnote_val \emph{character} Label to display next to the cell value when the user hovers over the cell.
 #'  Defaults to "Value".
 #' @param cellnote \emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
@@ -118,69 +134,70 @@ NULL
 #' 
 #' 
 d3heatmap <- function(x,
-	main = NULL,
-  width = NULL, 
-  height = NULL,
-  show_grid = TRUE,
-  anim_duration = 500,
-  rng = NULL,
+	, main = NULL
+  , width = NULL,
+  , height = NULL
+  , show_grid = TRUE
+  , anim_duration = 500
+  , rng = NULL
   
 	## dendrogram control
-  Rowv = TRUE,
-  Colv = if (symm) "Rowv" else TRUE,
-  distfun = dist,
-  hclustfun = hclust,
-  dendrogram = c("both", "row", "column", "none"),
-  reorderfun = function(d, w) reorder(d, w),
-  k_row = NULL,
-  k_col = NULL,
-  symm = FALSE,
-  revC = NULL,
+  , Rowv = TRUE
+  , Colv = if (symm) "Rowv" else TRUE
+  , distfun = dist
+  , hclustfun = hclust
+  , dendrogram = c("both", "row", "column", "none")
+  , reorderfun = function(d, w) reorder(d, w)
+  , k_row = NULL
+  , k_col = NULL
+  , symm = FALSE
+  , revC = NULL
   
   ## data scaling
-  scale = c("none", "row", "column"),
-  na.rm = TRUE,
-  na.color = "#777777",
-  na.value = NA,
+  , scale = c("none", "row", "column")
+  , na.rm = TRUE
+  , na.color = "#777777"
+  , na.value = NA
 
   ## legend 
-  legend.title = NULL,
-  show.legend = FALSE,
-  legend.location = c("fl", "br", "tr", "tl", "tr"),
+  , legend.title = NULL
+  , show.legend = FALSE
+  , legend.location = c("fl", "br", "tr", "tl", "tr"
 	
   ## cellnote formatting
-  digits = 3L,
-  cellnote = NULL,
-  cellnote_scale = FALSE,
-  cellnote_row = NULL,
-  cellnote_col = NULL, 
-  cellnote_val = "Value", 
-  brush_color = "#0000FF",
-	print.values = FALSE,
+  , digits = 3L
+  , cellnote = NULL
+  , cellnote_scale = FALSE
+  , cellnote_row = NULL
+  , cellnote_col = NULL,
+  , cellnote_val = "Value",
+  , brush_color = "#0000FF"
+	, print.values = FALSE
 
 	## color controls  
-  theme = NULL,
-  colors = "RdYlBu",
-  bins = NULL,
-  symmetrical = FALSE,
+  , theme = NULL
+  , colors = "RdYlBu"
+  , bins = NULL
+  , symmetrical = FALSE
 	
 	## axis controls
-  labRow = rownames(x), 
-  labCol = colnames(x), 
-  xaxis_height = 80,
-  yaxis_width = 120,
-  xaxis_font_size = NULL,
-  yaxis_font_size = NULL,
-  xaxis_angle = 60,
-  xaxis_location = "bottom",
-  yaxis_location = "right",
-  xaxis_title = NULL,
-  yaxis_title = NULL,
-  xaxis_title_font_size = 14,
-  yaxis_title_font_size = 14, 
+  , labRow = rownames(x),
+  , labCol = colnames(x),
+  , xaxis_height = 80
+  , yaxis_width = 120
+  , xaxis_font_size = NULL
+  , yaxis_font_size = NULL
+  , xaxis_angle = 60
+  , xaxis_location = "bottom"
+  , yaxis_location = "right"
+  , xaxis_title = NULL
+  , yaxis_title = NULL
+  , xaxis_title_font_size = 14
+  , yaxis_title_font_size = 14
+
 	## deprecate these
-  cexRow,
-  cexCol
+  , cexRow
+  , cexCol
 
 ) {
  
@@ -189,8 +206,10 @@ d3heatmap <- function(x,
 	## Save the parameters for later API calls
   ##===========================================================
 	## For the updated API, we need to be able to access stuff passed into
-	## the original call to d3heatmap before everything is processed (and there is
-	## a lot of processing going on here
+	## the original call to d3heatmap before everything is processed (and there 
+	## is a lot of processing going on here). Primarily we need those items
+	## passed into the internal heatmap() function, which does the lion's share
+	## of the generating
 	params <- list(
 		x = x
 		, Rowv = Rowv
@@ -217,26 +236,8 @@ d3heatmap <- function(x,
 	## the big call to create the heatmap
   ##==============================
 	## inserting new call to the heatmap function, which does everything up to 
-	## this point in d3heatmap
-	hm <- heatmap(x = x
-					, Rowv = Rowv
-					, Colv = Colv
-					, distfun = distfun
-					, hclustfun = hclustfun
-					, dendrogram = dendrogram
-					, reorderfun = reorderfun
-					, k_row = k_row
-					, k_col = k_col
-					, symm = symm
-					, revC = revC
-					, scale = scale
-					, na.rm = na.rm
-					, na.value = na.value
-					, digits = digits
-					, cellnote = cellnote
-					, cellnote_scale = cellnote_scale
-					, labRow = labRow
-					, labCol = labCol)
+	## this point that d3heatmap did
+	hm <- do.call(heatmap, args = params)
 
 	x <- hm$x
 	
@@ -326,7 +327,7 @@ d3heatmap <- function(x,
   # create widget
   htmlwidgets::createWidget(
     name = 'd3heatmap'
-    , payload
+    , payload # the x param
     , width = width
     , height = height
     , package = 'd3heatmap'
@@ -392,3 +393,4 @@ renderD3heatmap <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   shinyRenderWidget(expr, d3heatmapOutput, env, quoted = TRUE)
 }
+

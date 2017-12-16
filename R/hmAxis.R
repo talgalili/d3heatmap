@@ -29,8 +29,9 @@ hmAxis <- function(heatmap
     message("hmAxis: no axis specified... returning original heatmap")
     return(heatmap)
   }
-  
-  x <- heatmap$x$matrix
+ 
+	params <- heatmap$x$params
+  x <- params$x
   options <- heatmap$x$options
   
   axis <- match.arg(axis)
@@ -46,7 +47,7 @@ hmAxis <- function(heatmap
     if(!missing(labels)) colnames(x) <- labels
    
     cellnote_col <- heatmap$x$options$cellnote_col 
-    if(is.null(cellnote_col)) cellnote_col <- 
+    if(is.null(cellnote_row)) cellnote_row <- title
 	  
     angle <- min(90, max(angle, 25))
     
@@ -76,10 +77,17 @@ hmAxis <- function(heatmap
     )
   
   } else return(heatmap)
-  
-  x <- heatmap$x
-  x$options <- mergeLists(options, opts)
   rm(heatmap)
+  
+  params$x <- x
+	
+	## call heatmap with the updated params and save
+	## the params with the heatmap for later use
+  ##==============================================
+	hm <- do.call(heatmap, args = params)
+	hm$x$params <- params
+
+  hm$x$options <- mergeLists(options, opts)
   
   # re-create widget
   # I'm not a big fan of having to recreate the widget, but since the axis options affect the 
@@ -87,10 +95,11 @@ hmAxis <- function(heatmap
   # causes sizing and placement issues
   htmlwidgets::createWidget(
     name = 'd3heatmap',
-    x = x,
-    width = x$hm_width,
-    height = x$hm_height,
-    package = 'd3heatmap',
-    sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
+    , x = x
+    , width = hm$x$hm_width
+    , height = hm$x$hm_height
+    , package = 'd3heatmap'
+    , sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
 }
+
