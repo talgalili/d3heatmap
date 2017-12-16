@@ -16,9 +16,9 @@
 #' 
 #' @export
 hmCells <- function(heatmap
-  , digits,
+  , digits
   , cellnotes # cellnote
-  , scale, # cellnote_scale
+  , scale # cellnote_scale
   , row.label # cellnote_row
   , col.label # cellnote_col
   , value.label # cellnote_val
@@ -45,7 +45,7 @@ hmCells <- function(heatmap
 	new <- list(
 		digits  = digits
 		, scale = scale
-		, cellnote = cellnote
+		, cellnote = cellnotes
 	)
 
 	params <- mergeLists(params, new)

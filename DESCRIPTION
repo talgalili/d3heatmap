@@ -35,8 +35,10 @@ Collate:
     'dendrogram.R'
     'heatmap.R'
     'colors.R'
-    'axis.R'
-    'cellnote.R'
-    'legend.R'
+    'hmAxis.R'
+    'hmColors.R'
+    'hmCells.R'
+    'hmDendrogram.R'
+    'hmLegend.R'
     'utils.R'
 RoxygenNote: 6.0.1

@@ -2,7 +2,19 @@
 ## primary d3heatmap routine, but now have been broken out to allow for 
 ## calls from the new API
 
-heatmapColors <- function(x, colors, na.color, na.rm, rng, scale, bins) {
+heatmapColors <- function(
+  x
+  , colors
+  , na.color
+  , na.rm
+  , rng
+  , scale
+  , bins
+	
+  ## need ability to accept extra args without using them
+	, ...
+) 
+{
 
 	## process colors and parameters to create the pallette
   if (is.factor(x)) {
@@ -32,10 +44,10 @@ heatmapColors <- function(x, colors, na.color, na.rm, rng, scale, bins) {
 
 	# create the list to return to the calling environment
 	lst <- list(
-		legend_colors
-		, colors
-		, rng
-		, bins
+		legend_colors = legend_colors
+		, colors = colors
+		, rng = rng
+		, bins = bins
 	)	
 
 	return(lst)

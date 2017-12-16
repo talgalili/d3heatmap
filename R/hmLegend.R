@@ -13,9 +13,7 @@
 #' 
 #' @return Modified d3heatmap object
 #' @export
-#' 
-hmLegend <- function(
-  heatmap,
+hmLegend <- function(heatmap
   , show = FALSE
   , title = NULL
   , location = c("fl", "br", "tr", "tl", "bl")

@@ -97,7 +97,7 @@ hmColors <- function(heatmap
 
 	newOpts <- list(
 		legend_colors = hm_colors$legend_colors
-		, bins = hm_colors$bins,
+		, bins = hm_colors$bins
 		, na_color = params$na.color
 	)
 	options <- mergeLists(heatmap$options, newOpts)
@@ -106,7 +106,6 @@ hmColors <- function(heatmap
     rows = hm$rowDend 
 		, cols = hm$colDend
 		, matrix = hm$mtx
-		, title = main
 		, image = imgUri
     , theme = theme 
 		, options = options

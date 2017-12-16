@@ -5,9 +5,11 @@ d3heatmap(mtcars, dendrogram = 'none',
           legend.title = "Legend", xaxis_angle = 30, xaxis_title = 'test')
 
 # doesn't resize when defining axis titles
-d3heatmap(mtcars, dendrogram = 'none', show.legend = TRUE, 
+debug(hmAxis)
+d3heatmap(mtcars, dendrogram = 'none', show.legend = TRUE, colors = 'RdYlGn',
           scale = 'column', legend.title = "Legend") %>% 
-  hmAxis("x", angle = 30, title = "test")
+  hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') %>% 
+  hmAxis("y", title = "test", location = 'right')
 
 d3heatmap(mtcars, 
           dendrogram = 'none', 

@@ -36,6 +36,13 @@ heatmap <- function(
 	## axis controls
   , labRow
   , labCol
+
+	# keep if heatmap, heatmap.2 etc. use, otherwise deprecate	
+	, cexrow
+	, cexCol
+	
+	## need ability to accept extra args without using them
+	, ...
 	  
 ) {
   
@@ -59,8 +66,6 @@ heatmap <- function(
 
   ## Dendrograms for Row/Column 
   ##=======================
-  dendrogram <- match.arg(dendrogram)
-  
   # Use dendrogram argument to set defaults for Rowv/Colv
   if (missing(Rowv)) {
     Rowv <- dendrogram %in% c("both", "row")
@@ -152,8 +157,6 @@ heatmap <- function(
   
   ## Scale the data?
   ##====================
-  scale <- match.arg(scale) 
-  
 	# keep a backup for cellnote
   if(!cellnote_scale) x_unscaled <- x 
   

@@ -18,7 +18,7 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   cellnote = NULL, cellnote_scale = FALSE, cellnote_row = NULL,
   cellnote_col = NULL, cellnote_val = "Value", brush_color = "#0000FF",
   print.values = FALSE, theme = NULL, colors = "RdYlBu", bins = NULL,
-  symmetrical = FALSE, labRow = rownames(x), labCol = colnames(x),
+  symbreaks = FALSE, labRow = rownames(x), labCol = colnames(x),
   xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
   yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
   yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
@@ -58,17 +58,27 @@ reordered.    Has the options as the Rowv argument above and additionally
 when x is a square matrix, Colv = "Rowv" means that columns should be 
 treated identically to the rows.}
 
-\item{distfun}{function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist.}
+\item{distfun}{function used to compute the distance (dissimilarity) 
+between both rows and columns. Defaults to dist.}
 
-\item{hclustfun}{function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.}
+\item{hclustfun}{function used to compute the hierarchical clustering 
+when Rowv or Colv are not dendrograms. Defaults to hclust.}
 
-\item{dendrogram}{character string indicating whether to draw 'none', 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv (or Colv) arguments are honoured.}
+\item{dendrogram}{character string indicating whether to draw 'none', 
+'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if 
+Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning 
+is issued and Rowv (or Colv) arguments are honoured.}
 
-\item{reorderfun}{function(d, w) of dendrogram and weights for reordering the row and column dendrograms. The default uses stats{reorder.dendrogram}}
+\item{reorderfun}{function(d, w) of dendrogram and weights for reordering 
+the row and column dendrograms. The default uses stats{reorder.dendrogram}}
 
-\item{k_row}{an integer scalar with the desired number of groups by which to color the dendrogram's branches in the rows (uses \link[dendextend]{color_branches})}
+\item{k_row}{an integer scalar with the desired number of groups by which 
+to color the dendrogram's branches in the rows 
+(uses \link[dendextend]{color_branches})}
 
-\item{k_col}{an integer scalar with the desired number of groups by which to color the dendrogram's branches in the columns (uses \link[dendextend]{color_branches})}
+\item{k_col}{an integer scalar with the desired number of groups by which 
+to color the dendrogram's branches in the columns 
+(uses \link[dendextend]{color_branches})}
 
 \item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
@@ -104,7 +114,7 @@ should cellnote be scaled if x is also scaled?}
 \item{cellnote_row}{\emph{character} Label to display next to the row value when the user hovers over the cell.
 If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
 
-\item{cellnote_col}{\emph{character} Label to display next to the column value when the user hovers over the cell
+\item{cellnote_col}{\emph{character} Label to display next to the column value when the user hovers over the cell. 
 If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
 
 \item{cellnote_val}{\emph{character} Label to display next to the cell value when the user hovers over the cell.
@@ -120,12 +130,14 @@ expected.}
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 standalone visualizations, not R Markdown or Shiny.}
 
-\item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
-\code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
+\item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} 
+or \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
 
 \item{bins}{\emph{integer} The number of colors to generate from the palette.}
+
+\item{symbreaks}{\emph{logical} Arrange color bins symmetrically around zero?}
 
 \item{labRow}{character vectors with row labels to use (from top to bottom); default to rownames(x).}
 
@@ -158,8 +170,6 @@ and will give it a value cexRow*14}
 
 \item{cexCol}{positive numbers. If not missing, it will override \code{yaxis_font_size}
 and will give it a value cexCol*14}
-
-\item{symbreaks}{\emph{logical} Arrange color bins symmetrically around zero?}
 }
 \description{
 Creates a D3.js-based heatmap widget.

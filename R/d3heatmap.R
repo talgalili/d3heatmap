@@ -178,7 +178,7 @@ d3heatmap <- function(x
   , theme = NULL
   , colors = "RdYlBu"
   , bins = NULL
-  , symmetrical = FALSE
+  , symbreaks = FALSE
 	
 	## axis controls
   , labRow = rownames(x)
@@ -201,8 +201,6 @@ d3heatmap <- function(x
 
 ) {
  
-  scale <- match.arg(scale)
-   
 	## Save the parameters for later API calls
   ##===========================================================
 	## For the updated API, we need to be able to access stuff passed into
@@ -216,19 +214,19 @@ d3heatmap <- function(x
 		, Colv = Colv
 		, distfun = distfun
 		, hclustfun = hclustfun
-		, dendrogram = dendrogram
+		, dendrogram = match.arg(dendrogram)
 		, reorderfun = reorderfun
 		, k_row = k_row
 		, k_col = k_col
 		, symm = symm
 		, revC = revC
-		, scale = scale
+		, scale = match.arg(scale)
 		, na.rm = na.rm
 		, na.value = na.value
 		, digits = digits
 		, cellnote = cellnote
 		, cellnote_scale = cellnote_scale
-		, labrow = labRow
+		, labRow = labRow
 		, labCol = labCol
 		, colors = colors
 		, symbreaks = symbreaks
@@ -247,7 +245,7 @@ d3heatmap <- function(x
 	
 	## Colors for the heatmap and the legend
   ##===========================================
-	hm_colors <- heatmapColors(x,
+	hm_colors <- heatmapColors(x
 								, params$colors
 								, params$na.color
 								, params$na.rm
@@ -281,7 +279,7 @@ d3heatmap <- function(x
     , xaxis_title_font_size = xaxis_title_font_size
     , yaxis_title_font_size = yaxis_title_font_size 
     , bins = hm_colors$bins
-    , symmetrical = symmetrical
+    , symbreaks = symbreaks
     , print_values = print.values
     , show_legend = show.legend
     , legend_title = legend.title

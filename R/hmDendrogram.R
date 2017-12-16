@@ -46,7 +46,6 @@
 #'   
 #' @import htmlwidgets
 #'   
-#' @export
 #' @source 
 #' The interface was inspired by \link{dygraphs}
 #'   
@@ -56,7 +55,8 @@
 #' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
 #' hmDendrogram(dendrogram = 'row', row.groups = 3)
 #' 
-hmDendrogram <- function(heatmap,
+#' @export
+hmDendrogram <- function(heatmap
 	## dendrogram control
   , dendrogram = c('row', 'column', 'both', 'none')
 	, reorder #Rowv & Colv
@@ -120,7 +120,7 @@ hmDendrogram <- function(heatmap,
 	}
 
 	if (col) {
-		if (missing(column.reorder) column.reorder <- reorder
+		if (missing(column.reorder)) column.reorder <- reorder
 		dendrogram <- 'col'
 
 		if(symmetrical) column.reorder <- row.reorder
@@ -136,7 +136,7 @@ hmDendrogram <- function(heatmap,
 	if(missing(reverse.columns)) reverse.columns <- params$revC
 
   new <- list(
-			dendrogram = dendrogram,
+			dendrogram = dendrogram
 			, Rowv = row.reorder
 			, Colv = column.reorder
 			, distfun = distance.function
