@@ -13,10 +13,10 @@ NULL
 #' @param theme A custom CSS theme to use. Currently the only valid values are 
 #'   \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 #'   standalone visualizations, not R Markdown or Shiny.
-#' @param colors Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} or
-#'   \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
-#'   \code{"#RRGGBB"} format, or a color interpolation function like
-#'   \code{\link[grDevices]{colorRamp}}.
+#' @param colors Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} 
+#' or \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
+#' \code{"#RRGGBB"} format, or a color interpolation function like
+#' \code{\link[grDevices]{colorRamp}}.
 #' @param bins \emph{integer} The number of colors to generate from the palette.
 #' @param symbreaks \emph{logical} Arrange color bins symmetrically around zero?
 #' @param Rowv determines if and how the row dendrogram 
@@ -133,9 +133,9 @@ NULL
 #' d3heatmap(mtcars, scale = "column", colors = "Blues")
 #' 
 #' 
-d3heatmap <- function(x,
+d3heatmap <- function(x
 	, main = NULL
-  , width = NULL,
+  , width = NULL
   , height = NULL
   , show_grid = TRUE
   , anim_duration = 500
@@ -162,15 +162,15 @@ d3heatmap <- function(x,
   ## legend 
   , legend.title = NULL
   , show.legend = FALSE
-  , legend.location = c("fl", "br", "tr", "tl", "tr"
+  , legend.location = c("fl", "br", "tr", "tl", "tr")
 	
   ## cellnote formatting
   , digits = 3L
   , cellnote = NULL
   , cellnote_scale = FALSE
   , cellnote_row = NULL
-  , cellnote_col = NULL,
-  , cellnote_val = "Value",
+  , cellnote_col = NULL
+  , cellnote_val = "Value"
   , brush_color = "#0000FF"
 	, print.values = FALSE
 
@@ -181,8 +181,8 @@ d3heatmap <- function(x,
   , symmetrical = FALSE
 	
 	## axis controls
-  , labRow = rownames(x),
-  , labCol = colnames(x),
+  , labRow = rownames(x)
+  , labCol = colnames(x)
   , xaxis_height = 80
   , yaxis_width = 120
   , xaxis_font_size = NULL
@@ -230,6 +230,11 @@ d3heatmap <- function(x,
 		, cellnote_scale = cellnote_scale
 		, labrow = labRow
 		, labCol = labCol
+		, colors = colors
+		, symbreaks = symbreaks
+		, na.color = na.color
+		, rng = rng
+		, bins = bins
 	)
 	
   
@@ -238,33 +243,18 @@ d3heatmap <- function(x,
 	## inserting new call to the heatmap function, which does everything up to 
 	## this point that d3heatmap did
 	hm <- do.call(heatmap, args = params)
-
 	x <- hm$x
 	
 	## Colors for the heatmap and the legend
   ##===========================================
-  if (is.factor(x)) {
-    legend_colors <- scales::col_bin(colors, domain = 1:length(factor(x)), 
-                                     na.color = na.color)(1:length(factor(x)))
-    colors <- scales::col_factor(colors, x, na.color = na.color)
-    
-  } else {
-    if (is.null(rng)) {
-          rng <- range(x, na.rm = TRUE)
-          if (scale %in% c("row", "column")) {
-              rng <- c(max(abs(rng)), -max(abs(rng)))
-          }
-    }
-  
-    if(is.null(bins)) {
-      bins <- 50
-      colors <- scales::col_numeric(colors, rng, na.color = na.color)
-    } else {
-      colors <- scales::col_bin(colors, rng, bins = bins, na.color = na.color)
-    }
-    legend_colors <- scales::col_bin(colors, domain = 1:bins, bins = bins, na.color = na.color)(1:bins)
-  }
-  
+	hm_colors <- heatmapColors(x,
+								, params$colors
+								, params$na.color
+								, params$na.rm
+								, params$rng
+								, params$scale
+								, params$bins
+							)
 
 	## axis and cellnote labels sync
   ##==============================
@@ -290,13 +280,13 @@ d3heatmap <- function(x,
     , yaxis_title = yaxis_title
     , xaxis_title_font_size = xaxis_title_font_size
     , yaxis_title_font_size = yaxis_title_font_size 
-    , bins = bins
+    , bins = hm_colors$bins
     , symmetrical = symmetrical
     , print_values = print.values
     , show_legend = show.legend
     , legend_title = legend.title
     , legend_location = legend.location
-		, legend_colors = legend_colors
+		, legend_colors = hm_colors$legend_colors
     , brush_color = brush_color
     , na_color = na.color
     , show_grid = show_grid
@@ -311,7 +301,7 @@ d3heatmap <- function(x,
  
  	## proceed to the widget
 	##=======================================	
-  imgUri <- encodeAsPNG(t(x), colors)
+  imgUri <- encodeAsPNG(t(x), hm_colors$colors)
 	
   payload <- list(
     rows = hm$rowDend 
