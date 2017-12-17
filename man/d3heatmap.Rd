@@ -22,7 +22,8 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
   yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
   yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14, cexRow, cexCol)
+  xaxis_title_font_size = 14, yaxis_title_font_size = 14, cexRow = NULL,
+  cexCol = NULL)
 }
 \arguments{
 \item{x}{A numeric matrix

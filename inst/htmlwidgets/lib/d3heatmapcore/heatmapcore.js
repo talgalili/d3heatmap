@@ -488,7 +488,6 @@ function heatmap(selector, data, options) {
   			.text(function(d, i) { return d.label; });
   		cellLabels.exit().remove();
   
-  		//TODO - make sure that this works with the Firefox issue
   		function drawCellLabels(selection) {
   			var cellHeight = (y(1) - y(0)) - spacing;
   			var cellWidth = (x(1) - x(0)) - spacing;
@@ -639,7 +638,7 @@ function heatmap(selector, data, options) {
         .call(axis);
     var yfontSize = opts['yaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (8))) + "px";
     var xfontSize = opts['xaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (11))) + "px";
-    var fontSize = (rotated ? yfontSize : xfontSize); 
+    var fontSize = (rotated ? xfontSize : yfontSize); 
       axisNodes.selectAll("text").style("font-size", fontSize);
     
     var mouseTargets = svg.append("g")

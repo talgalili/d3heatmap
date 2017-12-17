@@ -7,16 +7,18 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmDendrogram(heatmap, dendrogram = c("row", "column", "both", "none"),
-  reorder, row.reorder, column.reorder, distance.function, hclustfun,
-  reorderfun, row.groups, column.groups, symmetrical, reverse.columns)
+hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
+  reorder, row.reorder, column.reorder, distance.function, clustering.function,
+  reorder.function, groups, symmetrical, reverse.columns)
 }
 \arguments{
-\item{heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
+\item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
 
 \item{dendrogram}{\emph{Required} The dendrogram to process in this
 call, among \code{'row', 'col', 'both', 'none'}. Using the \code{'none'}
-value turns off any previous dendrogram settings.}
+value turns off any previous dendrogram settings. If reorder or row.reorder 
+and col.reorder are FALSE or NULL and dendrogram is 'both', then a warning 
+is issued and row.reorder (or col.reorder) arguments are honoured.}
 
 \item{reorder}{a parameter that allows the user to pass in a single 
 reordering value to use on the dendrograms specified in the 
@@ -30,11 +32,22 @@ is done. If a dendrogram, then it is used "as-is", ie without any
 reordering. If a vector of integers, then dendrogram is computed 
 and reordered based on the order of the vector.}
 
-\item{hclustfun}{function used to compute the hierarchical clustering 
-when Rowv or Colv are not dendrograms. Defaults to hclust.}
+\item{column.reorder}{determines if and how the column dendrogram should be 
+be reordered.    Has the options as the Rowv argument above and additionally 
+when x is a square matrix, Colv = "Rowv" means that columns should be 
+treated identically to the rows.}
 
-\item{reorderfun}{function(d, w) of dendrogram and weights for reordering 
-the row and column dendrograms.}
+\item{distance.function}{function used to compute the distance 
+(dissimilarity) between both rows and columns. Defaults to dist.}
+
+\item{clustering.function}{function used to compute the hierarchical 
+clustering when Rowv or Colv are not dendrograms. Defaults to hclust.}
+
+\item{reorder.function}{function(d, w) of dendrogram and weights for 
+reordering the row and column dendrograms.}
+
+\item{groups}{an integer scalar with the desired number of groups by which 
+to color the dendrogram's branches (uses \link[dendextend]{color_branches})}
 
 \item{reverse.columns}{logical indicating if the column order should be 
 reversed for plotting. Default (when missing) is FALSE, unless symmetrical
@@ -42,17 +55,7 @@ is TRUE. This is useful for correlation matrices.}
 
 \item{dendrogram}{\emph{Required} A character string indicating whether 
 to draw 'none', 'row', 'column' or 'both' dendrograms. 
-Defaults to 'both'. However, if reorder or row.reorder and col.reorder 
-are FALSE or NULL and dendrogram is 'both', then a warning is 
-issued and row.reorder (or col.reorder) arguments are honoured.}
-
-\item{col.reorder}{determines if and how the column dendrogram should be 
-reordered.    Has the options as the Rowv argument above and additionally 
-when x is a square matrix, Colv = "Rowv" means that columns should be 
-treated identically to the rows.}
-
-\item{distfun}{function used to compute the distance (dissimilarity) 
-between both rows and columns. Defaults to dist.}
+Defaults to 'both'. However,}
 }
 \description{
 Set and adjust the dendrograms for a d3heatmap object
@@ -61,6 +64,6 @@ Set and adjust the dendrograms for a d3heatmap object
 library(d3heatmap)
 library(dplyr)
 d3heatmap(mtcars, scale = "column", colors = "Blues") \%>\%
-hmDendrogram(dendrogram = 'row', row.groups = 3)
+  hmDendrogram(dendrogram = 'row', row.groups = 3)
 
 }

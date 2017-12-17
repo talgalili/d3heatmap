@@ -8,7 +8,7 @@ NULL
 #' 
 #' Set and adjust the colors and color options for the d3heatmap
 #' 
-#' @param heatmap \emph{Required} A valid \emph{d3heatmap} object
+#' @param d3heatmap \emph{Required} A valid \emph{d3heatmap} object
 #' 
 #' @param theme A custom CSS theme to use. Currently the only valid values 
 #' are \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
@@ -38,7 +38,7 @@ NULL
 #' @source 
 #' The interface was inspired by \link{dygraphs}
 #'   
-hmColors <- function(heatmap
+hmColors <- function(d3heatmap
   , theme = c('', 'dark')
   , colors
   , range
@@ -48,14 +48,14 @@ hmColors <- function(heatmap
 )
 {
   
-	if(missing(heatmap)) {
+	if(missing(d3heatmap)) {
     message("hmColors: no heatmap provided... returning NULL")
     return(NULL)
   }
 
 	## grab original and modified parameters to feed the color creation
-	params <- heatmap$params
-	x <- heatmap$x
+	params <- d3heatmap$x$params
+	x <- d3heatmap$x
 
 	## process new parameters passed
 	if(missing(colors)) colors <- params$colors
@@ -88,7 +88,7 @@ hmColors <- function(heatmap
 								, params$bins
 							)
 
-	if(missing(theme)) theme <- heatmap$theme
+	if(missing(theme)) theme <- d3heatmap$theme
 	else theme <- match.arg(theme)
 	
 	## proceed to the widget
@@ -100,7 +100,7 @@ hmColors <- function(heatmap
 		, bins = hm_colors$bins
 		, na_color = params$na.color
 	)
-	options <- mergeLists(heatmap$options, newOpts)
+	options <- mergeLists(d3heatmap$x$options, newOpts)
   
 	payload <- list(
     rows = hm$rowDend 
@@ -112,9 +112,9 @@ hmColors <- function(heatmap
 		, params = params
 	)
 
-	heatmap$x <- payload
+	d3heatmap$x <- payload
 
-	return(heatmap)
+	return(d3heatmap)
 }
 
 

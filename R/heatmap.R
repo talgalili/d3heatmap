@@ -67,13 +67,8 @@ heatmap <- function(
   ## Dendrograms for Row/Column 
   ##=======================
   # Use dendrogram argument to set defaults for Rowv/Colv
-  if (missing(Rowv)) {
-    Rowv <- dendrogram %in% c("both", "row")
-  }
-  if (missing(Colv)) {
-    Colv <- dendrogram %in% c("both", "column")
-  }
-
+  Rowv <- dendrogram %in% c("both", "row")
+  Colv <- dendrogram %in% c("both", "column")
 
   if (isTRUE(Rowv)) {
     Rowv <- rowMeans(x, na.rm = na.rm)

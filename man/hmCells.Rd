@@ -4,10 +4,12 @@
 \alias{hmCells}
 \title{Modify cell options}
 \usage{
-hmCells(heatmap, digits, cellnotes, scale, row.label, col.label, value.label,
+hmCells(d3heatmap, digits, cellnotes, scale, row.label, col.label, value.label,
   brush.color, print = FALSE)
 }
 \arguments{
+\item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
+
 \item{digits}{\emph{integer} (Optional) indicating the number of decimal places to be used by \link{round} for 'label'.}
 
 \item{cellnotes}{\emph{numeric} (Optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.

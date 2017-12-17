@@ -196,8 +196,8 @@ d3heatmap <- function(x
   , yaxis_title_font_size = 14
 
 	## deprecate these
-  , cexRow
-  , cexCol
+  , cexRow = NULL
+  , cexCol = NULL
 
 ) {
  

@@ -7,11 +7,11 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmColors(heatmap, theme = c("", "dark"), colors, range, color.bins,
+hmColors(d3heatmap, theme = c("", "dark"), colors, range, color.bins,
   symmetrical, na.color)
 }
 \arguments{
-\item{heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
+\item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
 
 \item{theme}{A custom CSS theme to use. Currently the only valid values 
 are \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 

@@ -95,13 +95,10 @@ hmAxis <- function(d3heatmap
 	hm <- do.call(heatmap, args = params)
   options <- mergeLists(options, opts)
 
-	new <- list(
-		matrix = hm$mtx
-		, params = params
-		, options = options
-	)
+	d3heatmap$x$matrix = hm$mtx
+	d3heatmap$x$params = params
+	d3heatmap$x$options = options
 
-	d3heatmap$x <- mergeLists(d3heatmap$x, new, recursive = F)
   return(d3heatmap)  
 }
 
