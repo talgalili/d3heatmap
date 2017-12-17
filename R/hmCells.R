@@ -21,6 +21,22 @@
 #'  Defaults to "Value".
 #' 
 #' @param print \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
+#'   
+#' @return Modified d3heatmap object
+#' 
+#' @import htmlwidgets
+#'   
+#' @source 
+#' The interface was inspired by \link{dygraphs}
+#' 
+#' @seealso 
+#' \link{heatmap}, \link[gplots]{heatmap.2}
+#' 
+#' @examples 
+#' library(d3heatmap)
+#' library(dplyr)
+#' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
+#'   hmCells(digits = 0L, print = T)
 #' 
 #' @export
 hmCells <- function(d3heatmap

@@ -47,11 +47,16 @@
 #' @param groups an integer scalar with the desired number of groups by which 
 #' to color the dendrogram's branches (uses \link[dendextend]{color_branches})
 #'   
+#' @return Modified d3heatmap object
+#' 
 #' @import htmlwidgets
 #'   
 #' @source 
 #' The interface was inspired by \link{dygraphs}
 #'   
+#' @seealso 
+#' \link{heatmap}, \link[gplots]{heatmap.2}
+#' 
 #' @examples 
 #' library(d3heatmap)
 #' library(dplyr)

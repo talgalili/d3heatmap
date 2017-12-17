@@ -3,6 +3,9 @@
 \name{hmCells}
 \alias{hmCells}
 \title{Modify cell options}
+\source{
+The interface was inspired by \link{dygraphs}
+}
 \usage{
 hmCells(d3heatmap, digits, cellnotes, scale, row.label, col.label, value.label,
   brush.color, print = FALSE)
@@ -28,6 +31,19 @@ Defaults to "Value".}
 
 \item{print}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
 }
+\value{
+Modified d3heatmap object
+}
 \description{
 Provides options for modifying the cells and the display of their values
+}
+\examples{
+library(d3heatmap)
+library(dplyr)
+d3heatmap(mtcars, scale = "column", colors = "Blues") \%>\%
+  hmCells(digits = 0L, print = T)
+
+}
+\seealso{
+\link{heatmap}, \link[gplots]{heatmap.2}
 }

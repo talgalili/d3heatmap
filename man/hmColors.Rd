@@ -36,6 +36,19 @@ useful when the range of values changes between heatmaps, but colors
 should be the same (optional, defaults to the minimum and maximum 
 of \code{x}).}
 }
+\value{
+Modified d3heatmap object
+}
 \description{
 Set and adjust the colors and color options for the d3heatmap
+}
+\examples{
+library(d3heatmap)
+library(dplyr)
+d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
+  hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
+  
+}
+\seealso{
+\link{heatmap}, \link[gplots]{heatmap.2}
 }

@@ -3,6 +3,9 @@
 \name{hmLegend}
 \alias{hmLegend}
 \title{Modify the d3heatmap legend}
+\source{
+The interface was inspired by \link{dygraphs}
+}
 \usage{
 hmLegend(heatmap, show = FALSE, title = NULL, location = c("fl", "br",
   "tr", "tl", "bl"))
@@ -24,4 +27,14 @@ Modified d3heatmap object
 }
 \description{
 Provides options for modifying the legend for a d3heatmap object
+}
+\examples{
+library(d3heatmap)
+library(dplyr)
+d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
+  hmLegend(show = T, title = "Title", location = "tl") \%>\% 
+  
+}
+\seealso{
+\link{heatmap}, \link[gplots]{heatmap.2}
 }

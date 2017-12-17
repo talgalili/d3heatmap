@@ -121,7 +121,6 @@ NULL
 #'         
 #' @import htmlwidgets
 #'   
-#' @export
 #' @source 
 #' The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 #' 
@@ -132,7 +131,7 @@ NULL
 #' library(d3heatmap)
 #' d3heatmap(mtcars, scale = "column", colors = "Blues")
 #' 
-#' 
+#' @export
 d3heatmap <- function(x
 	, main = NULL
   , width = NULL

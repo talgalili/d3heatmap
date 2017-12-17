@@ -20,6 +20,23 @@
 #' @param title Title text
 #' 
 #' @param title.font.size Font size of axis title in pixels. Defaults to 14.
+#'   
+#' @return Modified d3heatmap object
+#' 
+#' @import htmlwidgets
+#'   
+#' @source 
+#' The interface was inspired by \link{dygraphs}
+#' 
+#' @seealso 
+#' \link{heatmap}, \link[gplots]{heatmap.2}
+#' 
+#' @examples 
+#' library(d3heatmap)
+#' library(dplyr)
+#' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
+#'   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') %>% 
+#'   hmAxis("y", title = "test", location = 'right')
 #' 
 #' @export
 hmAxis <- function(d3heatmap

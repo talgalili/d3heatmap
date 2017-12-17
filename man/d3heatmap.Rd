@@ -179,7 +179,6 @@ Creates a D3.js-based heatmap widget.
 library(d3heatmap)
 d3heatmap(mtcars, scale = "column", colors = "Blues")
 
-
 }
 \seealso{
 \link{heatmap}, \link[gplots]{heatmap.2}

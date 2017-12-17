@@ -57,6 +57,9 @@ is TRUE. This is useful for correlation matrices.}
 to draw 'none', 'row', 'column' or 'both' dendrograms. 
 Defaults to 'both'. However,}
 }
+\value{
+Modified d3heatmap object
+}
 \description{
 Set and adjust the dendrograms for a d3heatmap object
 }
@@ -66,4 +69,7 @@ library(dplyr)
 d3heatmap(mtcars, scale = "column", colors = "Blues") \%>\%
   hmDendrogram(dendrogram = 'row', row.groups = 3)
 
+}
+\seealso{
+\link{heatmap}, \link[gplots]{heatmap.2}
 }

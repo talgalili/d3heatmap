@@ -32,12 +32,23 @@ NULL
 #' should be the same (optional, defaults to the minimum and maximum 
 #' of \code{x}).
 #'   
+#' @return Modified d3heatmap object
+#' 
 #' @import htmlwidgets
 #'   
-#' @export
 #' @source 
 #' The interface was inspired by \link{dygraphs}
 #'   
+#' @seealso 
+#' \link{heatmap}, \link[gplots]{heatmap.2}
+#' 
+#' @examples 
+#' library(d3heatmap)
+#' library(dplyr)
+#' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
+#'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
+#'   
+#' @export
 hmColors <- function(d3heatmap
   , theme = c('', 'dark')
   , colors

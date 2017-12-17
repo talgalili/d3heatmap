@@ -1,14 +1,15 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
-Version: 0.6.1.1
-Date: 2016-02-23
+Version: 0.7
+Date: 2017-12-17
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
     person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
     person("RStudio, Inc.", role = c("cph")),
     person("Michael", "Bostock", role = c("ctb", "cph"), comment = "D3.js library"),
-    person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library")
+    person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library"),
+    person("Kent", "Laukhuf", role = c("ctb"), email = "laukhuf@gmail.com")
     )
 Maintainer: Joe Cheng <joe@rstudio.com>
 Description: Create interactive heat maps that are usable from the R console, in the
@@ -31,13 +32,13 @@ VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
 Collate:
+    'colors.R'
     'd3heatmap.R'
     'dendrogram.R'
     'heatmap.R'
-    'colors.R'
     'hmAxis.R'
-    'hmColors.R'
     'hmCells.R'
+    'hmColors.R'
     'hmDendrogram.R'
     'hmLegend.R'
     'utils.R'
