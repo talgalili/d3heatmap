@@ -1,5 +1,6 @@
+.gitignore
 .Rproj.user
 .Rhistory
 .RData
 change_log
-apiTests.R
+*.swp
