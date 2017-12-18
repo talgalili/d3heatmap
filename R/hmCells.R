@@ -21,7 +21,12 @@
 #'  Defaults to "Value".
 #' 
 #' @param print \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
-#'   
+#' 
+#' @param color \emph{character} name or hex specifying the color of the values printed
+#' inside the cells
+#' 
+#' @param font.size \emph{numeric} the pixel size of printed cell
+#' 
 #' @return Modified d3heatmap object
 #' 
 #' @import htmlwidgets
@@ -35,22 +40,24 @@
 #' @examples 
 #' library(d3heatmap)
 #' library(dplyr)
-#' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
+#' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmCells(digits = 0L, print = T)
 #' 
 #' @export
 hmCells <- function(d3heatmap
   , digits
   , cellnotes # cellnote
+  , font.size #notecex
+  , color #notecol
   , scale # cellnote_scale
   , row.label # cellnote_row
   , col.label # cellnote_col
   , value.label # cellnote_val
   , brush.color # brush_color
-  , print = FALSE # print.values
+  , print # print.values
 ) {
 
-  if(missing(d3heatmap)) {
+  if (missing(d3heatmap)) {
 		message("hmLegend: no heatmap provided... returning NULL")
 		return(NULL)
 	}
@@ -59,10 +66,12 @@ hmCells <- function(d3heatmap
 	params <- d3heatmap$x$params
 	options <- d3heatmap$x$options
 
-	if(missing(digits)) digits <- params$digits
-	if(missing(scale)) scale <- params$cellnote_scale
-	if(missing(cellnotes)) cellnotes <- params$cellnote
+	if (missing(digits)) digits <- params$digits
+	if (missing(scale)) scale <- params$cellnote_scale
+	if (missing(cellnotes)) cellnotes <- params$cellnote
+	if (missing(cellnotes)) cellnotes <- params$cellnote
 
+	
 	new <- list(
 		digits  = digits
 		, scale = scale
@@ -78,16 +87,20 @@ hmCells <- function(d3heatmap
 
 	## Process the additional options and then merge
   ##==============================================
-	if(missing(row.label)) row.label <- options$cellnote_row
-	if(missing(col.label)) col.label <- options$cellnote_col
-	if(missing(value.label)) value.label <- options$cellnote_val
-	if(missing(brush.color)) brush.color <- options$brush_color
-	if(missing(print)) print <- options$print.values
+	if (missing(row.label)) row.label <- options$cellnote_row
+	if (missing(col.label)) col.label <- options$cellnote_col
+	if (missing(value.label)) value.label <- options$cellnote_val
+	if (missing(brush.color)) brush.color <- options$brush_color
+	if (missing(print)) print <- options$print_values
+	if (missing(font.size)) font.size <- options$cellnote_fontsize
+	if (missing(color)) color <- options$cellnote_color
 
 	opts <- list(
     cellnote_row = row.label
     , cellnote_col = col.label
     , cellnote_val = value.label
+    , cellnote_color = color
+    , cellnote_fontsize = font.size
     , brush_color = brush.color
     , print_values = print
 	)

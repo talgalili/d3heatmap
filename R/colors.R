@@ -4,12 +4,13 @@
 
 heatmapColors <- function(
   x
-  , colors
+  , col
   , na.color
   , na.rm
   , rng
   , scale
-  , bins
+  , breaks
+  , symm
 	
   ## need ability to accept extra args without using them
 	, ...
@@ -18,36 +19,55 @@ heatmapColors <- function(
 
 	## process colors and parameters to create the pallette
   if (is.factor(x)) {
-    legend_colors <- scales::col_bin(colors, domain = 1:length(factor(x)), 
+    legend_colors <- scales::col_bin(col, domain = 1:length(factor(x)), 
                                      na.color = na.color)(1:length(factor(x)))
-    colors <- scales::col_factor(colors, x, na.color = na.color)
+    col <- scales::col_factor(col, x, na.color = na.color)
+    legend_bins <- sort(as.integer(factor(x)))
+    legend_breaks <- legend_bins
     
   } else {
     if (is.null(rng)) {
           rng <- range(x, na.rm = TRUE)
-          if (scale %in% c("row", "column")) {
-              rng <- c(max(abs(rng)), -max(abs(rng)))
-          }
+          if (symm) rng <- c(max(abs(rng)), -max(abs(rng)))
     }
-  
-    if(is.null(bins)) {
-      bins <- 50
-      colors <- scales::col_numeric(colors, rng, na.color = na.color)
+ 
+    ## create color-generating function(s) 
+    vals <- unique(sort(x))
+    if (is.null(breaks)) breaks <- 16
+    
+    if (length(breaks)==1) {
+			# need to include all the possible breakpoints when getting the total 
+			# color list for the legend
+			breaks_ <- breaks
+      vals <- seq(min(rng), max(rng), (max(rng) - min(rng)) / breaks_)
+      
+			cols <- scales::col_bin(col, rng, bins = vals, na.color = na.color)
+      legend_colors <- unique(cols(vals))
+      legend_breaks <- vals
+      
     } else {
-      colors <- scales::col_bin(colors, rng, bins = bins, na.color = na.color)
+      breaks_ <- unique(sort(c(breaks, rng)))
+      cols <- scales::col_bin(col, rng, bins = breaks_, na.color = na.color)
+      
+      # need to include both forced bins and the original values to get
+      # the union of all possible bins (some bins might not have any instances)
+      vals <- c(breaks_, vals)
+      legend_colors <- unique(cols(vals))
+      legend_breaks <- breaks_
+    
     }
-    legend_colors <- scales::col_bin(colors, 
-																		 domain = 1:bins, 
-																		 bins = bins, 
-																		 na.color = na.color)(1:bins)
+    legend_bins <- length(legend_colors)
+  
   }
 
 	# create the list to return to the calling environment
 	lst <- list(
 		legend_colors = legend_colors
-		, colors = colors
+		, legend_bins = legend_bins
+		, legend_breaks = legend_breaks
+		, col = cols
 		, rng = rng
-		, bins = bins
+		, breaks = breaks_
 	)	
 
 	return(lst)

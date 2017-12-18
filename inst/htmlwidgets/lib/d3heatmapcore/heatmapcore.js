@@ -1,7 +1,6 @@
 function heatmap(selector, data, options) {
 
   // ==== BEGIN HELPERS =================================
-  
   function htmlEscape(str) {
     return (str+"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
@@ -148,6 +147,7 @@ function heatmap(selector, data, options) {
     this._datapoint_hover = {x: null, y: null, value: null};
     this._transform = null;
   };
+
   (function() {
     this.highlight = function(x, y) {
       // Copy for safety
@@ -182,42 +182,20 @@ function heatmap(selector, data, options) {
   var controller = new Controller();
 
   // Set option defaults
-  var opts = {};
-  options = options || {};
+  var opts = options || {};
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
   opts.link_color = opts.link_color || "#AAA";
-  opts.xaxis_height = options.xaxis_height || 80;
-  opts.yaxis_width = options.yaxis_width || 120;
+  opts.xaxis_height = (options.xaxis_height || 80) * options.legend_scaler;
+  opts.yaxis_width = (options.yaxis_width || 120) * options.legend_scaler;
   opts.axis_padding = options.axis_padding || 6;
-  opts.show_grid = options.show_grid;
-  opts.cellnote_row = options.cellnote_row; 
-  opts.cellnote_col = options.cellnote_col; 
-  opts.cellnote_var = options.cellnote_var; 
   if (typeof(opts.show_grid) === 'undefined') {
     opts.show_grid = true;
   }
   opts.brush_color = options.brush_color || "#0000FF";
-  opts.na_color = options.na_color;
-  opts.xaxis_font_size = options.xaxis_font_size;
-  opts.yaxis_font_size = options.yaxis_font_size;
-  opts.xaxis_angle = options.xaxis_angle;
-  opts.xaxis_location = options.xaxis_location;
-  opts.yaxis_location = options.yaxis_location;
-  opts.xaxis_title = options.xaxis_title;
-  opts.yaxis_title = options.yaxis_title;
-  opts.xaxis_title_font_size = options.xaxis_title_font_size;
-  opts.yaxis_title_font_size = options.yaxis_title_font_size; 
-  opts.anim_duration = options.anim_duration;
-  opts.cellnote_val = options.cellnote_val;
-	opts.print_values = options.print_values;
-	opts.show_legend = options.show_legend;
-	opts.legend_location = options.legend_location;
-	opts.legend_title = options.legend_title;
-	opts.legend_colors = options.legend_colors;
-	opts.bins = options.bins;
-	opts.symmetrical = options.symmetrical;
-  if (typeof(opts.anim_duration) === 'undefined') {
+	opts.cellnote_color = options.cellnote_color || "#888888";
+  
+	if (typeof(opts.anim_duration) === 'undefined') {
     opts.anim_duration = 500;
   }
 
@@ -235,12 +213,12 @@ function heatmap(selector, data, options) {
   opts.rightEl_width = opts.yaxis_width;
   opts.yclust_width = opts.leftEl_width; // need this for later
  
-  
   opts.leftTitle_width = 0;
   opts.rightTitle_width = yaxis_title_width;
   opts.topTitle_height = 0;
   opts.bottomTitle_height = xaxis_title_height;
-  
+ 
+	// adjust element dimensions if an axis location has been switched	
   var tmpEl;
   if (opts.yaxis_location === "left") {
     tmpEl = opts.leftEl_width;
@@ -259,6 +237,30 @@ function heatmap(selector, data, options) {
     opts.bottomTitle_height = 0;
     opts.topTitle_height = xaxis_title_height;  
   }
+
+	// lastly, adjust the bounds sizes for the presence of the legend	
+	if(opts.show_legend) {
+			switch (opts.legend_location) {
+				case "br":
+    				opts.bottomEl_height = Math.max(opts.bottomEl_height, 80);
+    				opts.rightEl_width = Math.max(opts.rightEl_width, 120);
+						break;
+				case "tr":
+    				opts.topEl_height = Math.max(opts.topEl_height, 80);
+    				opts.rightEl_width = Math.max(opts.rightEl_width, 120);
+						break;
+				case "tl":
+    				opts.topEl_height = Math.max(opts.topEl_height, 80);
+    				opts.leftEl_width = Math.max(opts.leftEl_width, 120);
+						break;
+				case "bl":
+    				opts.bottomEl_height = Math.max(opts.bottomEl_height, 80);
+    				opts.leftEl_width = Math.max(opts.leftEl_width, 120);
+						break;
+				default:
+						break;
+			}
+	}
   
   gridSizer = new GridSizer(
     [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
@@ -504,20 +506,21 @@ function heatmap(selector, data, options) {
           .domain(leaves)
           .rangeBands([0, yaxis_height]);
 
-   			// take the minimum of the calculate y and x font sizes 
+   			// take the specified size or the minimum of the calculate y and x font sizes 
 				var yfontSize = opts['yaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (8)));
 		    var xfontSize = opts['xaxis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (11)));
   
-        var fontSize = Math.min(yfontSize, xfontSize);
-  
-  			selection
+        var fontSize = opts.cellnote_fontsize ? opts.cellnote_fontsize : Math.min(yfontSize, xfontSize);
+  			
+				selection
   				.attr("x", function(d, i) {
   					return x(i % cols) + cellWidth/2 - 1 - ((numDigits(d.label) - 1) * fontSize/2);
   				})
   				.attr("y", function(d, i) {
   					return y(Math.floor(i / cols)) + cellHeight/2 + fontSize/2;
   				})
-  				.attr("font-size",fontSize + "px");
+  				.style("font-size", fontSize + "px")
+					.style("fill", opts.cellnote_color);
   		}
   		drawCellLabels(cellLabels);
     }
@@ -650,7 +653,8 @@ function heatmap(selector, data, options) {
     mouseTargets
       .enter()
         .append("g").append("rect")
-          .attr("transform", rotated ? (axis_location === "bottom" ? "rotate(" + opts.xaxis_angle + "),translate(0,0)": "rotate(-" + opts.xaxis_angle + "),translate(0,0)") : "")
+          .attr("transform", rotated ? (axis_location === "bottom" ? "rotate(" + opts.xaxis_angle + 
+									"),translate(0,0)": "rotate(-" + opts.xaxis_angle + "),translate(0,0)") : "")
           .attr("fill", "transparent")
           .on("click", function(d, i) {
             var dim = rotated ? 'x' : 'y';
@@ -745,34 +749,28 @@ function heatmap(selector, data, options) {
   }
  
 	function legend(svg, data, options, height, width) {
-    if (data.length === 0)
+    if (data.x.length === 0)
       return function() {};
 
+		var breaks = options.legend_breaks;
 		var legend_title = options.legend_title;
 
-    var max = d3.max(data.x);
-    var min = d3.min(data.x);
-		if(options.symmetrical) {
-      min = Math.abs(max) > Math.abs(min) ? (0 - max) : min
-      max = Math.abs(min) >= Math.abs(max) ? max : min
-    }
-    
-		var interval = (max - min) / options.bins;
+    var max = d3.max(breaks);
+    var min = d3.min(breaks);
+
+		var interval = (max - min) / (breaks.length - 1);
     var n = min;
     var intervals = [];
     while(n <= max) {
       intervals.push(n);
       n += interval;
-    }     
-    
+    }
+
 		var colorscale = d3.scale.linear()
       .domain(intervals)
       .range(options.legend_colors);
 
-    var hist = d3.layout.histogram(data.x)
-      .bins(options.bins);
-
-    var blockwidth = width / options.bins;
+    var blockwidth = width / (breaks.length - 1);
 
     var legendscale = d3.scale.linear()
       .domain([min, max])
@@ -794,9 +792,9 @@ function heatmap(selector, data, options) {
       	.attr("transform", "translate(0, 10)");
 		}
 
-    var legend_key = d3.select('.legend')
+    var legend = d3.select('.legend')
       .append("g")
-      .attr("class", "legend_key")
+      .attr("class", "legend")
       .attr("transform", "translate(0, 45)")
       .attr('width', '100%');
 
@@ -807,42 +805,31 @@ function heatmap(selector, data, options) {
       .domain([0, d3.max(histdata, function(d) { return d.y; })])
       .range([0, height / 2]);
 
-  	var bar = legend_key.selectAll(".bar")
+  	var bar = legend.selectAll(".bar")
       .data(histdata)
     	.enter().append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) {
-        return(-histy(d.y))
-      })
-      .attr("x", function(d) {
-        return(legendscale(d.x));
-      })
+      .attr("y", function(d) { return(-histy(d.y)) })
+      .attr("x", function(d) { return(legendscale(d.x)); })
       .attr("width", blockwidth)
-      .attr("height", function(d) {
-        return(histy(d.y))})
-      .attr("fill", function(d) {
-        return(colorscale(d.x))
-      });
+      .attr("height", options.legend_type == 'histogram' ? function(d) { return(histy(d.y)) } : 0)
+      .attr("fill", options.legend_fill ? options.legend_fill : function(d) { return(colorscale(d.x)) });
 
-  	legend_key.append("rect")
+  	legend.append("rect")
   	  .attr("width", width)
   	  .attr("height", 8)
   	  .attr("fill", "transparent")
   	  .classed("legendbox", true);
 
-  	legend_key.selectAll(".legend")
+  	legend.selectAll(".legend")
   	  .data(intervals)
   	  .enter().append("rect")
   	  .attr("height", 8)
-  	  .attr("x", function(d) {
-  	    return (legendscale(d)); 
-  	  })
+  	  .attr("x", function(d) { return (legendscale(d)); })
   	  .attr("width", blockwidth)
-  	  .attr("fill", function(d) { 
-  	    return(colorscale(d)); 
-  	  });
+  	  .attr("fill", function(d) { return(colorscale(d)); });
     
-			legend_key.call(xAxis);
+		legend.call(xAxis);
 	}
   
   function edgeStrokeWidth(node) {

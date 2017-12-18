@@ -22,13 +22,13 @@ are \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for
 to interpolate in hexadecimal \code{"#RRGGBB"} format, or a color 
 interpolation function like \code{\link[grDevices]{colorRamp}}.}
 
-\item{na.color}{Color of NA values in heatmap. Defaults to neutral gray.}
+\item{color.bins}{\emph{numeric} The number of colors to generate from 
+the palette, or the breakpoints between the bins}
 
-\item{bins}{\emph{integer} The number of colors to generate from 
-the palette.}
-
-\item{symbreaks}{\emph{logical} Arrange color bins symmetrically around 
+\item{symmetrical}{\emph{logical} Arrange color bins symmetrically around 
 zero?}
+
+\item{na.color}{Color of NA values in heatmap. Defaults to neutral gray.}
 
 \item{rng}{A vector of two numbers, namely the minimum and maximum value
   to use when determining the mapping from values to colors. This is 

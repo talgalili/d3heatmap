@@ -48,16 +48,13 @@ heatmap <- function(
   
 	## x is a matrix!
   ##====================
-  if(!is.matrix(x)) {
+  if (!is.matrix(x)) {
     x <- as.matrix(x)
   }
-  if(!is.matrix(x)) stop("x must be a matrix")
+  if (!is.matrix(x)) stop("x must be a matrix")
   
   nr <- dim(x)[1]
   nc <- dim(x)[2]
-  ### TODO: debating if to include this or not:
-  #   if(nr <= 1 || nc <= 1)
-  #     stop("`x' must have at least 2 rows and 2 columns")
 
   ## Labels for Row/Column 
   ##======================
@@ -79,7 +76,7 @@ heatmap <- function(
   if (is.dendrogram(Rowv)) {
     Rowv <- rev(Rowv)
     rowInd <- order.dendrogram(Rowv)
-    if(nr != length(rowInd))
+    if (nr != length(rowInd))
       stop("Row dendrogram is the wrong size")
   } else {
     if (!is.null(Rowv) && !is.na(Rowv) && !identical(Rowv, FALSE))
@@ -110,16 +107,16 @@ heatmap <- function(
   
   ## revC
   ##=======================
-  if(is.null(revC)) {
+  if (is.null(revC)) {
     if (symm) {
       revC <- TRUE
-    } else if(is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, rev(Colv))) {
+    } else if (is.dendrogram(Colv) & is.dendrogram(Rowv) & identical(Rowv, rev(Colv))) {
       revC <- TRUE
     } else {
       revC <- FALSE
     }
   }
-  if(revC) {
+  if (revC) {
     Colv <- rev(Colv)
     colInd <- rev(colInd)
   }
@@ -137,49 +134,48 @@ heatmap <- function(
   #----------------
     # Due to the internal working of dendextend, in order to use it we first need
       # to populate the dendextend::dendextend_options() space:
-  if(!is.null(k_row) | !is.null(k_col)) dendextend::assign_dendextend_options()
+  if (!is.null(k_row) | !is.null(k_col)) dendextend::assign_dendextend_options()
   
-  if(is.dendrogram(Rowv) & !is.null(k_row)) {
+  if (is.dendrogram(Rowv) & !is.null(k_row)) {
     Rowv <- dendextend::color_branches(Rowv, k = k_row)
   }
-  if(is.dendrogram(Colv) & !is.null(k_col)) {
+  if (is.dendrogram(Colv) & !is.null(k_col)) {
     Colv <- dendextend::color_branches(Colv, k = k_col)
   }
   
-  rowDend <- if(is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
-  colDend <- if(is.dendrogram(Colv)) dendToTree(Colv) else NULL
+  rowDend <- if (is.dendrogram(Rowv)) dendToTree(Rowv) else NULL
+  colDend <- if (is.dendrogram(Colv)) dendToTree(Colv) else NULL
 
   
   ## Scale the data?
   ##====================
 	# keep a backup for cellnote
-  if(!cellnote_scale) x_unscaled <- x 
+  if (!cellnote_scale) x_unscaled <- x 
   
   if (!is.na(na.value)) {
     na.rm <- TRUE 
     x[which(x == na.value)] <- NA
   }
   
-  if(scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-    
-  }
-  else if(scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-  }
-  
   # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
   # mtcars$am when na.value == 0 and scaling by column), the functions above
   # will return NaN, which will be translated to NA... 
   # therefor we will replace all NaN's with .5)
-  x[is.nan(x)] <- .5
+  if (scale == "row") {
+    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+    x[is.nan(x)] <- .5
+  }
+  else if (scale == "column") {
+    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
+    x[is.nan(x)] <- .5
+  }
   
   ## cellnote
   ##====================================================
-  if(is.null(cellnote)) {
-    if(cellnote_scale) {
+  if (is.null(cellnote)) {
+    if (cellnote_scale) {
       cellnote <- round(x, digits = digits)
     } else { # default
       cellnote <- round(x_unscaled, digits = digits)

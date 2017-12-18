@@ -7,20 +7,30 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmLegend(heatmap, show = FALSE, title = NULL, location = c("fl", "br",
-  "tr", "tl", "bl"))
+hmLegend(heatmap, show = TRUE, size, title, location = c("fl", "br", "tr",
+  "tl", "bl"), density = c("histogram", "none"), density.fill = NULL)
 }
 \arguments{
 \item{show}{\emph{Required, logical} Show color key and density
 information? \code{TRUE/FALSE}. Defaults to \code{FALSE}}
 
-\item{title}{\emph{Optional, character} Separate title for legend. 
+\item{size}{\emph{numeric} value indicating the relative size of the key. 
+Will multiple the row and column axis sizes. Defaults to 1}
+
+\item{title}{\emph{Optional, character} Separate title for color key (legend). 
 Defaults to \code{NULL}.}
 
-\item{location}{\emph{Required, character} Location for legend, either 
+\item{location}{\emph{Required, character} Location for legend (color key), either 
 \code{"fl", "br", "tr", "tl", or "bl"} for "float", "bottom right", 
 "top right", "top left", and "bottom left". Defaults to \code{"fl"}, 
 which follows the location of the axis labels.}
+
+\item{density}{\emph{Optional, character} indicating whether to superimpose 
+a 'histogram' or no plot ('none') on the color-key (legend).}
+
+\item{density.fill}{\emph{Optional, character} giving the color for the density 
+display specified by 'density', defaults to \code{NULL} which will fill the
+bars with the same color as the bin}
 }
 \value{
 Modified d3heatmap object
@@ -31,7 +41,7 @@ Provides options for modifying the legend for a d3heatmap object
 \examples{
 library(d3heatmap)
 library(dplyr)
-d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
+d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) \%>\% 
   hmLegend(show = T, title = "Title", location = "tl") \%>\% 
   
 }

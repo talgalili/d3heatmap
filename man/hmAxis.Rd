@@ -7,9 +7,8 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size = NULL, labels,
-  font.size = NULL, angle = NULL, location, title = NULL,
-  title.font.size = NULL)
+hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size, labels,
+  font.size, angle, location, title, title.font.size)
 }
 \arguments{
 \item{axis}{Name of the axis to modify; either "x", "y", "row", or "column"}
@@ -18,7 +17,8 @@ hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size = NULL, labels,
 
 \item{labels}{character vectors with axis labels to use (top to bottom for y axis, left to right for x); default to rownames(x) or colnames(x).}
 
-\item{font.size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+\item{font.size}{integer Font size of axis labels, in pixels (i.e., will be translated to a 
+character string with 'px' appended)}
 
 \item{angle}{Angle of x axis labels (x axis only). Defaults to 60. Maximum of 90 (vertical), minimum of 25.}
 
@@ -40,7 +40,7 @@ Provides options for modifying the x and y axes of a D3 Heatmap widget
 \examples{
 library(d3heatmap)
 library(dplyr)
-d3heatmap(mtcars, scale = "column", colors = "Blues") \%>\%
+d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') \%>\% 
   hmAxis("y", title = "test", location = 'right')
 

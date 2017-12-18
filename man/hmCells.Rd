@@ -7,8 +7,8 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmCells(d3heatmap, digits, cellnotes, scale, row.label, col.label, value.label,
-  brush.color, print = FALSE)
+hmCells(d3heatmap, digits, cellnotes, font.size, color, scale, row.label,
+  col.label, value.label, brush.color, print)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
@@ -17,6 +17,11 @@ hmCells(d3heatmap, digits, cellnotes, scale, row.label, col.label, value.label,
 
 \item{cellnotes}{\emph{numeric} (Optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
+
+\item{font.size}{\emph{numeric} the pixel size of printed cell}
+
+\item{color}{\emph{character} name or hex specifying the color of the values printed
+inside the cells}
 
 \item{scale}{\emph{logical} (default is FALSE). If cellnote is missing and x is used, should cellnotes be scaled if x is also scaled?}
 
@@ -40,7 +45,7 @@ Provides options for modifying the cells and the display of their values
 \examples{
 library(d3heatmap)
 library(dplyr)
-d3heatmap(mtcars, scale = "column", colors = "Blues") \%>\%
+d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmCells(digits = 0L, print = T)
 
 }

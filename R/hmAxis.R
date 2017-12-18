@@ -10,7 +10,8 @@
 #' 
 #' @param labels character vectors with axis labels to use (top to bottom for y axis, left to right for x); default to rownames(x) or colnames(x).
 #' 
-#' @param font.size Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").
+#' @param font.size integer Font size of axis labels, in pixels (i.e., will be translated to a 
+#' character string with 'px' appended)
 #' 
 #' @param angle Angle of x axis labels (x axis only). Defaults to 60. Maximum of 90 (vertical), minimum of 25.
 #' 
@@ -34,23 +35,23 @@
 #' @examples 
 #' library(d3heatmap)
 #' library(dplyr)
-#' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
+#' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') %>% 
 #'   hmAxis("y", title = "test", location = 'right')
 #' 
 #' @export
 hmAxis <- function(d3heatmap
   , axis = c("x", "y", "row", "column")
-  , size = NULL
+  , size
   , labels
-  , font.size = NULL
-  , angle = NULL
+  , font.size
+  , angle
   , location
-  , title = NULL
-  , title.font.size = NULL
+  , title
+  , title.font.size
 ) {
   
-  if(missing(axis)) {
+  if (missing(axis)) {
     message("hmAxis: no axis specified... returning original heatmap")
     return(d3heatmap)
   }
@@ -62,15 +63,21 @@ hmAxis <- function(d3heatmap
   axis <- match.arg(axis)
   
   if (axis %in% c("x", "column")) {
+   
+    if (missing(size)) size <- options$xaxis_height 
+    if (missing(title)) title <- options$xaxis_title
+    if (missing(title.font.size)) title.font.size <- options$xaxis_title_font_size
     
-    if(!missing(location)) xaxis_location <- match.arg(location, c('bottom', 'top'))
+    if (!missing(location)) xaxis_location <- match.arg(location, c('bottom', 'top'))
     else xaxis_location <- options$xaxis_location
   
-    if(!missing(labels)) colnames(x) <- labels
+    if (missing(font.size)) font.size <- options$xaxis_font_size
+    if (!missing(labels)) colnames(x) <- labels
    
     cellnote_col <- options$cellnote_col 
-    if(is.null(cellnote_col)) cellnote_col <- title
-	  
+    if (is.null(cellnote_col)) cellnote_col <- title
+  
+    if (missing(angle)) angle <- options$srtCol 
     angle <- min(90, max(angle, 25))
     
     opts <- list(
@@ -84,14 +91,19 @@ hmAxis <- function(d3heatmap
     )
     
   } else if (axis %in% c("y", "row")) {
+    if (missing(size)) size <- options$yaxis_width
+    if (missing(title)) title <- options$yaxis_title
+    if (missing(title.font.size)) title.font.size <- options$yaxis_title_font_size
     
-    if(!missing(location)) yaxis_location <- match.arg(location, c('right', 'left'))
+    if (missing(font.size)) font.size <- options$yaxis_font_size
+    
+    if (!missing(location)) yaxis_location <- match.arg(location, c('right', 'left'))
     else yaxis_location <- options$yaxis_location
     
-    if(!missing(labels)) rownames(x) <- labels
+    if (!missing(labels)) rownames(x) <- labels
     
     cellnote_row <- options$cellnote_row 
-    if(is.null(cellnote_row)) cellnote_row <- title
+    if (is.null(cellnote_row)) cellnote_row <- title
   
     opts <- list(
       yaxis_width = size,
@@ -103,18 +115,23 @@ hmAxis <- function(d3heatmap
     )
   
   } else return(d3heatmap)
-  
-  params$x <- x
+
+  # we only have to re-run the heatmap creation if we've 
+  # changed the row or columns names for the matrix 
+  if (missing(labels)) {
+    params$x <- x
+  	
+    ## call heatmap with the updated params and save
+  	## the params with the heatmap for later use
+    ##==============================================
+  	hm <- do.call(heatmap, args = params)
+	  d3heatmap$x$matrix <- hm$mtx
+	  d3heatmap$x$params <- params
+  }
 	
-	## call heatmap with the updated params and save
-	## the params with the heatmap for later use
-  ##==============================================
-	hm <- do.call(heatmap, args = params)
   options <- mergeLists(options, opts)
 
-	d3heatmap$x$matrix = hm$mtx
-	d3heatmap$x$params = params
-	d3heatmap$x$options = options
+	d3heatmap$x$options <- options
 
   return(d3heatmap)  
 }

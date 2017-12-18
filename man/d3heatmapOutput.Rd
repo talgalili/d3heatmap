@@ -42,7 +42,7 @@ server <- function(input, output, session) {
   output$heatmap <- renderD3heatmap({
     d3heatmap(
       scale(mtcars),
-      colors = input$palette,
+      col = input$palette,
       dendrogram = if (input$cluster) "both" else "none"
     )
   })

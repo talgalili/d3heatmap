@@ -19,9 +19,10 @@ NULL
 #' to interpolate in hexadecimal \code{"#RRGGBB"} format, or a color 
 #' interpolation function like \code{\link[grDevices]{colorRamp}}.
 #' 
-#' @param bins \emph{integer} The number of colors to generate from 
-#' the palette.
-#' @param symbreaks \emph{logical} Arrange color bins symmetrically around 
+#' @param color.bins \emph{numeric} The number of colors to generate from 
+#' the palette, or the breakpoints between the bins
+#' 
+#' @param symmetrical \emph{logical} Arrange color bins symmetrically around 
 #' zero?
 #' 
 #' @param na.color Color of NA values in heatmap. Defaults to neutral gray.
@@ -59,26 +60,37 @@ hmColors <- function(d3heatmap
 )
 {
   
-	if(missing(d3heatmap)) {
+	if (missing(d3heatmap)) {
     message("hmColors: no heatmap provided... returning NULL")
     return(NULL)
   }
-
+ 
 	## grab original and modified parameters to feed the color creation
 	params <- d3heatmap$x$params
 	x <- d3heatmap$x
 
 	## process new parameters passed
-	if(missing(colors)) colors <- params$colors
-	if(missing(range)) range <- params$rng
-	if(missing(color.bins)) color.bins <- params$bins
-	if(missing(symmetrical)) symmetrical <- params$symbreaks
-	if(missing(na.color)) na.color <- params$na.color
+	if (missing(colors)) colors <- params$col
+	if (missing(range)) range <- params$rng
+	if (missing(symmetrical)) symmetrical <- params$symbreaks
+	if (missing(na.color)) na.color <- params$na.color
+	
+	if (missing(color.bins) | !is.numeric(color.bins)) {
+	  color.bins <- params$breaks
+	} 
+  
+	key <- d3heatmap$x$options$show_legend 
+  if(length(color.bins) > 1 & key) {
+    message('d3heatmap: color key (legend) is currently incomptatible with custom color
+            breaks. Hiding the color key')
+    key <- FALSE
+  }
+	  
 
 	new <- list(
-		colors = colors
+		col = colors
 		, rng = range
-		, bins = color.bins
+		, breaks = color.bins
 		, symbreaks = symmetrical
 		, na.color = na.color
 	)
@@ -91,25 +103,29 @@ hmColors <- function(d3heatmap
 	## Colors for the heatmap and the legend
   ##===========================================
 	hm_colors <- heatmapColors(x
-								, params$colors
+								, params$col
 								, params$na.color
 								, params$na.rm
 								, params$rng
 								, params$scale
-								, params$bins
+								, params$breaks
+								, params$symbreaks
 							)
 
-	if(missing(theme)) theme <- d3heatmap$theme
+	if (missing(theme)) theme <- d3heatmap$theme
 	else theme <- match.arg(theme)
 	
 	## proceed to the widget
 	##=======================================	
-  imgUri <- encodeAsPNG(t(x), hm_colors$colors)
+  imgUri <- encodeAsPNG(t(x), hm_colors$col)
 
 	newOpts <- list(
 		legend_colors = hm_colors$legend_colors
+		, legend_bins = hm_colors$legend_bins
+		, legend_breaks = hm_colors$legend_breaks
 		, bins = hm_colors$bins
 		, na_color = params$na.color
+		, show_legend = key
 	)
 	options <- mergeLists(d3heatmap$x$options, newOpts)
   

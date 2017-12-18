@@ -8,22 +8,22 @@ The interface was designed based on \link{heatmap} and \link[gplots]{heatmap.2}
 }
 \usage{
 d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
-  anim_duration = 500, rng = NULL, Rowv = TRUE, Colv = if (symm) "Rowv"
-  else TRUE, distfun = dist, hclustfun = hclust, dendrogram = c("both",
-  "row", "column", "none"), reorderfun = function(d, w) reorder(d, w),
-  k_row = NULL, k_col = NULL, symm = FALSE, revC = NULL,
+  anim_duration = 500, rng = NULL, symm = FALSE, Rowv = TRUE,
+  Colv = if (symm) "Rowv" else TRUE, distfun = dist, hclustfun = hclust,
+  dendrogram = c("both", "row", "column", "none"), reorderfun = function(d,
+  w) reorder(d, w), k_row = NULL, k_col = NULL, kr, kc, revC = NULL,
   scale = c("none", "row", "column"), na.rm = TRUE, na.color = "#777777",
-  na.value = NA, legend.title = NULL, show.legend = FALSE,
-  legend.location = c("fl", "br", "tr", "tl", "tr"), digits = 3L,
+  na.value = NA, key = FALSE, keysize = 1, key.title = NULL,
+  key.location = c("fl", "br", "tr", "tl", "bl"),
+  density.info = c("histogram", "none"), denscol = NULL, digits = 3L,
   cellnote = NULL, cellnote_scale = FALSE, cellnote_row = NULL,
   cellnote_col = NULL, cellnote_val = "Value", brush_color = "#0000FF",
-  print.values = FALSE, theme = NULL, colors = "RdYlBu", bins = NULL,
-  symbreaks = FALSE, labRow = rownames(x), labCol = colnames(x),
-  xaxis_height = 80, yaxis_width = 120, xaxis_font_size = NULL,
-  yaxis_font_size = NULL, xaxis_angle = 60, xaxis_location = "bottom",
-  yaxis_location = "right", xaxis_title = NULL, yaxis_title = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14, cexRow = NULL,
-  cexCol = NULL)
+  print.values = FALSE, notecol = "#222222", notecex = 1, cex.note,
+  theme = NULL, col = "RdYlBu", breaks = NULL, symbreaks = FALSE,
+  labRow = rownames(x), labCol = colnames(x), labColSize = 80,
+  labRowSize = 120, cexCol = NULL, cexRow = NULL, srtCol = 60,
+  sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
+  xaxis_title_font_size = 14, yaxis_title_font_size = 14)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -45,6 +45,8 @@ For large \code{x} it may help performance to set this value to \code{0}.}
 to use when determining the mapping from values to colors. This is useful
 when the range of values changes between heatmaps, but colors should be the
 same (optional, defaults to the minimum and maximum of \code{x}).}
+
+\item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
 \item{Rowv}{determines if and how the row dendrogram 
 should be reordered.    By default, it is TRUE, which implies 
@@ -73,21 +75,20 @@ is issued and Rowv (or Colv) arguments are honoured.}
 \item{reorderfun}{function(d, w) of dendrogram and weights for reordering 
 the row and column dendrograms. The default uses stats{reorder.dendrogram}}
 
-\item{k_row}{an integer scalar with the desired number of groups by which 
+\item{k_row, kr}{an integer scalar with the desired number of groups by which 
 to color the dendrogram's branches in the rows 
 (uses \link[dendextend]{color_branches})}
 
-\item{k_col}{an integer scalar with the desired number of groups by which 
+\item{k_col, kc}{an integer scalar with the desired number of groups by which 
 to color the dendrogram's branches in the columns 
 (uses \link[dendextend]{color_branches})}
-
-\item{symm}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 
 \item{revC}{logical indicating if the column order should be reversed for plotting.
 Default (when missing) - is FALSE, unless symm is TRUE.
 This is useful for cor matrix.}
 
-\item{scale}{character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is "none".}
+\item{scale}{character indicating if the values should be centered and scaled in either 
+the row direction or the column direction, or none. The default is "none".}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 
@@ -95,14 +96,24 @@ This is useful for cor matrix.}
 
 \item{na.value}{numeric indicating where NA's should be substituted to trigger the NA color.}
 
-\item{legend.title}{Separate title for legend. Defaults to \code{NULL}.}
-
-\item{show.legend}{Show color key and density
+\item{key}{Show color key and density
 information? \code{TRUE/FALSE}. Defaults to \code{FALSE}}
 
-\item{legend.location}{\emph{Required, character} Location for legend, either \code{"fl", "br", "tr"
+\item{keysize}{\emph{numeric} value indicating the relative size of the key. Will multiple the labRowSize and labColSize.
+Defaults to 1}
+
+\item{key.title}{Separate title for color key. Defaults to \code{NULL}.}
+
+\item{key.location}{\emph{Required, character} Location for color key, either \code{"fl", "br", "tr"
 "tl", or "bl"} for "float", "bottom right", "top right", "top left", and "bottom left". 
 Defaults to \code{"fl"}, which follows the location of the axis labels.}
+
+\item{density.info}{\emph{Optional, character} indicating whether to superimpose 
+a 'histogram' or no plot ('none') on the color-key (legend).}
+
+\item{denscol}{\emph{Optional, character} giving the color for the density 
+display specified by 'density.info', defaults to \code{NULL} which will fill the
+bars with the same color as the bin}
 
 \item{digits}{\emph{integer} indicating the number of decimal places to be used by \link{round} for 'label'.}
 
@@ -113,10 +124,10 @@ If missing, it will use \code{x}, after rounding it based on the \code{digits} p
 should cellnote be scaled if x is also scaled?}
 
 \item{cellnote_row}{\emph{character} Label to display next to the row value when the user hovers over the cell.
-If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
+If not specified, trys to match the \code{xlab}; if no axis title, defaults to "Row".}
 
 \item{cellnote_col}{\emph{character} Label to display next to the column value when the user hovers over the cell. 
-If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
+If not specified, trys to match the \code{ylab}; if no axis title, defaults to "Col".}
 
 \item{cellnote_val}{\emph{character} Label to display next to the cell value when the user hovers over the cell.
 Defaults to "Value".}
@@ -127,16 +138,25 @@ expected.}
 
 \item{print.values}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
 
+\item{notecol}{\emph{character} name or hex specifying the color of the values printed
+inside the cells}
+
+\item{notecex, cex.note}{\emph{numeric} scalar of 12 to determine pixel size of printed cell values.
+inside the cells. If not specified, the minimum font size between the x and y axes.}
+
 \item{theme}{A custom CSS theme to use. Currently the only valid values are 
 \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for 
 standalone visualizations, not R Markdown or Shiny.}
 
-\item{colors}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} 
+\item{col}{Either a colorbrewer2.org palette name (e.g. \code{"YlOrRd"} 
 or \code{"Blues"}), or a vector of colors to interpolate in hexadecimal 
 \code{"#RRGGBB"} format, or a color interpolation function like
 \code{\link[grDevices]{colorRamp}}.}
 
-\item{bins}{\emph{integer} The number of colors to generate from the palette.}
+\item{breaks}{\emph{integer} Either a numeric vector indicating the splitting 
+points for binning x into colors, or a integer number of break points 
+to be used, in which case the break points will be spaced equally 
+between min(x) and max(x).}
 
 \item{symbreaks}{\emph{logical} Arrange color bins symmetrically around zero?}
 
@@ -144,33 +164,31 @@ or \code{"Blues"}), or a vector of colors to interpolate in hexadecimal
 
 \item{labCol}{character vectors with column labels to use (from left to right); default to colnames(x).}
 
-\item{xaxis_height}{Size of axes, in pixels.}
+\item{labColSize}{Size of axes, in pixels.}
 
-\item{yaxis_width}{Size of axes, in pixels.}
+\item{labRowSize}{Size of axes, in pixels.}
 
-\item{xaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+\item{cexCol}{Font size of column labels, as a scalar to '12px' font. Default to 
+0.2 + 1/log10(ncol(x)).}
 
-\item{yaxis_font_size}{Font size of axis labels, as a CSS size (e.g. "14px" or "12pt").}
+\item{cexRow}{Font size of row labels, as a scalar to '12px' font size. Defaults to 
+0.2 + 1/log10(nrow(x)).}
 
-\item{xaxis_angle}{Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.}
+\item{srtCol}{Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.}
 
-\item{xaxis_location}{Location of the x axis, either "bottom" or "top". Defaults to "bottom".}
+\item{sideCol}{3 or 1, for "bottom" or "top", which side column labels 
+display. Defaults to 3 ("bottom").}
 
-\item{yaxis_location}{Location of the y axis, either "right" or "left". Defaults to "right".}
+\item{sideRow}{2 or 4, for "left" or "right", which side row labels 
+display. Defaults to 4 ("right").}
 
-\item{xaxis_title}{Title text of x axis}
+\item{xlab}{Title text of x axis}
 
-\item{yaxis_title}{Title text of y axis}
+\item{ylab}{Title text of y axis}
 
 \item{xaxis_title_font_size}{Font size of x axis title in pixels. Defaults to 14.}
 
 \item{yaxis_title_font_size}{Font size of y axis title in pixels. Defaults to 14.}
-
-\item{cexRow}{positive numbers. If not missing, it will override \code{xaxis_font_size}
-and will give it a value cexRow*14}
-
-\item{cexCol}{positive numbers. If not missing, it will override \code{yaxis_font_size}
-and will give it a value cexCol*14}
 }
 \description{
 Creates a D3.js-based heatmap widget.

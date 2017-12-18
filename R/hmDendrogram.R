@@ -60,7 +60,7 @@
 #' @examples 
 #' library(d3heatmap)
 #' library(dplyr)
-#' d3heatmap(mtcars, scale = "column", colors = "Blues") %>%
+#' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmDendrogram(dendrogram = 'row', row.groups = 3)
 #' 
 #' @export

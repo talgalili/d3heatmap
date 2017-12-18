@@ -137,7 +137,7 @@ body.theme-dark {
   stroke-opacity:0;
 }
 .bar {
-  stroke:#AAAAAA;
+  stroke:#FFFFFF;
   stroke-width:0.5px;
   stroke-linecap:butt;
   stroke-linejoin:miter;
@@ -147,6 +147,7 @@ body.theme-dark {
 .legend {
   overflow: visible;
   position: absolute;
+  padding: 5px 5px 5px 5px;
 }
 .legend_title {
 	position: absolute;
