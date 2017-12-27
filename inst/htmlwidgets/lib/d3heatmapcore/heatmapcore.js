@@ -186,8 +186,8 @@ function heatmap(selector, data, options) {
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
   opts.link_color = opts.link_color || "#AAA";
-  opts.xaxis_height = (options.xaxis_height || 80) * options.legend_scaler;
-  opts.yaxis_width = (options.yaxis_width || 120) * options.legend_scaler;
+  opts.xaxis_height = Math.max((options.xaxis_height || 80), (80 * options.legend_scaler));
+  opts.yaxis_width = Math.max((options.yaxis_width || 120), (120 * options.legend_scaler));
   opts.axis_padding = options.axis_padding || 6;
   if (typeof(opts.show_grid) === 'undefined') {
     opts.show_grid = true;
