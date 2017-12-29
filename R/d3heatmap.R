@@ -171,6 +171,13 @@ NULL
 #' 
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
+#' @param ColSideColors (optional) character vector of length ncol(x) containing
+#'   the color names for a horizontal side bar that may be used to annotate the
+#'   columns of x.
+#' @param RowSideColors (optional) character vector of length nrow(x) containing
+#'   the color names for a vertical side bar that may be used to annotate the
+#'   rows of x.
+#'   
 #' @import htmlwidgets
 #'   
 #' @source 
@@ -254,6 +261,10 @@ d3heatmap <- function(x
   , xaxis_title_font_size = 14
   , yaxis_title_font_size = 14
 
+	# side colors
+  , ColSideColors = NULL
+  , RowSideColors = NULL
+
 ) {
  
 	## pre-process paraemters
@@ -304,6 +315,8 @@ d3heatmap <- function(x
 		, na.color = na.color
 		, rng = rng
 		, breaks = breaks
+		, RowSideColors = RowSideColors
+		, ColSideColors = ColSideColors
 	)
 	
   
@@ -397,6 +410,8 @@ d3heatmap <- function(x
 		, matrix = hm$mtx
 		, title = main
 		, image = imgUri
+		, rowcolors = hm$rowcolors
+		, colcolors = hm$colcolors
     , theme = theme 
 		, options = options
 		, params = params

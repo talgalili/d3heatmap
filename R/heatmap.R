@@ -46,6 +46,8 @@ heatmap <- function(
 	  
 ) {
   
+  misc <- list(...)
+  
 	## x is a matrix!
   ##====================
   if (!is.matrix(x)) {
@@ -121,11 +123,27 @@ heatmap <- function(
     colInd <- rev(colInd)
   }
   
-  ## reorder x (and others)
+  ## reorder x and side color annotations
   ##=======================
   x <- x[rowInd, colInd]
-  if (!missing(cellnote))
+  if (!is.null(cellnote))
     cellnote <- cellnote[rowInd, colInd]
+  
+  RowSideColors = misc$RowSideColors
+  ColSideColors = misc$ColSideColors
+  
+	if (!is.null(RowSideColors)) {
+    if (!is.matrix(RowSideColors)) {
+      RowSideColors <- matrix(RowSideColors, nrow = 1)
+    }
+    RowSideColors <- RowSideColors[, rowInd, drop = FALSE]
+  }
+  if (!is.null(ColSideColors)) {
+    if (!is.matrix(ColSideColors)) {
+      ColSideColors <- matrix(ColSideColors, nrow = 1)
+    }
+    ColSideColors <- ColSideColors[, colInd, drop = FALSE]
+  }
 
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
@@ -208,6 +226,8 @@ heatmap <- function(
 		, mtx = mtx
 		, rowDend = rowDend
 		, colDend = colDend
+		, rowcolors = RowSideColors
+		, colcolors = ColSideColors
 	)
 
 	return(heatmap)
