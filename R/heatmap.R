@@ -134,9 +134,9 @@ heatmap <- function(
   
 	if (!is.null(RowSideColors)) {
     if (!is.matrix(RowSideColors)) {
-      RowSideColors <- matrix(RowSideColors, nrow = 1)
+      RowSideColors <- matrix(RowSideColors, ncol = 1)
     }
-    RowSideColors <- RowSideColors[, rowInd, drop = FALSE]
+    RowSideColors <- RowSideColors[rowInd, , drop = FALSE]
   }
   if (!is.null(ColSideColors)) {
     if (!is.matrix(ColSideColors)) {

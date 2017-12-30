@@ -1,6 +1,11 @@
 library(magrittr)
 library(d3heatmap)
 
+rsc<-matrix(rep_len(c('blue', 'black', 'red'), length.out = 64), ncol = 2)
+rsc<-rep_len(c('blue', 'black', 'red'), length.out = 32)
+csc<-matrix(rep_len(c('red', 'white', 'blue', 'green'), length.out = 33), nrow = 3)
+csc<-rep_len(c('red', 'white', 'blue'), length.out = 11)
+
 d3heatmap(mtcars,
           key = TRUE, scale = 'row', 
           key.title = "Legend", 
@@ -12,11 +17,15 @@ d3heatmap(mtcars,
           print.values = T,
           density.info = 'none',
           denscol = 'grey',
-          sideRow = 2,
-          sideCol = 1,
-          labRowSize = 150) %>% 
+          sideCol = 3,
+          sideRow = 4, 
+          ColSideColors = csc,
+          RowSideColors = rsc) %>% 
   hmColors(color.bins = 16) %>% 
   hmLegend(density = 'histogram', density.fill = 'blue')
+
+rsc<-rep_len(c('blue', 'black', 'red'), length.out = 32)
+csc<-rep_len(c('red', 'white', 'blue'), length.out = 11)
 
 # doesn't resize when defining axis titles
 d3heatmap(mtcars, dendrogram = 'none', key = TRUE, col = 'RdYlGn',

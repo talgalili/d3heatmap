@@ -171,12 +171,12 @@ NULL
 #' 
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ColSideColors (optional) character vector of length ncol(x) containing
-#'   the color names for a horizontal side bar that may be used to annotate the
-#'   columns of x.
-#' @param RowSideColors (optional) character vector of length nrow(x) containing
-#'   the color names for a vertical side bar that may be used to annotate the
-#'   rows of x.
+#' @param ColSideColors,ColIndividualColors (optional) character vector of length ncol(x), or matrix with
+#' columns equal to ncol(x), containing the color names for a horizontal side bar that may 
+#' be used to annotate the columns of x.
+#' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
+#' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
+#' rows of x.
 #'   
 #' @import htmlwidgets
 #'   
@@ -263,9 +263,13 @@ d3heatmap <- function(x
 
 	# side colors
   , ColSideColors = NULL
-  , RowSideColors = NULL
+  , RowSideColors = NULL,
+	
+	...
 
 ) {
+  
+  opts <- list(...)
  
 	## pre-process paraemters
   ##===========================================================
@@ -281,6 +285,10 @@ d3heatmap <- function(x
             breaks. Hiding the color key')
     key <- FALSE
   }
+  if(!is.null(opts$ColIndividualColors)) 
+    ColSideColors <- opts$ColIndividualColors
+  if(!is.null(opts$RowIndividualColors)) 
+    RowSideColors <- opts$RowIndividualColors
   
  
 	## Save the parameters for later API calls
@@ -401,16 +409,18 @@ d3heatmap <- function(x
   if (is.null(hm$colDend)) c(options, list(xclust_height = 0))
  
  	## proceed to the widget
+ 	## NOTE: when loading the side colors, we transpose the
+ 	## rowSideColors
 	##=======================================	
   imgUri <- encodeAsPNG(t(x), hm_colors$col)
-	
+
   payload <- list(
     rows = hm$rowDend 
 		, cols = hm$colDend
 		, matrix = hm$mtx
 		, title = main
 		, image = imgUri
-		, rowcolors = hm$rowcolors
+		, rowcolors = t(hm$rowcolors)
 		, colcolors = hm$colcolors
     , theme = theme 
 		, options = options

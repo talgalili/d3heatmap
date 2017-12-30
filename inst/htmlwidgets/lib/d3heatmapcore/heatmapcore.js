@@ -20,6 +20,19 @@ function heatmap(selector, data, options) {
 	function numDigits(x) {
 		return String(x).replace('.', '').length;
 	}
+  
+	function flattenMatrix(m) {
+    var cols = m[0].length;
+    var vec = [];
+    for (var i = 0; i < m.length; i++) {
+      if (m[i].length !== cols)
+        throw new Error("Non-rectangular matrix");
+      for (var j = 0; j < m[i].length; j++) {
+        vec.push(m[i][j]);
+      }
+    }
+    return vec;
+  }
 
   d3.selectAll(".outer").remove();
 
@@ -198,12 +211,33 @@ function heatmap(selector, data, options) {
 	if (typeof(opts.anim_duration) === 'undefined') {
     opts.anim_duration = 500;
   }
-
-	var xaxis_title_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
-	var yaxis_title_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
+    
+  if (typeof(opts.show_grid) === 'number') {
+    opts.spacing = opts.show_grid;
+  } else if (!!opts.show_grid) {
+    opts.spacing = 0.25;
+  } else {
+    opts.spacing = 0;
+  }
   
 	// modify for presence of main title bar and for presence of xaxis title
 	opts.height = opts.height - innerPos.top;
+	
+	//For future user control of the side color size
+	//opts.ycolors_width = options.ycolors_width;
+  //opts.xcolors_height = options.xcolors_height;
+  
+	// Row and Side colors sizes
+	opts.ycolors_width = !data.rowcolors ? 0 : data.rowcolors.length * 15;
+	opts.xcolors_height = !data.colcolors ? 0 : data.colcolors.length * 15;
+	opts.leftColEl_width = opts.ycolors_width;
+	opts.topColEl_height = opts.xcolors_height;
+	opts.rightColEl_width = 0;
+	opts.bottomColEl_height = 0;
+
+	// title blocks
+	var xaxis_title_height = opts.xaxis_title ? opts.xaxis_title_font_size * 1.5 + 5 : 0;
+	var yaxis_title_width = opts.yaxis_title ? opts.yaxis_title_font_size * 1.5 + 5 : 0;
 
   opts.xclust_height = options.xclust_height || opts.height * 0.12;
   opts.yclust_width = options.yclust_width || opts.width * 0.12;
@@ -211,7 +245,7 @@ function heatmap(selector, data, options) {
   opts.leftEl_width = !data.rows ? 0 : opts.yclust_width;
   opts.bottomEl_height = opts.xaxis_height;
   opts.rightEl_width = opts.yaxis_width;
-  opts.yclust_width = opts.leftEl_width; // need this for later
+  //opts.yclust_width = opts.leftEl_width; // need this for later
  
   opts.leftTitle_width = 0;
   opts.rightTitle_width = yaxis_title_width;
@@ -219,25 +253,28 @@ function heatmap(selector, data, options) {
   opts.bottomTitle_height = xaxis_title_height;
  
 	// adjust element dimensions if an axis location has been switched	
-  var tmpEl;
   if (opts.yaxis_location === "left") {
-    tmpEl = opts.leftEl_width;
+    opts.rightEl_width = opts.leftEl_width;
     opts.leftEl_width = opts.yaxis_width;
-    opts.rightEl_width = tmpEl;
     
     opts.rightTitle_width = 0;
     opts.leftTitle_width = yaxis_title_width;  
+
+		opts.leftColEl_width = 0;
+		opts.rightColEl_width = opts.ycolors_width;
   }
   
   if (opts.xaxis_location === "top") {
-    tmpEl = opts.topEl_height;
+    opts.bottomEl_height = opts.topEl_height;
     opts.topEl_height = opts.xaxis_height;
-    opts.bottomEl_height = tmpEl;
     
     opts.bottomTitle_height = 0;
     opts.topTitle_height = xaxis_title_height;  
+	
+		opts.topColEl_height = 0;
+		opts.bottomColEl_height = opts.xcolors_height;
   }
-
+ 
 	// lastly, adjust the bounds sizes for the presence of the legend	
 	if(opts.show_legend) {
 			switch (opts.legend_location) {
@@ -263,43 +300,58 @@ function heatmap(selector, data, options) {
 	}
   
   gridSizer = new GridSizer(
-    [opts.leftTitle_width, opts.leftEl_width, "*", opts.rightEl_width, opts.rightTitle_width],
-    [opts.topTitle_height, opts.topEl_height, "*", opts.bottomEl_height, opts.bottomTitle_height],
+    [opts.leftTitle_width, opts.leftEl_width, opts.leftColEl_width,
+						"*", 
+		  opts.rightColEl_width, opts.rightEl_width, opts.rightTitle_width],
+    [opts.topTitle_height, opts.topEl_height, opts.topColEl_height,
+						"*", 
+		  opts.bottomColEl_height, opts.bottomEl_height, opts.bottomTitle_height],
     opts.width,
     opts.height
   );
 
-  var colormapBounds = gridSizer.getCellBounds(2, 2);
-  var topElBounds = gridSizer.getCellBounds(2, 1);
-  var leftElBounds = gridSizer.getCellBounds(1, 2);
-  var rightElBounds = gridSizer.getCellBounds(3, 2);
-  var bottomElBounds = gridSizer.getCellBounds(2, 3);
- 
-  var xtitleBounds = gridSizer.getCellBounds(2, 4);
-  if (opts.xaxis_location === "top") {
-    xtitleBounds = gridSizer.getCellBounds(2, 0);
-  }
-
-  var ytitleBounds = gridSizer.getCellBounds(4, 2);
-  if (opts.yaxis_location === "left") {
-    ytitleBounds = gridSizer.getCellBounds(0, 2);
-  }
+	var topTitleBounds = gridSizer.getCellBounds(3, 0);
+  var topElBounds = gridSizer.getCellBounds(3, 1);
+  var topColElBounds = gridSizer.getCellBounds(3, 2);
+  var bottomColElBounds = gridSizer.getCellBounds(3, 4);
+  var bottomElBounds = gridSizer.getCellBounds(3, 5);
+	var bottomTitleBounds = gridSizer.getCellBounds(3, 6);
   
-  var colDendBounds, rowDendBounds, yaxisBounds, xaxisBounds;
-  if (opts.yaxis_location === "right") {
+  var colormapBounds = gridSizer.getCellBounds(3, 3);
+  
+  var leftTitleBounds = gridSizer.getCellBounds(0, 3);
+	var leftElBounds = gridSizer.getCellBounds(1, 3);
+  var leftColElBounds = gridSizer.getCellBounds(2, 3);
+	var rightColElBounds = gridSizer.getCellBounds(4, 3);
+  var rightElBounds = gridSizer.getCellBounds(5, 3);
+  var rightTitleBounds = gridSizer.getCellBounds(6, 3);
+ 
+  var colDendBounds, rowDendBounds, 
+								colColorsBounds, rowColorsBounds,
+								yaxisBounds, xaxisBounds;
+ 
+	if (opts.yaxis_location === "right") {
     yaxisBounds = rightElBounds;
+    ytitleBounds = rightTitleBounds;
   	rowDendBounds = leftElBounds;
+		rowColorsBounds = leftColElBounds;
   } else {
     yaxisBounds = leftElBounds;
+    ytitleBounds = leftTitleBounds;
   	rowDendBounds = rightElBounds;
+		rowColorsBounds = rightColElBounds;
   }
   
   if (opts.xaxis_location === "bottom") {
     xaxisBounds = bottomElBounds;
+    xtitleBounds = bottomTitleBounds;
 		colDendBounds = topElBounds;
+		colColorsBounds = topColElBounds;
   } else {
     xaxisBounds = topElBounds;
+    xtitleBounds = topTitleBounds;
 		colDendBounds = bottomElBounds;
+		colColorsBounds = bottomColElBounds;
   }
 
 	var legdBounds;
@@ -307,20 +359,20 @@ function heatmap(selector, data, options) {
 			var legdX, legdY;
 			switch (opts.legend_location) {
 				case "br":
-						legdBounds = gridSizer.getCellBounds(3, 3);
+						legdBounds = gridSizer.getCellBounds(5, 5);
 						break;
 				case "tr":
-						legdBounds = gridSizer.getCellBounds(3, 1);
+						legdBounds = gridSizer.getCellBounds(5, 1);
 						break;
 				case "tl":
 						legdBounds = gridSizer.getCellBounds(1, 1);
 						break;
 				case "bl":
-						legdBounds = gridSizer.getCellBounds(1, 3);
+						legdBounds = gridSizer.getCellBounds(1, 5);
 						break;
 				default:
-						legdX = opts.yaxis_location === "left" ? 1 : 3;
-						legdY = opts.xaxis_location === "top" ? 1 : 3;
+						legdX = opts.yaxis_location === "left" ? 1 : 5;
+						legdY = opts.xaxis_location === "top" ? 1 : 5;
 						legdBounds = gridSizer.getCellBounds(legdX, legdY);
 			}
 	}
@@ -331,6 +383,8 @@ function heatmap(selector, data, options) {
 		var legd = !opts.show_legend ? null : inner.append("svg").classed("legend", true).style(cssify(legdBounds));
     var colDend = !data.cols ? null : inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
     var rowDend = !data.rows ? null : inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
+    var colColors = !data.colcolors ? null : inner.append("svg").classed("dendrogram colColors", true).style(cssify(colColorsBounds));
+    var rowColors = !data.rowcolors ? null : inner.append("svg").classed("dendrogram rowColors", true).style(cssify(rowColorsBounds));
     var xtitle = !opts.xaxis_title ? null : inner.append("svg").classed("xtitle", true).style(cssify(xtitleBounds));
     var ytitle = !opts.yaxis_title ? null : inner.append("svg").classed("ytitle", true).style(cssify(ytitleBounds));
     var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
@@ -360,9 +414,12 @@ function heatmap(selector, data, options) {
         typeof(hl.x) === 'number' || typeof(hl.y) === 'number');
     });
   })();
+
   
   var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding, opts.yaxis_location === "left");
   var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding, opts.xaxis_location === "top");
+  var rowColors = !data.rowcolors ? null : rowColorLabels(el.select('svg.rowColors'), data.rowcolors, rowColorsBounds.width, rowColorsBounds.height, opts.axis_padding);
+  var colColors = !data.colcolors ? null : colColorLabels(el.select('svg.colColors'), data.colcolors, colColorsBounds.width, colColorsBounds.height, opts.axis_padding);
   var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, yaxisBounds.height);
   var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding, opts.xaxis_location);
   var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding, opts.yaxis_location);
@@ -850,6 +907,82 @@ function heatmap(selector, data, options) {
     return max;
   }
   
+	function rowColorLabels(svg, data, width, height, padding) {
+    svg = svg.append('g');
+    
+    // Convert matrix to vector
+    var rows = data.length;
+    data = flattenMatrix(data);
+    var cols = data.length / rows;
+
+    var x = d3.scale.linear()
+        .domain([0, rows])
+        .range([0, width - padding]);
+    var y = d3.scale.linear()
+        .domain([0, cols])
+        .range([0, height]);
+    
+    var rect = svg.selectAll("rect").data(data);
+    rect.enter()
+        .append("rect")
+        .attr("fill", function(d, i) { return d; });
+    rect.exit()
+        .remove();
+    
+    function draw(selection) {
+      selection
+          .attr("x", function(d, i) { return x(Math.floor(i / cols)); })
+          .attr("y", function(d, i) { return y(i % cols); })
+          .attr("width", x(1) - x(0) - (rows > 1 ? opts.spacing : 0))
+          .attr("height", y(1) - y(0) - opts.spacing);
+    }
+    draw(rect);
+
+    controller.on('transform.rowcolors', function(_) {
+      y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
+      draw(rect.transition().duration(opts.anim_duration).ease("linear"));
+    });
+
+  }
+ 
+	function colColorLabels(svg, data, width, height, padding) {
+    svg = svg.append('g');
+    
+    // Convert matrix to vector
+    var rows = data.length;
+    data = flattenMatrix(data);
+    var cols = data.length / rows;
+    
+    var x = d3.scale.linear()
+        .domain([0, cols])
+        .range([0, width]);
+    var y = d3.scale.linear()
+        .domain([0, rows])
+        .range([0, height - padding]);
+    
+    var rect = svg.selectAll("rect").data(data);
+    rect.enter()
+        .append("rect")
+        .attr("fill", function(d, i) { return d; });
+    rect.exit()
+        .remove();
+
+    function draw(selection) {
+      selection
+          .attr("x", function(d, i) { return x(i % cols); })
+          .attr("y", function(d, i) { return y(Math.floor(i / cols)); })
+          .attr("width", x(1) - x(0) - opts.spacing)
+          .attr("height", y(1) - y(0) - (rows > 1 ? opts.spacing : 0));
+    }
+    draw(rect);
+
+    controller.on('transform.colcolors', function(_) {
+      x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
+      draw(rect.transition().duration(opts.anim_duration).ease("linear"));
+    });
+
+  } 
+
   function dendrogram(svg, data, rotated, width, height, padding, flip) {
 		flip = flip || false;
     var topLineWidth = maxChildStrokeWidth(data, false);
