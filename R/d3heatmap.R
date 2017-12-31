@@ -332,6 +332,7 @@ d3heatmap <- function(x
   ##==============================
 	## inserting new call to the heatmap function, which does everything up to 
 	## this point that d3heatmap did
+	debug(heatmap)
 	hm <- do.call(heatmap, args = params)
 	x <- hm$x
 	

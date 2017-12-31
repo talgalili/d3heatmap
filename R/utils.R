@@ -27,3 +27,13 @@ mergeLists <- function (base_list, overlay_list, recursive = TRUE) {
     b
 }
 
+#' are_colors   
+#' Helper function to check for valid color strings  
+#' @param x color vector (etc) to test.   
+are.colors <- function(x) {  
+  if(is.numeric(x)) return(FALSE)  
+  sapply(x, function(X) {  
+    res <- try(col2rgb(x), silent=TRUE)  
+    return(!"try-error" %in% class(res))  
+  })  
+}  

@@ -136,12 +136,27 @@ heatmap <- function(
     if (!is.matrix(RowSideColors)) {
       RowSideColors <- matrix(RowSideColors, ncol = 1)
     }
+	  
+	  if (!all(are.colors(RowSideColors))) {  
+      rsc_labs <- unique(as.factor(RowSideColors))  
+      RowSideColors[] <- colorRampPalette(c("purple", "orange", "black"))(
+        length(rsc_labs))[as.factor(RowSideColors)]  
+	  }
+	  
     RowSideColors <- RowSideColors[rowInd, , drop = FALSE]
-  }
+	}
+  
   if (!is.null(ColSideColors)) {
     if (!is.matrix(ColSideColors)) {
       ColSideColors <- matrix(ColSideColors, nrow = 1)
     }
+    
+	  if (!all(are.colors(ColSideColors))) {  
+      csc_labs <- unique(as.factor(ColSideColors))  
+      ColSideColors[] <- colorRampPalette(c("purple", "orange", "black"))(
+        length(csc_labs))[as.factor(ColSideColors)]  
+	  }
+    
     ColSideColors <- ColSideColors[, colInd, drop = FALSE]
   }
 
