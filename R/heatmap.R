@@ -128,37 +128,67 @@ heatmap <- function(
   x <- x[rowInd, colInd]
   if (!is.null(cellnote))
     cellnote <- cellnote[rowInd, colInd]
-  
+ 
+  ## side colors objects
+  ##=======================
   RowSideColors = misc$RowSideColors
   ColSideColors = misc$ColSideColors
   
 	if (!is.null(RowSideColors)) {
     if (!is.matrix(RowSideColors)) {
       RowSideColors <- matrix(RowSideColors, ncol = 1)
+
     }
-	  
+	 
+ 		# if not passed a color matrix, then process for labels & colors	
 	  if (!all(are.colors(RowSideColors))) {  
-      rsc_labs <- unique(as.factor(RowSideColors))  
-      RowSideColors[] <- colorRampPalette(c("purple", "orange", "black"))(
-        length(rsc_labs))[as.factor(RowSideColors)]  
-	  }
-	  
+      rsclabs <- unique(as.factor(RowSideColors))  
+			rsccols <- colorRampPalette(misc$RowColorsPalette)(length(rsclabs))
+			RowSideColors[] <- rsccols[as.factor(RowSideColors)]
+      #RowSideColors[] <- colorRampPalette(misc$RowColorsPalette)(
+      #  length(rsclabs))[as.factor(RowSideColors)]  
+
+	  } else {
+			# since we've been passed a color matrix, we won't use these
+			rsclabs <- NULL
+			rsccols <- NULL
+
+		}
+
     RowSideColors <- RowSideColors[rowInd, , drop = FALSE]
+	} else {
+		# if RowSideColors is null, then set these to skip JS processing
+		rsclabs <- NULL
+		rsccols <- NULL
+
 	}
-  
+ 
+ 	# repeate the process for columns	
   if (!is.null(ColSideColors)) {
     if (!is.matrix(ColSideColors)) {
       ColSideColors <- matrix(ColSideColors, nrow = 1)
+
     }
     
 	  if (!all(are.colors(ColSideColors))) {  
-      csc_labs <- unique(as.factor(ColSideColors))  
-      ColSideColors[] <- colorRampPalette(c("purple", "orange", "black"))(
-        length(csc_labs))[as.factor(ColSideColors)]  
-	  }
-    
+      csclabs <- unique(as.factor(ColSideColors))  
+			csccols <- colorRampPalette(misc$ColColorsPalette)(length(csclabs))
+			ColSideColors[] <- csccols[as.factor(ColSideColors)]
+      # ColSideColors[] <- colorRampPalette(misc$ColColorsPalette)(
+      #   length(csclabs))[as.factor(ColSideColors)]  
+
+	  } else {
+			csclabs <- NULL
+			csccols <- NULL
+
+		}
     ColSideColors <- ColSideColors[, colInd, drop = FALSE]
-  }
+
+  } else {
+		csclabs <- NULL
+		csccols <- NULL
+
+	}
 
   ## Dendrograms - Update the labels and change to dendToTree
   ##=======================
@@ -243,6 +273,10 @@ heatmap <- function(
 		, colDend = colDend
 		, rowcolors = RowSideColors
 		, colcolors = ColSideColors
+		, rsclabs = rsclabs
+		, csclabs = csclabs
+		, rsccols = rsccols
+		, csccols = csccols
 	)
 
 	return(heatmap)

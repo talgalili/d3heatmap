@@ -138,10 +138,10 @@ body.theme-dark {
 }
 .bar {
   stroke:#FFFFFF;
-  stroke-width:0.5px;
+  stroke-width:0px;
   stroke-linecap:butt;
   stroke-linejoin:miter;
-  stroke-opacity:1;
+  stroke-opacity:0;
   fill-opacity: 1;
 }
 .legend {
@@ -153,8 +153,43 @@ body.theme-dark {
 	position: absolute;
 	top: 0px;
   font-family: Helvetica;
-  font-size: 0.6em;
+  font-size: 0.7em;
   font-style: italic;
   text-anchor: middle;
 	fill: black;
 }
+.side_color_title {
+	position: absolute;
+	top: 0px;
+  font-family: Helvetica;
+  font-size: 0.7em;
+  font-style: italic;
+  text-anchor: left;
+	fill: black;
+}
+.side_colors_label {  
+  stroke:#FFFFFF;
+  stroke-width:0px;  
+  stroke-linecap:butt;  
+  stroke-linejoin:miter;  
+  stroke-opacity:1;  
+}  
+.row_colors_label {  
+  position: absolute;  
+  left: 0;
+  width: 50px;  
+  height: 50%;  
+	font-size: 0.7em;  
+  margin-left: 5px;  
+}  
+.col_colors_label {  
+  position: relative;  
+  left: 0;
+	top: 50%;
+  width: 50px;  
+  height: 50%;
+	font-size: 0.7em;  
+  margin-left: 5px;  
+}  
+
+

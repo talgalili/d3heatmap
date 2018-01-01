@@ -175,6 +175,8 @@ NULL
 #' columns equal to ncol(x), containing the color names for a horizontal side bar that may 
 #' be used to annotate the columns of x.
 #' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
+#' @param RowColorsPalette a palette of colors to use for RowSideColors if passing a non-color matrix
+#' @param ColColorsPalette a palette of colors to use for ColSideColors if passing a non-color matrix
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
 #'   
@@ -263,9 +265,11 @@ d3heatmap <- function(x
 
 	# side colors
   , ColSideColors = NULL
-  , RowSideColors = NULL,
+  , RowSideColors = NULL
+  , RowColorsPalette = NULL
+  , ColColorsPalette = NULL
 	
-	...
+	, ...
 
 ) {
   
@@ -289,6 +293,11 @@ d3heatmap <- function(x
     ColSideColors <- opts$ColIndividualColors
   if(!is.null(opts$RowIndividualColors)) 
     RowSideColors <- opts$RowIndividualColors
+
+	if(is.null(RowColorsPalette)) 
+					RowColorsPalette <- c('blue', 'orange', 'black')
+	if(is.null(ColColorsPalette)) 
+					ColColorsPalette <- c('cyan', 'maroon', 'grey')
   
  
 	## Save the parameters for later API calls
@@ -325,6 +334,8 @@ d3heatmap <- function(x
 		, breaks = breaks
 		, RowSideColors = RowSideColors
 		, ColSideColors = ColSideColors
+		, RowColorsPalette = RowColorsPalette
+		, ColColorsPalette = ColColorsPalette
 	)
 	
   
@@ -332,7 +343,6 @@ d3heatmap <- function(x
   ##==============================
 	## inserting new call to the heatmap function, which does everything up to 
 	## this point that d3heatmap did
-	debug(heatmap)
 	hm <- do.call(heatmap, args = params)
 	x <- hm$x
 	
@@ -404,6 +414,10 @@ d3heatmap <- function(x
     , cellnote_fontsize = notecex * 12
     , cellnote_color = notecol
     , anim_duration = anim_duration
+		, rsc_labs = hm$rsclabs
+		, csc_labs = hm$csclabs
+		, rsc_cols = hm$rsccols
+		, csc_cols = hm$csccols
   )
 
   if (is.null(hm$rowDend)) c(options, list(yclust_width = 0))
