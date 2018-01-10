@@ -1,12 +1,14 @@
 library(magrittr)
-library(d3heatmap)
 
 rsc<-matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 rsccols<-c('red', 'white', 'blue')
+rscnames <- c('Test', 'Test2')
 
 csc<-matrix(rep_len(c('sweet', 'sour', 'tangy', 'spicy', 'salty'), length.out = 33), nrow = 3)
 csccols<-c('orange', 'blue', 'grey', 'green', 'red')
+cscnames <- c('Test', 'Test2', 'Test3')
 
+library(d3heatmap)
 d3heatmap(mtcars,
           key = TRUE, scale = 'column', 
           key.title = "Legend", 
@@ -23,7 +25,9 @@ d3heatmap(mtcars,
           ColSideColors = csc,
           RowSideColors = rsc,
           RowColorsPalette = rsccols,
-          ColColorsPalette = csccols) %>% 
+          ColColorsPalette = csccols,
+          RowColorsNames = rscnames,
+          ColColorsNames = cscnames) %>% 
   hmColors(color.bins = 16) %>% 
   hmLegend(density = 'histogram', density.fill = 'blue')
 

@@ -177,6 +177,8 @@ NULL
 #' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
 #' @param RowColorsPalette a palette of colors to use for RowSideColors if passing a non-color matrix
 #' @param ColColorsPalette a palette of colors to use for ColSideColors if passing a non-color matrix
+#' @param RowColorsNames the names of the variables for RowSideColors. Overrides colnames(RowSideColors)
+#' @param ColColorsNames the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
 #'   
@@ -268,6 +270,8 @@ d3heatmap <- function(x
   , RowSideColors = NULL
   , RowColorsPalette = NULL
   , ColColorsPalette = NULL
+  , RowColorsNames = NULL
+  , ColColorsNames = NULL
 	
 	, ...
 
@@ -298,6 +302,9 @@ d3heatmap <- function(x
 					RowColorsPalette <- c('blue', 'orange', 'black')
 	if(is.null(ColColorsPalette)) 
 					ColColorsPalette <- c('cyan', 'maroon', 'grey')
+
+	if(is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
+	if(is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
   
  
 	## Save the parameters for later API calls
@@ -418,6 +425,8 @@ d3heatmap <- function(x
 		, csc_labs = hm$csclabs
 		, rsc_cols = hm$rsccols
 		, csc_cols = hm$csccols
+		, rsc_colnames = RowColorsNames
+		, csc_colnames = ColColorsNames
   )
 
   if (is.null(hm$rowDend)) c(options, list(yclust_width = 0))

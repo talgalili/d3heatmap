@@ -162,7 +162,7 @@ body.theme-dark {
 	position: absolute;
 	top: 0px;
   font-family: Helvetica;
-  font-size: 0.7em;
+  font-size: 1em;
   font-style: italic;
   text-anchor: left;
 	fill: black;
@@ -179,7 +179,8 @@ body.theme-dark {
   left: 0;
   width: 50px;  
   height: 50%;  
-	font-size: 0.7em;  
+	font-size: 1em;  
+  font-family: Helvetica;
   margin-left: 5px;  
 }  
 .col_colors_label {  
@@ -188,7 +189,8 @@ body.theme-dark {
 	top: 50%;
   width: 50px;  
   height: 50%;
-	font-size: 0.7em;  
+	font-size: 1em;  
+  font-family: Helvetica;
   margin-left: 5px;  
 }  
 
