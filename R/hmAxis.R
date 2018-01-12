@@ -2,7 +2,7 @@
 #' 
 #' Provides options for modifying the x and y axes of a D3 Heatmap widget
 #' 
-#' @param heatmap a d3heatmap object created from the d3heatmap() or hmHeatmap()
+#' @param d3heatmap a d3heatmap object created from the d3heatmap() or hmHeatmap()
 #' 
 #' @param axis Name of the axis to modify; either "x", "y", "row", or "column"
 #' 
@@ -50,6 +50,11 @@ hmAxis <- function(d3heatmap
   , title
   , title.font.size
 ) {
+  
+	if (missing(d3heatmap)) {
+		message("hmLegend: no heatmap provided... returning NULL")
+		return(NULL)
+	}
   
   if (missing(axis)) {
     message("hmAxis: no axis specified... returning original heatmap")

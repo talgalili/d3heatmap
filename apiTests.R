@@ -2,11 +2,11 @@ library(magrittr)
 
 rsc<-matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 rsccols<-c('red', 'white', 'blue')
-rscnames <- c('Test', 'Test2')
+rscnames <- c('Row 1', 'Row 2')
 
-csc<-matrix(rep_len(c('sweet', 'sour', 'tangy', 'spicy', 'salty'), length.out = 33), nrow = 3)
+csc<-matrix(rep_len(c('first', 'second', 'third', 'fourth', 'fifth'), length.out = 33), nrow = 3)
 csccols<-c('orange', 'blue', 'grey', 'green', 'red')
-cscnames <- c('Test', 'Test2', 'Test3')
+cscnames <- c('Column 1', 'Column 2', 'Column 3')
 
 library(d3heatmap)
 d3heatmap(mtcars,
@@ -21,15 +21,21 @@ d3heatmap(mtcars,
           density.info = 'histogram',
           denscol = 'grey',
           sideCol = 3,
-          sideRow = 4, 
+          sideRow = 4,
+          # RowSideColors = rsc,
           ColSideColors = csc,
-          RowSideColors = rsc,
-          RowColorsPalette = rsccols,
+          # RowColorsPalette = rsccols,
           ColColorsPalette = csccols,
-          RowColorsNames = rscnames,
+          # RowColorsNames = rscnames,
           ColColorsNames = cscnames) %>% 
   hmColors(color.bins = 16) %>% 
   hmLegend(density = 'histogram', density.fill = 'blue')
+
+d3heatmap(mtcars, key = TRUE, scale = 'none') %>% 
+  hmSideColors(axis = 'column', side.colors = csc,
+    palette = csccols, names = cscnames) %>% 
+  hmSideColors(axis = 'y', side.colors = rsc,
+    palette = rsccols, names = rscnames)
 
 rsc<-rep_len(c('blue', 'black', 'red'), length.out = 32)
 csc<-rep_len(c('red', 'white', 'blue'), length.out = 11)

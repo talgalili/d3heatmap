@@ -23,7 +23,10 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   labRow = rownames(x), labCol = colnames(x), labColSize = 80,
   labRowSize = 120, cexCol = NULL, cexRow = NULL, srtCol = 60,
   sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14)
+  xaxis_title_font_size = 14, yaxis_title_font_size = 14,
+  ColSideColors = NULL, RowSideColors = NULL, RowColorsPalette = NULL,
+  ColColorsPalette = NULL, RowColorsNames = NULL, ColColorsNames = NULL,
+  ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -189,6 +192,22 @@ display. Defaults to 4 ("right").}
 \item{xaxis_title_font_size}{Font size of x axis title in pixels. Defaults to 14.}
 
 \item{yaxis_title_font_size}{Font size of y axis title in pixels. Defaults to 14.}
+
+\item{ColSideColors, ColIndividualColors}{(optional) character vector of length ncol(x), or matrix with
+columns equal to ncol(x), containing the color names for a horizontal side bar that may 
+be used to annotate the columns of x.}
+
+\item{RowSideColors, RowIndividualColors}{(optional) character vector of length nrow(x), or matrix}
+
+\item{RowColorsPalette}{a palette of colors to use for RowSideColors if passing a non-color matrix}
+
+\item{ColColorsPalette}{a palette of colors to use for ColSideColors if passing a non-color matrix}
+
+\item{RowColorsNames}{the names of the variables for RowSideColors. Overrides colnames(RowSideColors)}
+
+\item{ColColorsNames}{the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
+with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
+rows of x.}
 }
 \description{
 Creates a D3.js-based heatmap widget.

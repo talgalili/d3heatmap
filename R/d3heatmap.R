@@ -174,10 +174,15 @@ NULL
 #' @param ColSideColors,ColIndividualColors (optional) character vector of length ncol(x), or matrix with
 #' columns equal to ncol(x), containing the color names for a horizontal side bar that may 
 #' be used to annotate the columns of x.
+#'   
 #' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
+#'   
 #' @param RowColorsPalette a palette of colors to use for RowSideColors if passing a non-color matrix
+#'   
 #' @param ColColorsPalette a palette of colors to use for ColSideColors if passing a non-color matrix
+#'   
 #' @param RowColorsNames the names of the variables for RowSideColors. Overrides colnames(RowSideColors)
+#'   
 #' @param ColColorsNames the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
@@ -431,6 +436,9 @@ d3heatmap <- function(x
 
   if (is.null(hm$rowDend)) c(options, list(yclust_width = 0))
   if (is.null(hm$colDend)) c(options, list(xclust_height = 0))
+  
+  # transpose will cause error if row colors is null
+  if (!is.null(hm$rowcolors)) hm$rowcolors <- t(hm$rowcolors)
  
  	## proceed to the widget
  	## NOTE: when loading the side colors, we transpose the
@@ -444,7 +452,7 @@ d3heatmap <- function(x
 		, matrix = hm$mtx
 		, title = main
 		, image = imgUri
-		, rowcolors = t(hm$rowcolors)
+		, rowcolors = hm$rowcolors
 		, colcolors = hm$colcolors
     , theme = theme 
 		, options = options

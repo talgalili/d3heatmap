@@ -11,6 +11,8 @@ hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size, labels,
   font.size, angle, location, title, title.font.size)
 }
 \arguments{
+\item{d3heatmap}{a d3heatmap object created from the d3heatmap() or hmHeatmap()}
+
 \item{axis}{Name of the axis to modify; either "x", "y", "row", or "column"}
 
 \item{size}{Size of axes, in pixels.}
@@ -28,8 +30,6 @@ either "right" or "left" for the y axis. Defaults to "bottom" and "right".}
 \item{title}{Title text}
 
 \item{title.font.size}{Font size of axis title in pixels. Defaults to 14.}
-
-\item{heatmap}{a d3heatmap object created from the d3heatmap() or hmHeatmap()}
 }
 \value{
 Modified d3heatmap object
