@@ -27,7 +27,8 @@ Imports:
     grDevices
 Suggests:
     shiny,
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
