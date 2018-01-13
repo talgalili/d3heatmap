@@ -35,7 +35,8 @@
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' library(magrittr)
+#' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) %>% 
 #'   hmLegend(show = T, title = "Title", location = "tl") %>% 
 #'   

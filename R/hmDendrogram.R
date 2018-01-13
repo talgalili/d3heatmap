@@ -59,7 +59,8 @@
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' library(magrittr)
+#' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmDendrogram(dendrogram = 'row', row.groups = 3)
 #' 

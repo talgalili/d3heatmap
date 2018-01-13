@@ -39,7 +39,8 @@
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' library(magrittr)
+#' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmCells(digits = 0L, print = T)
 #' 

@@ -45,7 +45,8 @@ NULL
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' library(magrittr)
+#' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
 #'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
 #'   
