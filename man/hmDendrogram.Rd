@@ -52,10 +52,6 @@ to color the dendrogram's branches (uses \link[dendextend]{color_branches})}
 \item{reverse.columns}{logical indicating if the column order should be 
 reversed for plotting. Default (when missing) is FALSE, unless symmetrical
 is TRUE. This is useful for correlation matrices.}
-
-\item{dendrogram}{\emph{Required} A character string indicating whether 
-to draw 'none', 'row', 'column' or 'both' dendrograms. 
-Defaults to 'both'. However,}
 }
 \value{
 Modified d3heatmap object
@@ -65,7 +61,8 @@ Set and adjust the dendrograms for a d3heatmap object
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+library(magrittr)
+
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmDendrogram(dendrogram = 'row', row.groups = 3)
 

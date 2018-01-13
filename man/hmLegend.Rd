@@ -7,10 +7,12 @@
 The interface was inspired by \link{dygraphs}
 }
 \usage{
-hmLegend(heatmap, show = TRUE, size, title, location = c("fl", "br", "tr",
+hmLegend(d3heatmap, show = TRUE, size, title, location = c("fl", "br", "tr",
   "tl", "bl"), density = c("histogram", "none"), density.fill = NULL)
 }
 \arguments{
+\item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
+
 \item{show}{\emph{Required, logical} Show color key and density
 information? \code{TRUE/FALSE}. Defaults to \code{FALSE}}
 
@@ -40,7 +42,8 @@ Provides options for modifying the legend for a d3heatmap object
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+library(magrittr)
+
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) \%>\% 
   hmLegend(show = T, title = "Title", location = "tl") \%>\% 
   

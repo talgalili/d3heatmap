@@ -2,6 +2,8 @@
 #' 
 #' Provides options for modifying the legend for a d3heatmap object
 #' 
+#' @param d3heatmap \emph{Required} A valid \emph{d3heatmap} object
+#' 
 #' @param show \emph{Required, logical} Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
 #' 
@@ -41,7 +43,7 @@
 #'   hmLegend(show = T, title = "Title", location = "tl") %>% 
 #'   
 #' @export
-hmLegend <- function(heatmap
+hmLegend <- function(d3heatmap
   , show = TRUE
   , size
   , title
@@ -50,7 +52,7 @@ hmLegend <- function(heatmap
   , density.fill = NULL
 ) {
   
-  if (missing(heatmap)) {
+  if (missing(d3heatmap)) {
 		message("hmLegend: no heatmap provided... returning NULL")
 		return(NULL)
   }

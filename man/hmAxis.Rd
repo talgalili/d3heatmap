@@ -39,7 +39,8 @@ Provides options for modifying the x and y axes of a D3 Heatmap widget
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+library(magrittr)
+
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') \%>\% 
   hmAxis("y", title = "test", location = 'right')

@@ -27,7 +27,7 @@ NULL
 #' 
 #' @param na.color Color of NA values in heatmap. Defaults to neutral gray.
 #' 
-#' @param rng A vector of two numbers, namely the minimum and maximum value
+#' @param range A vector of two numbers, namely the minimum and maximum value
 #'   to use when determining the mapping from values to colors. This is 
 #' useful when the range of values changes between heatmaps, but colors 
 #' should be the same (optional, defaults to the minimum and maximum 

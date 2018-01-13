@@ -35,6 +35,10 @@ If not specified, trys to match the \code{yaxis_title}; if no axis title, defaul
 Defaults to "Value".}
 
 \item{print}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
+
+\item{brush_color}{The base color to be used for the brush. The brush will be
+filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
+expected.}
 }
 \value{
 Modified d3heatmap object
@@ -44,7 +48,8 @@ Provides options for modifying the cells and the display of their values
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+library(magrittr)
+
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmCells(digits = 0L, print = T)
 

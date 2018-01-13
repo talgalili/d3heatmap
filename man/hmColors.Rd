@@ -22,6 +22,12 @@ are \code{""} and \code{"dark"}. \code{"dark"} is primarily intended for
 to interpolate in hexadecimal \code{"#RRGGBB"} format, or a color 
 interpolation function like \code{\link[grDevices]{colorRamp}}.}
 
+\item{range}{A vector of two numbers, namely the minimum and maximum value
+  to use when determining the mapping from values to colors. This is 
+useful when the range of values changes between heatmaps, but colors 
+should be the same (optional, defaults to the minimum and maximum 
+of \code{x}).}
+
 \item{color.bins}{\emph{numeric} The number of colors to generate from 
 the palette, or the breakpoints between the bins}
 
@@ -29,12 +35,6 @@ the palette, or the breakpoints between the bins}
 zero?}
 
 \item{na.color}{Color of NA values in heatmap. Defaults to neutral gray.}
-
-\item{rng}{A vector of two numbers, namely the minimum and maximum value
-  to use when determining the mapping from values to colors. This is 
-useful when the range of values changes between heatmaps, but colors 
-should be the same (optional, defaults to the minimum and maximum 
-of \code{x}).}
 }
 \value{
 Modified d3heatmap object
@@ -44,7 +44,8 @@ Set and adjust the colors and color options for the d3heatmap
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+library(magrittr)
+
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
   

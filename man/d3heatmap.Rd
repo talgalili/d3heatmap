@@ -208,6 +208,9 @@ be used to annotate the columns of x.}
 \item{ColColorsNames}{the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
 with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 rows of x.}
+
+\item{...}{a catch for undocumented features or un-used arguments from heatmap.2
+or heatmap.3, to enable direct use of those formulations in d3heatmap}
 }
 \description{
 Creates a D3.js-based heatmap widget.

@@ -10,10 +10,6 @@
 #' and col.reorder are FALSE or NULL and dendrogram is 'both', then a warning 
 #' is issued and row.reorder (or col.reorder) arguments are honoured.
 #' 
-#' @param dendrogram \emph{Required} A character string indicating whether 
-#' to draw 'none', 'row', 'column' or 'both' dendrograms. 
-#' Defaults to 'both'. However, 
-#'
 #' @param reorder a parameter that allows the user to pass in a single 
 #' reordering value to use on the dendrograms specified in the 
 #' \code{dendrogram} argument.

@@ -25,6 +25,10 @@
 #' @param color \emph{character} name or hex specifying the color of the values printed
 #' inside the cells
 #' 
+#' @param brush_color The base color to be used for the brush. The brush will be
+#'   filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
+#'   expected.
+#' 
 #' @param font.size \emph{numeric} the pixel size of printed cell
 #' 
 #' @return Modified d3heatmap object

@@ -1,5 +1,5 @@
 #' @import htmlwidgets
-#' @importFrom grDevices col2rgb rgb
+#' @importFrom grDevices col2rgb rgb colorRampPalette
 #' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
 NULL
 
@@ -186,6 +186,9 @@ NULL
 #' @param ColColorsNames the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
+#' 
+#' @param ... a catch for undocumented features or un-used arguments from heatmap.2
+#' or heatmap.3, to enable direct use of those formulations in d3heatmap
 #'   
 #' @import htmlwidgets
 #'   
