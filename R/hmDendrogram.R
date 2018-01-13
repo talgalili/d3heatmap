@@ -98,11 +98,25 @@ hmDendrogram <- function(d3heatmap
 	if (dendrogram == 'none') {
 		params$dendrogram <- 'none'
 		hm <- do.call(heatmap, args = params)
-
-		d3heatmap$x$rows <- hm$rowDend
-		d3heatmap$x$cols <- hm$colDend
-		d3heatmap$x$matrix <- hm$mtx
-		d3heatmap$x$params <- params
+	  x <- hm$x
+	    
+	  hm_colors <- heatmapColors(x
+	  							, params$col
+	  							, params$na.color
+	  							, params$na.rm
+	  							, params$rng
+	  							, params$scale
+	  							, params$breaks
+	  							, params$symbreaks
+	  						)
+	  
+    imgUri <- encodeAsPNG(t(x), hm_colors$col)
+	  
+	  d3heatmap$x$rows <- hm$rowDend
+	  d3heatmap$x$cols <- hm$colDend
+	  d3heatmap$x$matrix <- hm$mtx
+    d3heatmap$x$image <- imgUri
+	  d3heatmap$x$params <- params
 
   	return(d3heatmap)  
 	}
@@ -167,10 +181,24 @@ hmDendrogram <- function(d3heatmap
 	## the params with the heatmap for later use
   ##==============================================
 	hm <- do.call(heatmap, args = params)
-
+	x <- hm$x
+	  
+	hm_colors <- heatmapColors(x
+								, params$col
+								, params$na.color
+								, params$na.rm
+								, params$rng
+								, params$scale
+								, params$breaks
+								, params$symbreaks
+							)
+	
+  imgUri <- encodeAsPNG(t(x), hm_colors$col)
+	
 	d3heatmap$x$rows <- hm$rowDend
 	d3heatmap$x$cols <- hm$colDend
 	d3heatmap$x$matrix <- hm$mtx
+  d3heatmap$x$image <- imgUri
 	d3heatmap$x$params <- params
 
   return(d3heatmap)  
