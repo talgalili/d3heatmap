@@ -30,8 +30,8 @@
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
@@ -40,7 +40,7 @@
 #' library(magrittr)
 #' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) %>% 
-#'   hmLegend(show = T, title = "Title", location = "tl") %>% 
+#'   hmLegend(show = TRUE, title = "Title", location = "tl") 
 #'   
 #' @export
 hmLegend <- function(d3heatmap
@@ -57,8 +57,8 @@ hmLegend <- function(d3heatmap
 		return(NULL)
   }
   
-  if(missing(size)) size <- heatmap$x$options$legend_scaler
-  if(missing(title)) title <- heatmap$x$options$legend_title
+  if(missing(size)) size <- d3heatmap$x$options$legend_scaler
+  if(missing(title)) title <- d3heatmap$x$options$legend_title
   
   opts <- list(
     show_legend = show
@@ -69,7 +69,6 @@ hmLegend <- function(d3heatmap
     , legend_fill = density.fill
   )
   
-  heatmap$x$options <- mergeLists(heatmap$x$options, opts)
-  return(heatmap) 
+  d3heatmap$x$options <- mergeLists(d3heatmap$x$options, opts)
+  return(d3heatmap) 
 }
-

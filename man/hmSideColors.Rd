@@ -4,7 +4,7 @@
 \alias{hmSideColors}
 \title{Modify axis options}
 \source{
-The newer interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmSideColors(d3heatmap, axis = c("x", "y", "row", "column"), side.colors,
@@ -43,9 +43,9 @@ cscnames <- c('Column 1', 'Column 2', 'Column 3')
 
 d3heatmap(mtcars, key = TRUE, scale = 'column') \%>\% 
   hmSideColors(axis = 'column', side.colors = csc,
-    palette = csccols, color.names = cscnames) \%>\% 
+    palette = csccols, names = cscnames) \%>\% 
   hmSideColors(axis = 'y', side.colors = rsc,
-    palette = rsccols, color.names = rscnames)
+    palette = rsccols, names = rscnames)
 
 
 }

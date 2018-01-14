@@ -17,9 +17,6 @@
 #'   
 #' @param names the names of the variables for the side colors.
 #'   
-#' @source 
-#' The newer interface was inspired by \link{dygraphs} 
-#' 
 #' @examples 
 #' library(d3heatmap)
 #' library(magrittr)
@@ -34,10 +31,13 @@
 #' 
 #' d3heatmap(mtcars, key = TRUE, scale = 'column') %>% 
 #'   hmSideColors(axis = 'column', side.colors = csc,
-#'     palette = csccols, color.names = cscnames) %>% 
+#'     palette = csccols, names = cscnames) %>% 
 #'   hmSideColors(axis = 'y', side.colors = rsc,
-#'     palette = rsccols, color.names = rscnames)
+#'     palette = rsccols, names = rscnames)
 #' 
+#' 
+#' @source 
+#' The interface was inspired by \cite{dygraphs}
 #' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}

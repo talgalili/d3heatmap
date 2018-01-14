@@ -38,8 +38,8 @@ NULL
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
@@ -48,7 +48,7 @@ NULL
 #' library(magrittr)
 #' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
-#'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
+#'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
 #'   
 #' @export
 hmColors <- function(d3heatmap

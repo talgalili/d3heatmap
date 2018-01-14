@@ -4,7 +4,7 @@
 \alias{hmDendrogram}
 \title{Set d3heatmap dendrograms}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
@@ -49,6 +49,8 @@ reordering the row and column dendrograms.}
 \item{groups}{an integer scalar with the desired number of groups by which 
 to color the dendrogram's branches (uses \link[dendextend]{color_branches})}
 
+\item{symmetrical}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
+
 \item{reverse.columns}{logical indicating if the column order should be 
 reversed for plotting. Default (when missing) is FALSE, unless symmetrical
 is TRUE. This is useful for correlation matrices.}
@@ -64,7 +66,7 @@ library(d3heatmap)
 library(magrittr)
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
-  hmDendrogram(dendrogram = 'row', row.groups = 3)
+  hmDendrogram(dendrogram = 'row', groups = 3)
 
 }
 \seealso{

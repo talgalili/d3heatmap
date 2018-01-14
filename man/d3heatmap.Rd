@@ -123,8 +123,7 @@ bars with the same color as the bin}
 \item{cellnote}{\emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.}
 
-\item{cellnote_scale}{\emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
-should cellnote be scaled if x is also scaled?}
+\item{cellnote_scale}{\emph{logical} (default is FALSE). IF cellnote is missing and x is used, should cellnote be scaled if x is also scaled?}
 
 \item{cellnote_row}{\emph{character} Label to display next to the row value when the user hovers over the cell.
 If not specified, trys to match the \code{xlab}; if no axis title, defaults to "Row".}
@@ -193,11 +192,14 @@ display. Defaults to 4 ("right").}
 
 \item{yaxis_title_font_size}{Font size of y axis title in pixels. Defaults to 14.}
 
-\item{ColSideColors, ColIndividualColors}{(optional) character vector of length ncol(x), or matrix with
+\item{ColSideColors}{(optional) character vector of length ncol(x), or matrix with
 columns equal to ncol(x), containing the color names for a horizontal side bar that may 
-be used to annotate the columns of x.}
+be used to annotate the columns of x. \code{ColIndividualColors}, from heatmap.2, can
+also be used}
 
-\item{RowSideColors, RowIndividualColors}{(optional) character vector of length nrow(x), or matrix}
+\item{RowSideColors}{(optional) character vector of length nrow(x), or matrix with rows
+equal to nrow(x), containing the color names for a vertical side bar that may be used to
+annotate the rows of x. \code{RowIndividualColors}, from heatmap.3, can also be used}
 
 \item{RowColorsPalette}{a palette of colors to use for RowSideColors if passing a non-color matrix}
 

@@ -4,7 +4,7 @@
 \alias{hmAxis}
 \title{Modify axis options}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size, labels,

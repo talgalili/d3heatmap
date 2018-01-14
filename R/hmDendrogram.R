@@ -43,13 +43,15 @@
 #' @param groups an integer scalar with the desired number of groups by which 
 #' to color the dendrogram's branches (uses \link[dendextend]{color_branches})
 #'   
+#' @param symmetrical logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
+#'   
 #' @return Modified d3heatmap object
 #' 
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
@@ -58,7 +60,7 @@
 #' library(magrittr)
 #' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
-#'   hmDendrogram(dendrogram = 'row', row.groups = 3)
+#'   hmDendrogram(dendrogram = 'row', groups = 3)
 #' 
 #' @export
 hmDendrogram <- function(d3heatmap

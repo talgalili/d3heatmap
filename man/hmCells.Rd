@@ -4,7 +4,7 @@
 \alias{hmCells}
 \title{Modify cell options}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmCells(d3heatmap, digits, cellnotes, font.size, color, scale, row.label,
@@ -34,11 +34,11 @@ If not specified, trys to match the \code{yaxis_title}; if no axis title, defaul
 \item{value.label}{\emph{character} (Optional) Label to display next to the cell value when the user hovers over the cell.
 Defaults to "Value".}
 
-\item{print}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
-
-\item{brush_color}{The base color to be used for the brush. The brush will be
+\item{brush.color}{The base color to be used for the brush. The brush will be
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 expected.}
+
+\item{print}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
 }
 \value{
 Modified d3heatmap object
@@ -51,7 +51,7 @@ library(d3heatmap)
 library(magrittr)
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
-  hmCells(digits = 0L, print = T)
+  hmCells(digits = 0L, print = TRUE)
 
 }
 \seealso{

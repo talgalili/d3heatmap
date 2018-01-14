@@ -27,7 +27,7 @@
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
+#' The interface was inspired by \cite{dygraphs}
 #' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}

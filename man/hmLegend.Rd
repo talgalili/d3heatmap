@@ -4,7 +4,7 @@
 \alias{hmLegend}
 \title{Modify the d3heatmap legend}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmLegend(d3heatmap, show = TRUE, size, title, location = c("fl", "br", "tr",
@@ -45,7 +45,7 @@ library(d3heatmap)
 library(magrittr)
 
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) \%>\% 
-  hmLegend(show = T, title = "Title", location = "tl") \%>\% 
+  hmLegend(show = TRUE, title = "Title", location = "tl") 
   
 }
 \seealso{

@@ -4,7 +4,7 @@
 \alias{hmColors}
 \title{Set d3heatmap color options}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmColors(d3heatmap, theme = c("", "dark"), colors, range, color.bins,
@@ -47,7 +47,7 @@ library(d3heatmap)
 library(magrittr)
 
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
-  hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
+  hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
   
 }
 \seealso{

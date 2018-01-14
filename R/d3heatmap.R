@@ -164,18 +164,20 @@ NULL
 #' @param cellnote \emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #' 
-#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
-#' should cellnote be scaled if x is also scaled?
+#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, should cellnote be scaled if x is also scaled?
 #' 
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' 
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ColSideColors,ColIndividualColors (optional) character vector of length ncol(x), or matrix with
+#' @param ColSideColors (optional) character vector of length ncol(x), or matrix with
 #' columns equal to ncol(x), containing the color names for a horizontal side bar that may 
-#' be used to annotate the columns of x.
+#' be used to annotate the columns of x. \code{ColIndividualColors}, from heatmap.2, can
+#' also be used
 #'   
-#' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
+#' @param RowSideColors (optional) character vector of length nrow(x), or matrix with rows
+#' equal to nrow(x), containing the color names for a vertical side bar that may be used to
+#' annotate the rows of x. \code{RowIndividualColors}, from heatmap.3, can also be used
 #'   
 #' @param RowColorsPalette a palette of colors to use for RowSideColors if passing a non-color matrix
 #'   
