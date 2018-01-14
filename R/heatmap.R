@@ -27,6 +27,7 @@ heatmap <- function(
   , scale
   , na.rm
   , na.value
+	, scale.by.range
 
   ## cellnote formatting
   , digits
@@ -219,21 +220,38 @@ heatmap <- function(
     na.rm <- TRUE 
     x[which(x == na.value)] <- NA
   }
-  
-  # in the instance where all non-NA values are the same (i.e., mtcars$vs or 
-  # mtcars$am when na.value == 0 and scaling by column), the functions above
-  # will return NaN, which will be translated to NA... 
-  # therefor we will replace all NaN's with .5)
-  if (scale == "row") {
-    x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
-    x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
-    x[is.nan(x)] <- .5
-  }
-  else if (scale == "column") {
-    x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
-    x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
-    x[is.nan(x)] <- .5
-  }
+ 
+  if (!scale.by.range) {
+
+  	# in the instance where all non-NA values are the same (i.e., 
+		# mtcars$vs or mtcars$am when na.value == 0 and scaling by column), 
+		# the functions above will return NaN, which will be translated to NA... 
+  	# therefor we will replace all NaN's with .5)
+  	if (scale == "row") {
+			browser()
+  	  x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
+  	  x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
+  	  x[is.nan(x)] <- .5
+  	}
+  	else if (scale == "column") {
+  	  x <- sweep(x, 2, colMeans(x, na.rm = na.rm))
+  	  x <- sweep(x, 2, apply(x, 2, sd, na.rm = na.rm), "/")
+  	  x[is.nan(x)] <- .5
+  	}
+
+	} else {
+		# we scale absolutely by using the range in each of the vectors
+		normalize <- function(x) (x - min(x, na.rm = TRUE)) / 
+							(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+
+  	if (scale == "row") {
+  	  x <- apply(x, 1, normalize)
+
+  	}
+  	else if (scale == "column") {
+  	  x <- apply(x, 2, normalize)
+  	}
+	}
   
   ## cellnote
   ##====================================================

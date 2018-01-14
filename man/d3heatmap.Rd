@@ -12,17 +12,17 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   Colv = if (symm) "Rowv" else TRUE, distfun = dist, hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"), reorderfun = function(d,
   w) reorder(d, w), k_row = NULL, k_col = NULL, kr, kc, revC = NULL,
-  scale = c("none", "row", "column"), na.rm = TRUE, na.color = "#777777",
-  na.value = NA, key = FALSE, keysize = 1, key.title = NULL,
-  key.location = c("fl", "br", "tr", "tl", "bl"),
-  density.info = c("histogram", "none"), denscol = NULL, digits = 3L,
-  cellnote = NULL, cellnote_scale = FALSE, cellnote_row = NULL,
-  cellnote_col = NULL, cellnote_val = "Value", brush_color = "#0000FF",
-  print.values = FALSE, notecol = "#222222", notecex = 1, cex.note,
-  theme = NULL, col = "RdYlBu", breaks = NULL, symbreaks = FALSE,
-  labRow = rownames(x), labCol = colnames(x), labColSize = 80,
-  labRowSize = 120, cexCol = NULL, cexRow = NULL, srtCol = 60,
-  sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
+  scale = c("none", "row", "column"), scale.by.range = FALSE,
+  na.rm = TRUE, na.color = "#777777", na.value = NA, key = FALSE,
+  keysize = 1, key.title = NULL, key.location = c("fl", "br", "tr", "tl",
+  "bl"), density.info = c("histogram", "none"), denscol = NULL,
+  digits = 3L, cellnote = NULL, cellnote_scale = FALSE,
+  cellnote_row = NULL, cellnote_col = NULL, cellnote_val = "Value",
+  brush_color = "#0000FF", print.values = FALSE, notecol = "#222222",
+  notecex = 1, cex.note, theme = NULL, col = "RdYlBu", breaks = NULL,
+  symbreaks = FALSE, labRow = rownames(x), labCol = colnames(x),
+  labColSize = 80, labRowSize = 120, cexCol = NULL, cexRow = NULL,
+  srtCol = 60, sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
   xaxis_title_font_size = 14, yaxis_title_font_size = 14,
   ColSideColors = NULL, RowSideColors = NULL, RowColorsPalette = NULL,
   ColColorsPalette = NULL, RowColorsNames = NULL, ColColorsNames = NULL,
@@ -92,6 +92,10 @@ This is useful for cor matrix.}
 
 \item{scale}{character indicating if the values should be centered and scaled in either 
 the row direction or the column direction, or none. The default is "none".}
+
+\item{scale.by.range}{logical indicating whether to scale rows or columns by
+the range of each row and column. Setting this parameter to \code{TRUE} 
+automatically sets \code{na.rm} to \code{TRUE}}
 
 \item{na.rm}{logical indicating whether NA's should be removed.}
 

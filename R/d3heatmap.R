@@ -132,6 +132,10 @@ NULL
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either 
 #' the row direction or the column direction, or none. The default is "none".
+#'
+#' @param scale.by.range logical indicating whether to scale rows or columns by
+#' the range of each row and column. Setting this parameter to \code{TRUE} 
+#' automatically sets \code{na.rm} to \code{TRUE}
 #' 
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
@@ -229,6 +233,7 @@ d3heatmap <- function(x
   
   ## data scaling
   , scale = c("none", "row", "column")
+	, scale.by.range = FALSE
   , na.rm = TRUE
   , na.color = "#777777"
   , na.value = NA
@@ -337,6 +342,7 @@ d3heatmap <- function(x
 		, symm = symm
 		, revC = revC
 		, scale = match.arg(scale)
+		, scale.by.range = scale.by.range
 		, na.rm = na.rm
 		, na.value = na.value
 		, digits = digits
