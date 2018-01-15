@@ -42,7 +42,6 @@ Provides options for modifying the legend for a d3heatmap object
 }
 \examples{
 library(d3heatmap)
-library(magrittr)
 
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) \%>\% 
   hmLegend(show = TRUE, title = "Title", location = "tl") 

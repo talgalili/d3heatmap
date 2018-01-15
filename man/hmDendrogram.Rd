@@ -9,7 +9,7 @@ The interface was inspired by \cite{dygraphs}
 \usage{
 hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
   reorder, row.reorder, column.reorder, distance.function, clustering.function,
-  reorder.function, groups, symmetrical, reverse.columns)
+  reorder.function, groups, symmetrical)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
@@ -50,10 +50,6 @@ reordering the row and column dendrograms.}
 to color the dendrogram's branches (uses \link[dendextend]{color_branches})}
 
 \item{symmetrical}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
-
-\item{reverse.columns}{logical indicating if the column order should be 
-reversed for plotting. Default (when missing) is FALSE, unless symmetrical
-is TRUE. This is useful for correlation matrices.}
 }
 \value{
 Modified d3heatmap object
@@ -63,7 +59,6 @@ Set and adjust the dendrograms for a d3heatmap object
 }
 \examples{
 library(d3heatmap)
-library(magrittr)
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmDendrogram(dendrogram = 'row', groups = 3)

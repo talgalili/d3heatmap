@@ -24,12 +24,12 @@ Imports:
     base64enc,
     dendextend (>= 0.18.0),
     stats,
-    grDevices
+    grDevices,
+    magrittr
 Suggests:
     shiny,
     knitr,
-    rmarkdown,
-    magrittr
+    rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
@@ -37,12 +37,14 @@ Collate:
     'colors.R'
     'd3heatmap.R'
     'dendrogram.R'
+    'exports.R'
     'heatmap.R'
     'hmAxis.R'
     'hmCells.R'
     'hmColors.R'
-    'hmSidecolors.R'
     'hmDendrogram.R'
     'hmLegend.R'
+    'hmOptions.R'
+    'hmSidecolors.R'
     'utils.R'
 RoxygenNote: 6.0.1

@@ -48,7 +48,6 @@ Provides options for modifying the cells and the display of their values
 }
 \examples{
 library(d3heatmap)
-library(magrittr)
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmCells(digits = 0L, print = TRUE)

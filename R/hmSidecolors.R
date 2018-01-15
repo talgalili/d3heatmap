@@ -2,8 +2,7 @@
 #' 
 #' Provides options for modifying the x and y axes of a D3 Heatmap widget
 #' 
-#' @param d3heatmap a d3heatmap object created from the d3heatmap() or 
-#' hmHeatmap()
+#' @param d3heatmap a d3heatmap object created from the d3heatmap()
 #' 
 #' @param axis Name of the axis to modify; either "x", "y", "row", or "column"
 #' 
@@ -19,7 +18,6 @@
 #'   
 #' @examples 
 #' library(d3heatmap)
-#' library(magrittr)
 #' 
 #' rsc <- matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 #' rsccols <- c('red', 'white', 'blue')

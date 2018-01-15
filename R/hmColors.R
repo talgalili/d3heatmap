@@ -1,9 +1,3 @@
-#' @import htmlwidgets
-#' @importFrom grDevices col2rgb rgb
-#' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
-NULL
-
-
 #' Set d3heatmap color options
 #' 
 #' Set and adjust the colors and color options for the d3heatmap
@@ -45,7 +39,6 @@ NULL
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(magrittr)
 #' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
 #'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
