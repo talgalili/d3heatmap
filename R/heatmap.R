@@ -228,7 +228,6 @@ heatmap <- function(
 		# the functions above will return NaN, which will be translated to NA... 
   	# therefor we will replace all NaN's with .5)
   	if (scale == "row") {
-			browser()
   	  x <- sweep(x, 1, rowMeans(x, na.rm = na.rm))
   	  x <- sweep(x, 1, apply(x, 1, sd, na.rm = na.rm), "/")
   	  x[is.nan(x)] <- .5
@@ -245,6 +244,7 @@ heatmap <- function(
 							(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 
   	if (scale == "row") {
+			browser()
   	  x <- apply(x, 1, normalize)
 
   	}

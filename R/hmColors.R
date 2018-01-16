@@ -73,14 +73,6 @@ hmColors <- function(d3heatmap
 	  color.bins <- params$breaks
 	} 
   
-	key <- d3heatmap$x$options$show_legend 
-  if(length(color.bins) > 1 & key) {
-    message('d3heatmap: color key (legend) is currently incomptatible with custom color
-            breaks. Hiding the color key')
-    key <- FALSE
-  }
-	  
-
 	new <- list(
 		col = colors
 		, rng = range
@@ -119,7 +111,7 @@ hmColors <- function(d3heatmap
 		, legend_breaks = hm_colors$legend_breaks
 		, bins = hm_colors$bins
 		, na_color = params$na.color
-		, show_legend = key
+		, manual_breaks = (length(color.bins) > 0)
 	)
 	options <- mergeLists(d3heatmap$x$options, newOpts)
   

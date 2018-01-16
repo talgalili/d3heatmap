@@ -223,7 +223,7 @@ Creates a D3.js-based heatmap widget.
 }
 \examples{
 library(d3heatmap)
-d3heatmap(mtcars, scale = "column", colors = "Blues")
+d3heatmap(mtcars, scale = "column", col = "Blues")
 
 }
 \seealso{

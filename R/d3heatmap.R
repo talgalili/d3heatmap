@@ -206,7 +206,7 @@ NULL
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' d3heatmap(mtcars, scale = "column", colors = "Blues")
+#' d3heatmap(mtcars, scale = "column", col = "Blues")
 #' 
 #' @export
 d3heatmap <- function(x
@@ -303,11 +303,11 @@ d3heatmap <- function(x
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
   
-  if(length(breaks) > 1 & key) {
-    message('d3heatmap: color key (legend) is currently incomptatible with custom color
-            breaks. Hiding the color key')
-    key <- FALSE
-  }
+  #if(length(breaks) > 1 & key) {
+  #  message('d3heatmap: color key (legend) is currently incomptatible with custom color
+  #          breaks. Hiding the color key')
+  #  key <- FALSE
+  #}
   if(!is.null(opts$ColIndividualColors)) 
     ColSideColors <- opts$ColIndividualColors
   if(!is.null(opts$RowIndividualColors)) 
@@ -398,9 +398,8 @@ d3heatmap <- function(x
 	key.location <- match.arg(key.location)
 	axis.locations <- c("top", "left", "bottom", "right")
   
-	if(!sideCol %in% c(1, 3)) sideCol <- 3	
-	if(!sideRow %in% c(2, 4)) sideRow <- 4	
-	
+	if (!sideCol %in% c(1, 3)) sideCol <- 3	
+	if (!sideRow %in% c(2, 4)) sideRow <- 4	
 
   options <- list(
     hm_width = width
@@ -417,6 +416,7 @@ d3heatmap <- function(x
     , xaxis_title_font_size = xaxis_title_font_size
     , yaxis_title_font_size = yaxis_title_font_size 
     , bins = hm_colors$breaks
+		, manual_breaks = (length(breaks) > 1)
     , symbreaks = symbreaks
     , print_values = print.values
     , show_legend = key
