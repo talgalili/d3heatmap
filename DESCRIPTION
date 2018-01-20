@@ -1,7 +1,7 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
-Version: 0.6.1.2
+Version: 0.6.1.3
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
     person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
