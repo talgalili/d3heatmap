@@ -244,7 +244,6 @@ heatmap <- function(
 							(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 
   	if (scale == "row") {
-			browser()
   	  x <- apply(x, 1, normalize)
 
   	}
@@ -262,7 +261,7 @@ heatmap <- function(
       cellnote <- round(x_unscaled, digits = digits)
     }
   }
-  
+ 
   # Check that cellnote is o.k.:
   if (is.null(dim(cellnote))) {
     if (length(cellnote) != nr*nc) {
@@ -271,6 +270,7 @@ heatmap <- function(
     dim(cellnote) <- dim(x)
   }
   if (!identical(dim(x), dim(cellnote))) {
+    browser()
     stop("cellnote matrix must have same dimensions as x")
   }  
   

@@ -32,8 +32,8 @@ NULL
 #' should be reordered.	By default, it is TRUE, which implies 
 #' dendrogram is computed and reordered based on row means. 
 #' If NULL or FALSE, then no dendrogram is computed and no reordering 
-#' is done. If a dendrogram, then it is used "as-is", ie without any 
-#' reordering. If a vector of integers, then dendrogram is computed 
+#' is done. If a dendrogram, then it is used "as-is", i.e. without any 
+#' reordering. If a vector of integers, then a dendrogram is computed 
 #' and reordered based on the order of the vector.
 #' 
 #' @param Colv determines if and how the column dendrogram should be 
@@ -303,24 +303,23 @@ d3heatmap <- function(x
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
   
-  #if(length(breaks) > 1 & key) {
-  #  message('d3heatmap: color key (legend) is currently incomptatible with custom color
-  #          breaks. Hiding the color key')
-  #  key <- FALSE
-  #}
-  if(!is.null(opts$ColIndividualColors)) 
+  if (!is.null(opts$ColIndividualColors)) 
     ColSideColors <- opts$ColIndividualColors
-  if(!is.null(opts$RowIndividualColors)) 
+  if (!is.null(opts$RowIndividualColors)) 
     RowSideColors <- opts$RowIndividualColors
 
-	if(is.null(RowColorsPalette)) 
+	if (is.null(RowColorsPalette)) 
 					RowColorsPalette <- c('blue', 'orange', 'black')
-	if(is.null(ColColorsPalette)) 
+	if (is.null(ColColorsPalette)) 
 					ColColorsPalette <- c('cyan', 'maroon', 'grey')
 
-	if(is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
-	if(is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
-  
+	if (is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
+	if (is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
+
+	## additional controls for working with the gadget (shiny inputs)
+  ##===========================================================
+  if (!is.null(k_row)) if (is.na(k_row)) k_row <- NULL
+  if (!is.null(k_col)) if (is.na(k_col)) k_col <- NULL
  
 	## Save the parameters for later API calls
   ##===========================================================
