@@ -244,7 +244,7 @@ heatmap <- function(
 							(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 
   	if (scale == "row") {
-  	  x <- apply(x, 1, normalize)
+  	  x <- t(apply(x, 1, normalize))
 
   	}
   	else if (scale == "column") {
@@ -270,7 +270,6 @@ heatmap <- function(
     dim(cellnote) <- dim(x)
   }
   if (!identical(dim(x), dim(cellnote))) {
-    browser()
     stop("cellnote matrix must have same dimensions as x")
   }  
   
