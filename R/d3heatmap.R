@@ -276,6 +276,8 @@ d3heatmap <- function(x
   , srtCol = 60
   , sideCol = 3
   , sideRow = 4
+	, xaxis.location
+	, yaxis.location
   , xlab = NULL
   , ylab = NULL
   , xaxis_title_font_size = 14
@@ -327,16 +329,16 @@ d3heatmap <- function(x
   if (!is.null(cexCol)) if (is.na(cexCol)) cexCol <- NULL
   if (!is.null(cexRow)) if (is.na(cexRow)) cexRow <- NULL
 	
-  if(!is.null(opts$xaxis.location)) {
-    xaxis.location <- tolower(opts$xaxis.location)
+  if(!missing(xaxis.location)) {
+    xaxis.location <- tolower(xaxis.location)
     if (xaxis.location %in% c('top', 'bottom'))
-      sideCol <- which(axis.locations == tolower(xaxis.location))
+      sideCol <- which(axis.locations == xaxis.location)
   } 
 	
-	if(!is.null(opts$yaxis.location)) {
-	  yaxis.location <- tolower(opts$yaxis.location)
+	if(!missing(yaxis.location)) {
+	  yaxis.location <- tolower(yaxis.location)
 	  if (yaxis.location %in% c('left', 'right'))
-      sideRow <- which(axis.locations == tolower(yaxis.location))
+      sideRow <- which(axis.locations == yaxis.location)
 	} 
     
 	## Save the parameters for later API calls

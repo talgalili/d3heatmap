@@ -22,11 +22,11 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   notecex = 1, cex.note, theme = NULL, col = "RdYlBu", breaks = NULL,
   symbreaks = FALSE, labRow = rownames(x), labCol = colnames(x),
   labColSize = 80, labRowSize = 120, cexCol = NULL, cexRow = NULL,
-  srtCol = 60, sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14,
-  ColSideColors = NULL, RowSideColors = NULL, RowColorsPalette = NULL,
-  ColColorsPalette = NULL, RowColorsNames = NULL, ColColorsNames = NULL,
-  ...)
+  srtCol = 60, sideCol = 3, sideRow = 4, xaxis.location, yaxis.location,
+  xlab = NULL, ylab = NULL, xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14, ColSideColors = NULL, RowSideColors = NULL,
+  RowColorsPalette = NULL, ColColorsPalette = NULL, RowColorsNames = NULL,
+  ColColorsNames = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric matrix

@@ -1,3 +1,7 @@
+#' @import shiny miniUI
+#' @importFrom methods new
+NULL
+
 setOldClass('d3heatmap')
 setClass('d3heatmapGadget', 
   representation(x = 'data.frame'
@@ -30,10 +34,9 @@ setClass('d3heatmapGadget',
 #' # "d3heatmapGadget"
 #' }
 #' 
-#' @import miniUI
 #' @export
 d3heatmapGadget <- function(x, ...) {
-  if (!require('shiny') | !require('miniUI')) 
+  if (!requireNamespace('shiny') | !requireNamespace('miniUI')) 
     stop("Shiny or miniUI packages not detected, please install first")
  
   # object class settings will take precence over ... params 
@@ -388,10 +391,10 @@ d3heatmapGadget <- function(x, ...) {
 											value = .settings$'labColSize', min = 0, step = 1)
 					, numericInput('labRowSize', 'Y axis (row) size (# pixels)',
 											value = .settings$'labRowSize', min = 0, step = 1)
-					, numericInput('cexCol', 'X axis label font size',
-											value = .settings$'cexCol', min = 0, step = 1)
-					, numericInput('cexRow', 'Y axis label font size',
-											value = .settings$'cexRow', min = 0, step = 1)
+					, numericInput('cexCol', 'X axis label font size (# * 12px)',
+											value = .settings$'cexCol', min = 0, step = .1)
+					, numericInput('cexRow', 'Y axis label font size (# * 12px)',
+											value = .settings$'cexRow', min = 0, step = .1)
 					, numericInput('xaxis_title_font_size', 'X axis title font size',
 					             value = .settings$'xaxis_title_font_size', 
 											 min = 0)
