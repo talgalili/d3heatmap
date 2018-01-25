@@ -39,11 +39,11 @@ d3heatmapGadget <- function(x, ...) {
   if (!requireNamespace('shiny') | !requireNamespace('miniUI')) 
     stop("Shiny or miniUI packages not detected, please install first")
  
-  # object class settings will take precence over ... params 
   params <- as.list(substitute(list(...)))[-1L]
   
   if (class(x) == 'd3heatmapGadget') {
     .x <- x@x
+    # object class settings will take precedence over ... params 
 		.settings <- mergeLists(params, x@settings)
 		.heatmap <- x@heatmap
     .rows <- x@rows
@@ -207,8 +207,14 @@ d3heatmapGadget <- function(x, ...) {
    
     # filter matrix rows / columns 
     observe({ 
-      gVals$x <- .x[which(row.names(.x) %in% input$'filter.rows'),
-                    which(colnames(.x) %in% input$'filter.cols')] 
+      rowInd <- which(row.names(.x) %in% input$'fitler.rows')
+      colInd <- which(colnames(.x) %in% input$'fitler.cols')
+      
+      if(!is.null(.settings$RowSideColors)) .settings$RowSideColors[rowInd,]
+      if(!is.null(.settings$ColSideColors)) .settings$ColSideColors[,colInd]
+      
+      gVals$x <- .x[rowInd, colInd]
+      
       isolate({
         gVals$rows <- input$'filter.rows'
         gVals$cols <- input$'filter.cols'

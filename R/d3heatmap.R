@@ -307,11 +307,14 @@ d3heatmap <- function(x
   if (!missing(kr)) k_row <- kr
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
+	
+	if(!is.null(ColSideColors)) ColSideColors <- as.matrix(ColSideColors)
+	if(!is.null(RowSideColors)) RowSideColors <- as.matrix(RowSideColors)
   
   if (!is.null(opts$ColIndividualColors)) 
-    ColSideColors <- opts$ColIndividualColors
+    ColSideColors <- as.matrix(opts$ColIndividualColors)
   if (!is.null(opts$RowIndividualColors)) 
-    RowSideColors <- opts$RowIndividualColors
+    RowSideColors <- as.matrix(opts$RowIndividualColors)
 
 	if (is.null(RowColorsPalette)) 
 					RowColorsPalette <- c('blue', 'orange', 'black')
