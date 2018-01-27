@@ -4,12 +4,12 @@
 \alias{hmDendrogram}
 \title{Set d3heatmap dendrograms}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
   reorder, row.reorder, column.reorder, distance.function, clustering.function,
-  reorder.function, groups, symmetrical, reverse.columns)
+  reorder.function, groups, symmetrical)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
@@ -49,13 +49,7 @@ reordering the row and column dendrograms.}
 \item{groups}{an integer scalar with the desired number of groups by which 
 to color the dendrogram's branches (uses \link[dendextend]{color_branches})}
 
-\item{reverse.columns}{logical indicating if the column order should be 
-reversed for plotting. Default (when missing) is FALSE, unless symmetrical
-is TRUE. This is useful for correlation matrices.}
-
-\item{dendrogram}{\emph{Required} A character string indicating whether 
-to draw 'none', 'row', 'column' or 'both' dendrograms. 
-Defaults to 'both'. However,}
+\item{symmetrical}{logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.}
 }
 \value{
 Modified d3heatmap object
@@ -65,9 +59,9 @@ Set and adjust the dendrograms for a d3heatmap object
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
-  hmDendrogram(dendrogram = 'row', row.groups = 3)
+  hmDendrogram(dendrogram = 'row', groups = 3)
 
 }
 \seealso{

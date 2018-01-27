@@ -1,9 +1,3 @@
-#' @import htmlwidgets
-#' @importFrom grDevices col2rgb rgb
-#' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
-NULL
-
-
 #' Set d3heatmap color options
 #' 
 #' Set and adjust the colors and color options for the d3heatmap
@@ -27,7 +21,7 @@ NULL
 #' 
 #' @param na.color Color of NA values in heatmap. Defaults to neutral gray.
 #' 
-#' @param rng A vector of two numbers, namely the minimum and maximum value
+#' @param range A vector of two numbers, namely the minimum and maximum value
 #'   to use when determining the mapping from values to colors. This is 
 #' useful when the range of values changes between heatmaps, but colors 
 #' should be the same (optional, defaults to the minimum and maximum 
@@ -38,16 +32,16 @@ NULL
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
-#'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = T)
+#'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
 #'   
 #' @export
 hmColors <- function(d3heatmap
@@ -79,14 +73,6 @@ hmColors <- function(d3heatmap
 	  color.bins <- params$breaks
 	} 
   
-	key <- d3heatmap$x$options$show_legend 
-  if(length(color.bins) > 1 & key) {
-    message('d3heatmap: color key (legend) is currently incomptatible with custom color
-            breaks. Hiding the color key')
-    key <- FALSE
-  }
-	  
-
 	new <- list(
 		col = colors
 		, rng = range
@@ -125,7 +111,7 @@ hmColors <- function(d3heatmap
 		, legend_breaks = hm_colors$legend_breaks
 		, bins = hm_colors$bins
 		, na_color = params$na.color
-		, show_legend = key
+		, manual_breaks = (length(color.bins) > 0)
 	)
 	options <- mergeLists(d3heatmap$x$options, newOpts)
   

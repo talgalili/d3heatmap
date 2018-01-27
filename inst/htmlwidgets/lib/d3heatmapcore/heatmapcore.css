@@ -147,7 +147,7 @@ body.theme-dark {
 .legend {
   overflow: visible;
   position: absolute;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 5px 5px 10px;
 }
 .legend_title {
 	position: absolute;

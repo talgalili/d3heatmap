@@ -4,15 +4,14 @@
 \alias{hmSideColors}
 \title{Modify axis options}
 \source{
-The newer interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmSideColors(d3heatmap, axis = c("x", "y", "row", "column"), side.colors,
   palette, names)
 }
 \arguments{
-\item{d3heatmap}{a d3heatmap object created from the d3heatmap() or 
-hmHeatmap()}
+\item{d3heatmap}{a d3heatmap object created from the d3heatmap()}
 
 \item{axis}{Name of the axis to modify; either "x", "y", "row", or "column"}
 
@@ -31,7 +30,6 @@ Provides options for modifying the x and y axes of a D3 Heatmap widget
 }
 \examples{
 library(d3heatmap)
-library(magrittr)
 
 rsc <- matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 rsccols <- c('red', 'white', 'blue')
@@ -43,9 +41,9 @@ cscnames <- c('Column 1', 'Column 2', 'Column 3')
 
 d3heatmap(mtcars, key = TRUE, scale = 'column') \%>\% 
   hmSideColors(axis = 'column', side.colors = csc,
-    palette = csccols, color.names = cscnames) \%>\% 
+    palette = csccols, names = cscnames) \%>\% 
   hmSideColors(axis = 'y', side.colors = rsc,
-    palette = rsccols, color.names = rscnames)
+    palette = rsccols, names = rscnames)
 
 
 }

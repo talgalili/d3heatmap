@@ -2,6 +2,8 @@
 #' 
 #' Provides options for modifying the legend for a d3heatmap object
 #' 
+#' @param d3heatmap \emph{Required} A valid \emph{d3heatmap} object
+#' 
 #' @param show \emph{Required, logical} Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
 #' 
@@ -28,19 +30,19 @@
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) %>% 
-#'   hmLegend(show = T, title = "Title", location = "tl") %>% 
+#'   hmLegend(show = TRUE, title = "Title", location = "tl") 
 #'   
 #' @export
-hmLegend <- function(heatmap
+hmLegend <- function(d3heatmap
   , show = TRUE
   , size
   , title
@@ -49,13 +51,13 @@ hmLegend <- function(heatmap
   , density.fill = NULL
 ) {
   
-  if (missing(heatmap)) {
+  if (missing(d3heatmap)) {
 		message("hmLegend: no heatmap provided... returning NULL")
 		return(NULL)
   }
   
-  if(missing(size)) size <- heatmap$x$options$legend_scaler
-  if(missing(title)) title <- heatmap$x$options$legend_title
+  if(missing(size)) size <- d3heatmap$x$options$legend_scaler
+  if(missing(title)) title <- d3heatmap$x$options$legend_title
   
   opts <- list(
     show_legend = show
@@ -66,7 +68,6 @@ hmLegend <- function(heatmap
     , legend_fill = density.fill
   )
   
-  heatmap$x$options <- mergeLists(heatmap$x$options, opts)
-  return(heatmap) 
+  d3heatmap$x$options <- mergeLists(d3heatmap$x$options, opts)
+  return(d3heatmap) 
 }
-

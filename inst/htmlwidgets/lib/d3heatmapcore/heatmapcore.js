@@ -864,35 +864,55 @@ function heatmap(selector, data, options) {
     if (data.x.length === 0)
       return function() {};
 
-		var breaks = options.legend_breaks;
-		var legend_title = options.legend_title;
+		var breaks = options.legend_breaks,
+		    legend_title = options.legend_title,
+        max = d3.max(breaks),
+        min = d3.min(breaks);
 
-    var max = d3.max(breaks);
-    var min = d3.min(breaks);
+		// remove last item since everything above the last threshold
+		// gets the same color
+		var intervals = breaks;
+		// we need N+1 colors for the threshold scale
+		var colors = options.legend_colors;
+		colors.unshift(options.na_color);
 
-		var interval = (max - min) / (breaks.length - 1);
-    var n = min;
-    var intervals = [];
-    while(n <= max) {
-      intervals.push(n);
-      n += interval;
-    }
-
-		var colorscale = d3.scale.linear()
+		var colorscale = d3.scale.threshold()
       .domain(intervals)
-      .range(options.legend_colors);
+      .range(colors);
 
     var blockwidth = width / (breaks.length - 1);
 
-    var legendscale = d3.scale.linear()
-      .domain([min, max])
-      .range([0, (width - blockwidth)]);
+		if(options.manual_breaks) {
+			var legendscale = d3.scale.ordinal()
+    	  .domain(intervals)
+    	  .rangeBands([0, width]);
 
-    var xAxis = d3.svg.axis()
-      .ticks(5)
-      .scale(legendscale)
-      .orient("bottom")
-      .tickSize(10);
+			var divisor = Math.max(1, Math.floor(intervals.length / 5));
+
+	    var xAxis = d3.svg.axis()
+	      .scale(legendscale)
+				.tickValues(intervals.filter(function(value, index, Arr) {
+					return (index + 1) % divisor == 0;
+				}))
+	      .orient("bottom")
+	      .tickSize(10);
+
+			//historgrams process thresholds differently than scales,
+			// so for manual breaks we need to add inifinity
+			intervals.push(d3.max(data.x));
+
+		} else {
+    	var legendscale = d3.scale.linear()
+    	  .domain([min, max])
+    	  .range([0, (width - blockwidth)]);
+
+	    var xAxis = d3.svg.axis()
+	      .ticks(5)
+	      .scale(legendscale)
+	      .orient("bottom")
+	      .tickSize(10);
+
+		}
 
 	 if(legend_title) {
   		d3.select('.legend')
@@ -910,7 +930,7 @@ function heatmap(selector, data, options) {
       .attr("transform", "translate(0, 50)")
       .attr('width', '100%');
 
-    var histdata = d3.layout.histogram()
+		var histdata = d3.layout.histogram()
       .bins(intervals)(data.x);
 
     var histy = d3.scale.linear()
@@ -924,10 +944,16 @@ function heatmap(selector, data, options) {
       .data(histdata)
     	.enter().append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) { return(-histy(d.y)); })
-      .attr("x", function(d) { return(legendscale(d.x)); })
+      .attr("y", function(d) { 
+							return(-histy(d.y)); 
+			})
+      .attr("x", function(d) { 
+							return(legendscale(d.x)); 
+			})
       .attr("width", blockwidth)
-      .attr("height", function(d) { return(histy(d.y)) })
+      .attr("height", function(d) { 
+							return(histy(d.y)) 
+			})
       .attr("fill", function(d) { 
 							clr = fill ? fill : colorscale(d.x);
 		 					return(clr)	
@@ -1162,8 +1188,6 @@ function heatmap(selector, data, options) {
 		var coeff = flip ? -1 : 1;
 		var topPadding = xloc === "top" ? 0 : padding;
 		var bottomPadding = xloc === "top" ? padding : 0;
-		console.log(axisWidth, padding, flip, xloc, 
-						coeff, bottomPadding, topPadding);
 
     // Convert matrix to vector
 		// For the sake of consistency, we'll keep rows and cols
@@ -1176,9 +1200,9 @@ function heatmap(selector, data, options) {
 		var colnames = options.csc_colnames;
 		var colors = {};
 		colors.color = !options.csc_cols ? null : 
-									options.csc_cols.filter(onlyUnique) : 
+									options.csc_cols.filter(onlyUnique);
 		colors.label = !options.csc_labs ? null : 
-									options.csc_labs.filter(onlyUnique) : null;
+									options.csc_labs.filter(onlyUnique);
 
 		// populate array of named lists for fill and label	
 		var scols = [];

@@ -2,7 +2,7 @@
 #' 
 #' Provides options for modifying the x and y axes of a D3 Heatmap widget
 #' 
-#' @param d3heatmap a d3heatmap object created from the d3heatmap() or hmHeatmap()
+#' @param d3heatmap a d3heatmap object created from the d3heatmap()
 #' 
 #' @param axis Name of the axis to modify; either "x", "y", "row", or "column"
 #' 
@@ -27,14 +27,14 @@
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
+#' The interface was inspired by \cite{dygraphs}
 #' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') %>% 
 #'   hmAxis("y", title = "test", location = 'right')
@@ -140,4 +140,3 @@ hmAxis <- function(d3heatmap
 
   return(d3heatmap)  
 }
-

@@ -4,14 +4,14 @@
 \alias{hmAxis}
 \title{Modify axis options}
 \source{
-The interface was inspired by \link{dygraphs}
+The interface was inspired by \cite{dygraphs}
 }
 \usage{
 hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size, labels,
   font.size, angle, location, title, title.font.size)
 }
 \arguments{
-\item{d3heatmap}{a d3heatmap object created from the d3heatmap() or hmHeatmap()}
+\item{d3heatmap}{a d3heatmap object created from the d3heatmap()}
 
 \item{axis}{Name of the axis to modify; either "x", "y", "row", or "column"}
 
@@ -39,7 +39,7 @@ Provides options for modifying the x and y axes of a D3 Heatmap widget
 }
 \examples{
 library(d3heatmap)
-library(dplyr)
+
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') \%>\% 
   hmAxis("y", title = "test", location = 'right')
