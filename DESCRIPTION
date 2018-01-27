@@ -1,7 +1,7 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
-Version: 0.8
+Version: 0.8.1
 Date: 2018-01-13
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
@@ -24,10 +24,13 @@ Imports:
     base64enc,
     dendextend (>= 0.18.0),
     stats,
-    grDevices
+    grDevices,
+    magrittr
 Suggests:
     shiny,
-    knitr
+    miniUI,
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
@@ -35,12 +38,15 @@ Collate:
     'colors.R'
     'd3heatmap.R'
     'dendrogram.R'
+    'exports.R'
+    'gadget.R'
     'heatmap.R'
     'hmAxis.R'
     'hmCells.R'
     'hmColors.R'
-    'hmSidecolors.R'
     'hmDendrogram.R'
     'hmLegend.R'
+    'hmOptions.R'
+    'hmSidecolors.R'
     'utils.R'
 RoxygenNote: 6.0.1

@@ -10,10 +10,6 @@
 #' and col.reorder are FALSE or NULL and dendrogram is 'both', then a warning 
 #' is issued and row.reorder (or col.reorder) arguments are honoured.
 #' 
-#' @param dendrogram \emph{Required} A character string indicating whether 
-#' to draw 'none', 'row', 'column' or 'both' dendrograms. 
-#' Defaults to 'both'. However, 
-#'
 #' @param reorder a parameter that allows the user to pass in a single 
 #' reordering value to use on the dendrograms specified in the 
 #' \code{dendrogram} argument.
@@ -40,28 +36,26 @@
 #' @param reorder.function function(d, w) of dendrogram and weights for 
 #' reordering the row and column dendrograms. 
 #'
-#' @param reverse.columns logical indicating if the column order should be 
-#' reversed for plotting. Default (when missing) is FALSE, unless symmetrical
-#' is TRUE. This is useful for correlation matrices.
-#'   
 #' @param groups an integer scalar with the desired number of groups by which 
 #' to color the dendrogram's branches (uses \link[dendextend]{color_branches})
+#'   
+#' @param symmetrical logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.
 #'   
 #' @return Modified d3heatmap object
 #' 
 #' @import htmlwidgets
 #'   
 #' @source 
-#' The interface was inspired by \link{dygraphs}
-#'   
+#' The interface was inspired by \cite{dygraphs}
+#' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' library(dplyr)
+#' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
-#'   hmDendrogram(dendrogram = 'row', row.groups = 3)
+#'   hmDendrogram(dendrogram = 'row', groups = 3)
 #' 
 #' @export
 hmDendrogram <- function(d3heatmap
@@ -75,11 +69,11 @@ hmDendrogram <- function(d3heatmap
   , reorder.function #reorder
   , groups 
   , symmetrical #symmetrical
-  , reverse.columns #reverse.columns
 )
 {
 
 	# perform critical argument checks
+  ##==============================================
 	if(missing(d3heatmap)) {
 		message('hmDendrogram: no heatmap provided, returning NULL')
 		return(NULL)
@@ -92,8 +86,11 @@ hmDendrogram <- function(d3heatmap
 	}
  
 	# grab the input parameters for generating the heatmap
+  ##==============================================
 	params <- d3heatmap$x$params
 
+	## process parameters
+  ##==============================================
   dendrogram <- match.arg(dendrogram)
 	
 	# if setting to 'none', then we're turning off past
@@ -101,11 +98,25 @@ hmDendrogram <- function(d3heatmap
 	if (dendrogram == 'none') {
 		params$dendrogram <- 'none'
 		hm <- do.call(heatmap, args = params)
-
-		d3heatmap$x$rows <- hm$rowDend
-		d3heatmap$x$cols <- hm$colDend
-		d3heatmap$x$matrix <- hm$mtx
-		d3heatmap$x$params <- params
+	  x <- hm$x
+	    
+	  hm_colors <- heatmapColors(x
+	  							, params$col
+	  							, params$na.color
+	  							, params$na.rm
+	  							, params$rng
+	  							, params$scale
+	  							, params$breaks
+	  							, params$symbreaks
+	  						)
+	  
+    imgUri <- encodeAsPNG(t(x), hm_colors$col)
+	  
+	  d3heatmap$x$rows <- hm$rowDend
+	  d3heatmap$x$cols <- hm$colDend
+	  d3heatmap$x$matrix <- hm$mtx
+    d3heatmap$x$image <- imgUri
+	  d3heatmap$x$params <- params
 
   	return(d3heatmap)  
 	}
@@ -149,7 +160,6 @@ hmDendrogram <- function(d3heatmap
 	if(missing(reorder.function)) reorder.function <- params$reorderfun
 	if(is.null(row.groups)) row.groups <- params$k_row
 	if(is.null(column.groups)) column.groups <- params$k_col
-	if(missing(reverse.columns)) reverse.columns <- params$revC
 
   new <- list(
 			dendrogram = dendrogram
@@ -161,7 +171,6 @@ hmDendrogram <- function(d3heatmap
 			, k_row = row.groups
 			, k_col = column.groups
 			, symm = symmetrical
-			, revC = reverse.columns
 	)
 
 	params <- mergeLists(params, new)
@@ -170,10 +179,27 @@ hmDendrogram <- function(d3heatmap
 	## the params with the heatmap for later use
   ##==============================================
 	hm <- do.call(heatmap, args = params)
-
+	x <- hm$x
+	  
+  ## process re-coloring	
+  ##==============================================
+	hm_colors <- heatmapColors(x
+								, params$col
+								, params$na.color
+								, params$na.rm
+								, params$rng
+								, params$scale
+								, params$breaks
+								, params$symbreaks
+							)
+  imgUri <- encodeAsPNG(t(x), hm_colors$col)
+	
+	## load up the widget	
+  ##==============================================
 	d3heatmap$x$rows <- hm$rowDend
 	d3heatmap$x$cols <- hm$colDend
 	d3heatmap$x$matrix <- hm$mtx
+  d3heatmap$x$image <- imgUri
 	d3heatmap$x$params <- params
 
   return(d3heatmap)  

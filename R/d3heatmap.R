@@ -1,5 +1,5 @@
 #' @import htmlwidgets
-#' @importFrom grDevices col2rgb rgb
+#' @importFrom grDevices col2rgb rgb colorRampPalette
 #' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
 NULL
 
@@ -32,8 +32,8 @@ NULL
 #' should be reordered.	By default, it is TRUE, which implies 
 #' dendrogram is computed and reordered based on row means. 
 #' If NULL or FALSE, then no dendrogram is computed and no reordering 
-#' is done. If a dendrogram, then it is used "as-is", ie without any 
-#' reordering. If a vector of integers, then dendrogram is computed 
+#' is done. If a dendrogram, then it is used "as-is", i.e. without any 
+#' reordering. If a vector of integers, then a dendrogram is computed 
 #' and reordered based on the order of the vector.
 #' 
 #' @param Colv determines if and how the column dendrogram should be 
@@ -132,6 +132,10 @@ NULL
 #' 
 #' @param scale character indicating if the values should be centered and scaled in either 
 #' the row direction or the column direction, or none. The default is "none".
+#'
+#' @param scale.by.range logical indicating whether to scale rows or columns by
+#' the range of each row and column. Setting this parameter to \code{TRUE} 
+#' automatically sets \code{na.rm} to \code{TRUE}
 #' 
 #' @param na.rm logical indicating whether NA's should be removed.
 #' 
@@ -164,18 +168,20 @@ NULL
 #' @param cellnote \emph{numeric} (optional) matrix of the same dimensions as \code{x} that has the human-readable version of each value, for displaying to the user on hover. If \code{NULL}, then \code{x} will be coerced using \code{\link{as.character}}.
 #' If missing, it will use \code{x}, after rounding it based on the \code{digits} parameter.
 #' 
-#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, 
-#' should cellnote be scaled if x is also scaled?
+#' @param cellnote_scale \emph{logical} (default is FALSE). IF cellnote is missing and x is used, should cellnote be scaled if x is also scaled?
 #' 
 #' @param labRow character vectors with row labels to use (from top to bottom); default to rownames(x).
 #' 
 #' @param labCol character vectors with column labels to use (from left to right); default to colnames(x).
 #'         
-#' @param ColSideColors,ColIndividualColors (optional) character vector of length ncol(x), or matrix with
+#' @param ColSideColors (optional) character vector of length ncol(x), or matrix with
 #' columns equal to ncol(x), containing the color names for a horizontal side bar that may 
-#' be used to annotate the columns of x.
+#' be used to annotate the columns of x. \code{ColIndividualColors}, from heatmap.2, can
+#' also be used
 #'   
-#' @param RowSideColors,RowIndividualColors (optional) character vector of length nrow(x), or matrix 
+#' @param RowSideColors (optional) character vector of length nrow(x), or matrix with rows
+#' equal to nrow(x), containing the color names for a vertical side bar that may be used to
+#' annotate the rows of x. \code{RowIndividualColors}, from heatmap.3, can also be used
 #'   
 #' @param RowColorsPalette a palette of colors to use for RowSideColors if passing a non-color matrix
 #'   
@@ -186,6 +192,9 @@ NULL
 #' @param ColColorsNames the names of the variables for ColSideColors. Overrides rownames(ColSideColors)
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
+#' 
+#' @param ... a catch for undocumented features or un-used arguments from heatmap.2
+#' or heatmap.3, to enable direct use of those formulations in d3heatmap
 #'   
 #' @import htmlwidgets
 #'   
@@ -197,7 +206,7 @@ NULL
 #' 
 #' @examples 
 #' library(d3heatmap)
-#' d3heatmap(mtcars, scale = "column", colors = "Blues")
+#' d3heatmap(mtcars, scale = "column", col = "Blues")
 #' 
 #' @export
 d3heatmap <- function(x
@@ -224,6 +233,7 @@ d3heatmap <- function(x
   
   ## data scaling
   , scale = c("none", "row", "column")
+	, scale.by.range = FALSE
   , na.rm = TRUE
   , na.color = "#777777"
   , na.value = NA
@@ -293,24 +303,23 @@ d3heatmap <- function(x
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
   
-  if(length(breaks) > 1 & key) {
-    message('d3heatmap: color key (legend) is currently incomptatible with custom color
-            breaks. Hiding the color key')
-    key <- FALSE
-  }
-  if(!is.null(opts$ColIndividualColors)) 
+  if (!is.null(opts$ColIndividualColors)) 
     ColSideColors <- opts$ColIndividualColors
-  if(!is.null(opts$RowIndividualColors)) 
+  if (!is.null(opts$RowIndividualColors)) 
     RowSideColors <- opts$RowIndividualColors
 
-	if(is.null(RowColorsPalette)) 
+	if (is.null(RowColorsPalette)) 
 					RowColorsPalette <- c('blue', 'orange', 'black')
-	if(is.null(ColColorsPalette)) 
+	if (is.null(ColColorsPalette)) 
 					ColColorsPalette <- c('cyan', 'maroon', 'grey')
 
-	if(is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
-	if(is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
-  
+	if (is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
+	if (is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
+
+	## additional controls for working with the gadget (shiny inputs)
+  ##===========================================================
+  if (!is.null(k_row)) if (is.na(k_row)) k_row <- NULL
+  if (!is.null(k_col)) if (is.na(k_col)) k_col <- NULL
  
 	## Save the parameters for later API calls
   ##===========================================================
@@ -332,6 +341,7 @@ d3heatmap <- function(x
 		, symm = symm
 		, revC = revC
 		, scale = match.arg(scale)
+		, scale.by.range = scale.by.range
 		, na.rm = na.rm
 		, na.value = na.value
 		, digits = digits
@@ -387,9 +397,8 @@ d3heatmap <- function(x
 	key.location <- match.arg(key.location)
 	axis.locations <- c("top", "left", "bottom", "right")
   
-	if(!sideCol %in% c(1, 3)) sideCol <- 3	
-	if(!sideRow %in% c(2, 4)) sideRow <- 4	
-	
+	if (!sideCol %in% c(1, 3)) sideCol <- 3	
+	if (!sideRow %in% c(2, 4)) sideRow <- 4	
 
   options <- list(
     hm_width = width
@@ -406,6 +415,7 @@ d3heatmap <- function(x
     , xaxis_title_font_size = xaxis_title_font_size
     , yaxis_title_font_size = yaxis_title_font_size 
     , bins = hm_colors$breaks
+		, manual_breaks = (length(breaks) > 1)
     , symbreaks = symbreaks
     , print_values = print.values
     , show_legend = key

@@ -1,0 +1,51 @@
+## ------------------------------------------------------------------------
+suppressMessages(library(dendextend))
+library(d3heatmap)
+
+## ------------------------------------------------------------------------
+x <- mtcars # [c(2:4,7),1:4]
+
+d3heatmap(x, k_row = 4, k_col = 2)
+d3heatmap(x, k_row = 4, k_col = 2, scale = "column") # a more appropriate scalling
+
+# row_dend2 <- x %>% dist %>% hclust %>% as.dendrogram %>%
+#   color_branches(k = 3)
+# col_dend2 <- x %>% t %>% dist %>% hclust %>% as.dendrogram %>%
+#   color_branches(k = 2)
+# d3heatmap(x, Rowv = row_dend2, Colv = col_dend2)
+# d3heatmap(x, Rowv = row_dend2, Colv = col_dend2, scale = "column") # a more appropriate scaling
+
+## ------------------------------------------------------------------------
+x_cor <- cor(x)
+
+x_cor %>% d3heatmap(k_row = 3, k_col = 3) # (symm = TRUE)
+# x_cor %>% d3heatmap(reorderfun = function(x, ...) x) # this doesn't reorder the rows/columns based on the means.
+# Note the use of k_row/k_col to color the branches
+
+# # reproducing the dendrogram, but with manually created the dendrograms
+# cor_dend <- x_cor  %>% dist %>% hclust(method = "com") %>% as.dendrogram %>%
+#   color_branches(k = 3) %>% 
+#   reorder(rowMeans(x_cor)) # this is what is done inside heatmap.
+# x_cor %>% d3heatmap(Rowv = cor_dend, Colv = cor_dend)
+
+
+
+## ------------------------------------------------------------------------
+x <- datasets::iris[,-5] # [c(2:4,7),1:4]
+
+row_dend2 <- x %>% dist %>% hclust(method = "ave") %>% as.dendrogram %>%
+  color_branches(k = 3) %>% 
+  reorder(rowMeans(x)) 
+col_dend2 <- x %>% t %>% dist %>% hclust %>% as.dendrogram %>%
+  color_branches(k = 2) %>% 
+  sort # This sorting requires dendextend and cannot be easily done without it
+
+d3heatmap(x, Rowv = row_dend2, Colv = col_dend2,
+          colors = "Greens",
+          # scale = "row",
+          width = 600,
+          show_grid = FALSE)
+
+## ---- cache=FALSE--------------------------------------------------------
+sessionInfo()
+
