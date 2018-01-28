@@ -1013,23 +1013,30 @@ function heatmap(selector, data, options) {
 		// we ought to consider switching or transposing the matrix
     var rows = data.rowcolors.length;
     var rowcolors = flattenMatrix(data.rowcolors);
-    
+   
 		var cols = rowcolors.length / rows;
 		var colnames = options.rsc_colnames;
 		var colors = {};
-		colors.color = options.rsc_cols;
-		colors.label = options.rsc_labs.filter(onlyUnique);
-	
+		colors.color = !options.rsc_cols ? null : 
+									options.rsc_cols.filter(onlyUnique);
+		colors.label = !options.rsc_labs ? null : 
+									options.rsc_labs.filter(onlyUnique);
+
+
+
 		// populate array of named lists for fill and label	
 		var scols = [];
 		for(var i = 0; i < rowcolors.length; i++) {
 			var datum = {};
 			datum.fill = rowcolors[i];
 
-			for(var j = 0; j < colors.color.length; j++) {
-				if(datum.fill === colors.color[j]) {
-					datum.label = colors.label[j];
-					continue;
+			// only proceed if we've explicitly defined the colors and the labels
+			if(colors.color) {
+				for(var j = 0; j < colors.color.length; j++) {
+					if(datum.fill === colors.color[j]) {
+						datum.label = colors.label[j];
+						continue;
+					}
 				}
 			}
 			scols.push(datum);
@@ -1037,7 +1044,7 @@ function heatmap(selector, data, options) {
 
 	  // if we've originally passed a character matrix, then we were able to 
 	  // extract labels and apply colors, so we can create the labels
-	  if(colors) {
+	  if(colors.color) {
 	  	function onlyUnique(value, index, self) {   
 	  	  return self.indexOf(value) === index;  
 	  	} 
@@ -1124,7 +1131,7 @@ function heatmap(selector, data, options) {
   			.style("font-size", (0.8 * width / rows)	+ "px");
 		}
 
-	  if(colors) {
+	  if(colors.label) {
 			var tooltip = d3.tip()  
     		  .attr('class', 'd3heatmap-tip')  
     		  .html(function(d, i) {  
@@ -1192,8 +1199,10 @@ function heatmap(selector, data, options) {
     var cols = colcolors.length / rows;
 		var colnames = options.csc_colnames;
 		var colors = {};
-		colors.color = options.csc_cols;
-		colors.label = options.csc_labs.filter(onlyUnique);
+		colors.color = !options.csc_cols ? null : 
+									options.csc_cols.filter(onlyUnique) : 
+		colors.label = !options.csc_labs ? null : 
+									options.csc_labs.filter(onlyUnique) : null;
 
 		// populate array of named lists for fill and label	
 		var scols = [];
@@ -1201,10 +1210,13 @@ function heatmap(selector, data, options) {
 			var datum = {};
 			datum.fill = colcolors[i];
 
-			for(var j = 0; j < colors.color.length; j++) {
-				if(datum.fill === colors.color[j]) {
-					datum.label = colors.label[j];
-					continue;
+			// only proceed if we've explicitly defined the colors and the labels
+			if(colors.color) {
+				for(var j = 0; j < colors.color.length; j++) {
+					if(datum.fill === colors.color[j]) {
+						datum.label = colors.label[j];
+						continue;
+					}
 				}
 			}
 			scols.push(datum);
@@ -1212,7 +1224,7 @@ function heatmap(selector, data, options) {
 
 		// if we've originally passed a character matrix, then we were able to 
 		// extract labels and apply colors, so we can create the labels
-		if(colors) {
+		if(colors.color) {
 			function onlyUnique(value, index, self) {   
 			  return self.indexOf(value) === index;  
 			} 
@@ -1298,7 +1310,7 @@ function heatmap(selector, data, options) {
   			.style("font-size", (0.8 * height / rows)	+ "px");
 		}
 
-	  if(colors) {
+	  if(colors.label) {
 			var tooltip = d3.tip()  
     		  .attr('class', 'd3heatmap-tip')  
     		  .html(function(d, i) {  
