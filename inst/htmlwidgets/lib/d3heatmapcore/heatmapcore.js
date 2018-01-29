@@ -34,7 +34,7 @@ function heatmap(selector, data, options) {
     return vec;
   }
 
-  d3.selectAll(".outer").remove();
+  d3v3.selectAll(".outer").remove();
 
         // Opera 8.0+
   var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -129,7 +129,7 @@ function heatmap(selector, data, options) {
   // ==== END HELPERS ===================================
 
 
-  var el = d3.select(selector);
+  var el = d3v3.select(selector);
 
   var outer = el.append("div").classed("outer", true);
 
@@ -158,7 +158,7 @@ function heatmap(selector, data, options) {
   var bbox = inner.node().getBoundingClientRect();
 
   var Controller = function() {
-    this._events = d3.dispatch("highlight", "datapoint_hover", "transform");
+    this._events = d3v3.dispatch("highlight", "datapoint_hover", "transform");
     this._highlight = {x: null, y: null};
     this._datapoint_hover = {x: null, y: null, value: null};
     this._transform = null;
@@ -495,10 +495,10 @@ function heatmap(selector, data, options) {
     var rows = data.dim[0];
     
     var merged = data.merged;
-    var x = d3.scale.linear().domain([0, cols]).range([0, width]);
-    var y = d3.scale.linear().domain([0, rows]).range([0, height]);
+    var x = d3v3.scale.linear().domain([0, cols]).range([0, width]);
+    var y = d3v3.scale.linear().domain([0, rows]).range([0, height]);
 
-    var tip = d3.tip()
+    var tip = d3v3.tip()
         .attr('class', 'd3heatmap-tip')
         .html(function(d, i) {
           var rowTitle = opts.cellnote_row ? opts.cellnote_row : opts.yaxis_title ? opts.yaxis_title : "Row";
@@ -514,7 +514,7 @@ function heatmap(selector, data, options) {
     
     var current_origin;    
     
-    var brush = d3.svg.brush()
+    var brush = d3v3.svg.brush()
         .x(x)
         .y(y)
         .clamp([true, true])
@@ -524,7 +524,7 @@ function heatmap(selector, data, options) {
           extent[0][1] = Math.round(extent[0][1]);
           extent[1][0] = Math.round(extent[1][0]);
           extent[1][1] = Math.round(extent[1][1]);
-          d3.select(this).call(brush.extent(extent));
+          d3v3.select(this).call(brush.extent(extent));
         })
         .on('brushend', function() {
 
@@ -550,7 +550,7 @@ function heatmap(selector, data, options) {
             controller.transform({scale: scale, translate: translate, extent: ex});
           }
           brush.clear();
-          d3.select(this).call(brush).select(".brush .extent")
+          d3v3.select(this).call(brush).select(".brush .extent")
               .style({fill: opts.brush_color, stroke: opts.brush_color});
         });
 
@@ -608,13 +608,13 @@ function heatmap(selector, data, options) {
   
       	var leaves = data.rows || data.matrix.rows;
       	if (data.children) {
-      	  leaves = d3.layout.cluster().nodes(data)
+      	  leaves = d3v3.layout.cluster().nodes(data)
       	      .filter(function(x) { return !x.children; })
       	      .map(function(x) { return x.label + ""; });
       	} else if (data.length) {
       	  leaves = data;
       	}
-      	var scale = d3.scale.ordinal()
+      	var scale = d3v3.scale.ordinal()
           .domain(leaves)
           .rangeBands([0, yaxis_height]);
 
@@ -653,9 +653,9 @@ function heatmap(selector, data, options) {
           tip.style("display", "block");
         })
         .on("mousemove", function() {
-          var e = d3.event;
-          var offsetX = d3.event.offsetX;
-          var offsetY = d3.event.offsetY;
+          var e = d3v3.event;
+          var offsetX = d3v3.event.offsetX;
+          var offsetY = d3v3.event.offsetY;
           if (typeof(offsetX) === "undefined") {
             // Firefox 38 and earlier
             var target = e.target || e.srcElement;
@@ -678,8 +678,8 @@ function heatmap(selector, data, options) {
           }
           
           tip.show({col: col, row: row, label: label}).style({
-            top: d3.event.clientY + 15 + "px",
-            left: d3.event.clientX + 15 + "px",
+            top: d3v3.event.clientY + 15 + "px",
+            left: d3v3.event.clientX + 15 + "px",
             opacity: 0.9
           });
           controller.datapoint_hover({col:col, row:row, label:label});
@@ -718,7 +718,7 @@ function heatmap(selector, data, options) {
     // If the former, transform it to simply a list of names.
     var leaves;
     if (data.children) {
-      leaves = d3.layout.cluster().nodes(data)
+      leaves = d3v3.layout.cluster().nodes(data)
           .filter(function(x) { return !x.children; })
           .map(function(x) { return x.label + ""; });
     } else if (data.length) {
@@ -726,10 +726,10 @@ function heatmap(selector, data, options) {
     }
     
     // Define scale, axis
-    var scale = d3.scale.ordinal()
+    var scale = d3v3.scale.ordinal()
         .domain(leaves)
         .rangeBands([0, rotated ? width : height]);
-    var axis = d3.svg.axis()
+    var axis = d3v3.svg.axis()
         .scale(scale)
         .orient(axis_location)
         .outerTickSize(0)
@@ -779,7 +779,7 @@ function heatmap(selector, data, options) {
               hl[dim] = i;
               controller.highlight(hl);
             }
-            d3.event.stopPropagation();
+            d3v3.event.stopPropagation();
           });
     function layoutMouseTargets(selection) {
       var _h = scale.rangeBand() / (rotated ? 1.414 : 1);
@@ -866,8 +866,8 @@ function heatmap(selector, data, options) {
 
 		var breaks = options.legend_breaks,
 		    legend_title = options.legend_title,
-        max = d3.max(breaks),
-        min = d3.min(breaks);
+        max = d3v3.max(breaks),
+        min = d3v3.min(breaks);
 
 		// remove last item since everything above the last threshold
 		// gets the same color
@@ -876,20 +876,20 @@ function heatmap(selector, data, options) {
 		var colors = options.legend_colors;
 		colors.unshift(options.na_color);
 
-		var colorscale = d3.scale.threshold()
+		var colorscale = d3v3.scale.threshold()
       .domain(intervals)
       .range(colors);
 
     var blockwidth = width / (breaks.length - 1);
 
 		if(options.manual_breaks) {
-			var legendscale = d3.scale.ordinal()
+			var legendscale = d3v3.scale.ordinal()
     	  .domain(intervals)
     	  .rangeBands([0, width]);
 
 			var divisor = Math.max(1, Math.floor(intervals.length / 5));
 
-	    var xAxis = d3.svg.axis()
+	    var xAxis = d3v3.svg.axis()
 	      .scale(legendscale)
 				.tickValues(intervals.filter(function(value, index, Arr) {
 					return (index + 1) % divisor == 0;
@@ -899,14 +899,14 @@ function heatmap(selector, data, options) {
 
 			//historgrams process thresholds differently than scales,
 			// so for manual breaks we need to add inifinity
-			intervals.push(d3.max(data.x));
+			intervals.push(d3v3.max(data.x));
 
 		} else {
-    	var legendscale = d3.scale.linear()
+    	var legendscale = d3v3.scale.linear()
     	  .domain([min, max])
     	  .range([0, (width - blockwidth)]);
 
-	    var xAxis = d3.svg.axis()
+	    var xAxis = d3v3.svg.axis()
 	      .ticks(5)
 	      .scale(legendscale)
 	      .orient("bottom")
@@ -915,7 +915,7 @@ function heatmap(selector, data, options) {
 		}
 
 	 if(legend_title) {
-  		d3.select('.legend')
+  		d3v3.select('.legend')
 				.append('text')
   		  .classed('legend_title', true)
   		  .text(legend_title)
@@ -924,17 +924,17 @@ function heatmap(selector, data, options) {
       	.attr("transform", "translate(0, 10)");
 		}
 
-    var legend = d3.select('.legend')
+    var legend = d3v3.select('.legend')
       .append("g")
       .attr("class", "legend")
       .attr("transform", "translate(0, 50)")
       .attr('width', '100%');
 
-		var histdata = d3.layout.histogram()
+		var histdata = d3v3.layout.histogram()
       .bins(intervals)(data.x);
 
-    var histy = d3.scale.linear()
-      .domain([0, d3.max(histdata, function(d) { return d.y; })])
+    var histy = d3v3.scale.linear()
+      .domain([0, d3v3.max(histdata, function(d) { return d.y; })])
       .range([0, height / 2]);
 
 		var none = options.legend_type == 'none';
@@ -997,7 +997,7 @@ function heatmap(selector, data, options) {
   
 	function rowColorLabels(svg, data, width, height, axisHeight, options) {
    	svg = svg.append('g').style('overflow', 'hidden');
-    d3.select('.rowColors');
+    d3v3.select('.rowColors');
 
 		var padding = options.axis_padding;
 		var xloc = options.xaxis_location;
@@ -1053,20 +1053,20 @@ function heatmap(selector, data, options) {
 	  	
 	  	// vertical ordinal colour scale  
 	  	// with legend  
-	  	var collabels = d3.select('.row_colors_label')  
+	  	var collabels = d3v3.select('.row_colors_label')  
 	  	
-	  	var labscale = d3.scale.ordinal()  
+	  	var labscale = d3v3.scale.ordinal()  
 	  	  .domain(colors.label)  
 	  	  .range(colors.color)  
 	  	
 	  	var legendheight = 15 * colors.label.length;  
 	  	
 			// Color scale  
-	  	var colorscale_legendscale = d3.scale.ordinal()  
+	  	var colorscale_legendscale = d3v3.scale.ordinal()  
 	  	  .domain(colors.label) // legend   
 	  	  .rangeRoundBands([0, legendheight]); // height (px)  
 	  	
-	  	var yAxis = d3.svg.axis()  
+	  	var yAxis = d3v3.svg.axis()  
 	  	  .scale(colorscale_legendscale)  
 	  	  .orient("right")  
 	  	  .tickSize(7)  
@@ -1089,10 +1089,10 @@ function heatmap(selector, data, options) {
 	  	collabels.call(yAxis);  
 	  }
     
-		var x = d3.scale.linear()
+		var x = d3v3.scale.linear()
         .domain([0, rows])
         .range([0 + leftPadding, width - rightPadding]);
-    var y = d3.scale.linear()
+    var y = d3v3.scale.linear()
         .domain([0, cols])
         .range([0, height]);
     
@@ -1104,13 +1104,13 @@ function heatmap(selector, data, options) {
         .remove();
    
 		if(colnames) {	
-			var rcaxis = d3.select('.rowColorsAxis').append('g');
+			var rcaxis = d3v3.select('.rowColorsAxis').append('g');
 
-			var yscale = d3.scale.ordinal()
+			var yscale = d3v3.scale.ordinal()
     	    .domain(colnames)
     	    .rangeBands([0, width - padding]);
     	 
-			var rsc_xaxis = d3.svg.axis()
+			var rsc_xaxis = d3v3.svg.axis()
     	    .scale(yscale)
     	    .orient(xloc)
     	    .outerTickSize(0)
@@ -1132,7 +1132,7 @@ function heatmap(selector, data, options) {
 		}
 
 	  if(colors.label) {
-			var tooltip = d3.tip()  
+			var tooltip = d3v3.tip()  
     		  .attr('class', 'd3heatmap-tip')  
     		  .html(function(d, i) {  
     		  return "<table>" +   
@@ -1152,8 +1152,8 @@ function heatmap(selector, data, options) {
     	  tooltip
     	    .show(d, i)
     	    .style({
-    	          top: d3.event.clientY + 15 + "px",
-    	          left: d3.event.clientX + 15 + "px",
+    	          top: d3v3.event.clientY + 15 + "px",
+    	          left: d3v3.event.clientX + 15 + "px",
     	          opacity: 0.9
     	        });
     	})
@@ -1179,7 +1179,7 @@ function heatmap(selector, data, options) {
  
 	function colColorLabels(svg, data, width, height, axisWidth, options) {
    	svg = svg.append('g').style('overflow', 'hidden');
-    d3.select('.colColors');
+    d3v3.select('.colColors');
     
 		var xloc = options.xaxis_location;
 		var yloc = options.yaxis_location;
@@ -1233,20 +1233,20 @@ function heatmap(selector, data, options) {
 			
 			// vertical ordinal colour scale  
 			// with legend  
-			var collabels = d3.select('.col_colors_label')  
+			var collabels = d3v3.select('.col_colors_label')  
 			
-			var labscale = d3.scale.ordinal()  
+			var labscale = d3v3.scale.ordinal()  
 			  .domain(colors.label)  
 			  .range(colors.color)  
 			
 	  	var legendheight = 15 * colors.label.length;  
 
 			// Color scale  
-			var colorscale_legendscale = d3.scale.ordinal()  
+			var colorscale_legendscale = d3v3.scale.ordinal()  
 	  	  .domain(colors.label) // legend   
 			  .rangeRoundBands([0, legendheight]); // height (px)  
 			
-			var yAxis = d3.svg.axis()  
+			var yAxis = d3v3.svg.axis()  
 			  .scale(colorscale_legendscale)  
 			  .orient("right")  
 			  .tickSize(7)  
@@ -1269,10 +1269,10 @@ function heatmap(selector, data, options) {
 			collabels.call(yAxis); 
 		}
     
-    var x = d3.scale.linear()
+    var x = d3v3.scale.linear()
         .domain([0, cols])
         .range([0, width]);
-    var y = d3.scale.linear()
+    var y = d3v3.scale.linear()
         .domain([0, rows])
         .range([0 + bottomPadding, height - topPadding]);
     
@@ -1284,13 +1284,13 @@ function heatmap(selector, data, options) {
         .remove();
 		
 		if(colnames) {	
-			var ccaxis = d3.select('.colColorsAxis').append('g');
+			var ccaxis = d3v3.select('.colColorsAxis').append('g');
 
-			var xscale = d3.scale.ordinal()
+			var xscale = d3v3.scale.ordinal()
     	    .domain(colnames)
     	    .rangeBands([0 + bottomPadding, height - topPadding]);
     	 
-			var csc_xaxis = d3.svg.axis()
+			var csc_xaxis = d3v3.svg.axis()
     	    .scale(xscale)
     	    .orient(yloc)
     	    .outerTickSize(0)
@@ -1311,7 +1311,7 @@ function heatmap(selector, data, options) {
 		}
 
 	  if(colors.label) {
-			var tooltip = d3.tip()  
+			var tooltip = d3v3.tip()  
     		  .attr('class', 'd3heatmap-tip')  
     		  .html(function(d, i) {  
     		  return "<table>" +   
@@ -1331,8 +1331,8 @@ function heatmap(selector, data, options) {
     	  tooltip
     	    .show(d, i)
     	    .style({
-    	          top: d3.event.clientY + 15 + "px",
-    	          left: d3.event.clientX + 15 + "px",
+    	          top: d3v3.event.clientY + 15 + "px",
+    	          left: d3v3.event.clientX + 15 + "px",
     	          opacity: 0.9
     	        });
     	})
@@ -1361,14 +1361,14 @@ function heatmap(selector, data, options) {
 		flip = flip || false;
     var topLineWidth = maxChildStrokeWidth(data, false);
     
-    var x = d3.scale.linear()
+    var x = d3v3.scale.linear()
         .domain([data.height, 0])
         .range([topLineWidth/2, width-padding]);
-    var y = d3.scale.linear()
+    var y = d3v3.scale.linear()
         .domain([0, height])
         .range([0, height]);
     
-    var cluster = d3.layout.cluster()
+    var cluster = d3v3.layout.cluster()
         .separation(function(a, b) { return 1; })
         .size([rotated ? width : height, NaN]);
    
@@ -1470,20 +1470,20 @@ function heatmap(selector, data, options) {
   }
 
  
-  var dispatcher = d3.dispatch('hover', 'click');
+  var dispatcher = d3v3.dispatch('hover', 'click');
   
   controller.on("datapoint_hover", function(_) {
     dispatcher.hover({data: _});
   });
   
   function on_col_label_mouseenter(e) {
-    controller.highlight(+d3.select(this).attr("index"), null);
+    controller.highlight(+d3v3.select(this).attr("index"), null);
   }
   function on_col_label_mouseleave(e) {
     controller.highlight(null, null);
   }
   function on_row_label_mouseenter(e) {
-    controller.highlight(null, +d3.select(this).attr("index"));
+    controller.highlight(null, +d3v3.select(this).attr("index"));
   }
   function on_row_label_mouseleave(e) {
     controller.highlight(null, null);

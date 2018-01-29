@@ -6,26 +6,26 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module with d3 as a dependency.
-    define(['d3'], factory)
+    define(['d3v3'], factory)
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS
-    module.exports = function(d3) {
-      d3.tip = factory(d3)
-      return d3.tip
+    module.exports = function(d3v3) {
+      d3v3.tip = factory(d3v3)
+      return d3v3.tip
     }
   } else {
     // Browser global.
-    root.d3.tip = factory(root.d3)
+    root.d3v3.tip = factory(root.d3v3)
   }
-}(this, function (d3) {
+}(this, function (d3v3) {
 
   // Public - contructs a new tooltip
   //
   // Returns a tip
   return function() {
-    var direction = d3_tip_direction,
-        offset    = d3_tip_offset,
-        html      = d3_tip_html,
+    var direction = d3v3_tip_direction,
+        offset    = d3v3_tip_offset,
+        html      = d3v3_tip_html,
         node      = initNode(),
         svg       = null,
         point     = null,
@@ -47,7 +47,7 @@
       var content = html.apply(this, args),
           poffset = offset.apply(this, args),
           dir     = direction.apply(this, args),
-          nodel   = d3.select(node),
+          nodel   = d3v3.select(node),
           i       = directions.length,
           coords,
           scrollTop  = document.documentElement.scrollTop || document.body.scrollTop,
@@ -70,7 +70,7 @@
     //
     // Returns a tip
     tip.hide = function() {
-      var nodel = d3.select(node)
+      var nodel = d3v3.select(node)
       nodel.style({ opacity: 0, 'pointer-events': 'none' })
       return tip
     }
@@ -83,10 +83,10 @@
     // Returns tip or attribute value
     tip.attr = function(n, v) {
       if (arguments.length < 2 && typeof n === 'string') {
-        return d3.select(node).attr(n)
+        return d3v3.select(node).attr(n)
       } else {
         var args =  Array.prototype.slice.call(arguments)
-        d3.selection.prototype.attr.apply(d3.select(node), args)
+        d3v3.selection.prototype.attr.apply(d3v3.select(node), args)
       }
 
       return tip
@@ -100,10 +100,10 @@
     // Returns tip or style property value
     tip.style = function(n, v) {
       if (arguments.length < 2 && typeof n === 'string') {
-        return d3.select(node).style(n)
+        return d3v3.select(node).style(n)
       } else {
         var args =  Array.prototype.slice.call(arguments)
-        d3.selection.prototype.style.apply(d3.select(node), args)
+        d3v3.selection.prototype.style.apply(d3v3.select(node), args)
       }
 
       return tip
@@ -117,7 +117,7 @@
     // Returns tip or direction
     tip.direction = function(v) {
       if (!arguments.length) return direction
-      direction = v == null ? v : d3.functor(v)
+      direction = v == null ? v : d3v3.functor(v)
 
       return tip
     }
@@ -129,7 +129,7 @@
     // Returns offset or
     tip.offset = function(v) {
       if (!arguments.length) return offset
-      offset = v == null ? v : d3.functor(v)
+      offset = v == null ? v : d3v3.functor(v)
 
       return tip
     }
@@ -141,16 +141,16 @@
     // Returns html value or tip
     tip.html = function(v) {
       if (!arguments.length) return html
-      html = v == null ? v : d3.functor(v)
+      html = v == null ? v : d3v3.functor(v)
 
       return tip
     }
 
-    function d3_tip_direction() { return 'n' }
-    function d3_tip_offset() { return [0, 0] }
-    function d3_tip_html() { return ' ' }
+    function d3v3_tip_direction() { return 'n' }
+    function d3v3_tip_offset() { return [0, 0] }
+    function d3v3_tip_html() { return ' ' }
 
-    var direction_callbacks = d3.map({
+    var direction_callbacks = d3v3.map({
       n:  direction_n,
       s:  direction_s,
       e:  direction_e,
@@ -228,7 +228,7 @@
     }
 
     function initNode() {
-      var node = d3.select(document.createElement('div'))
+      var node = d3v3.select(document.createElement('div'))
       node.style({
         position: 'absolute',
         top: 0,
@@ -262,7 +262,7 @@
     //
     // Returns an Object {n, s, e, w, nw, sw, ne, se}
     function getScreenBBox() {
-      var targetel   = target || d3.event.target,
+      var targetel   = target || d3v3.event.target,
           bbox       = {},
           matrix     = targetel.getScreenCTM(),
           tbbox      = targetel.getBBox(),

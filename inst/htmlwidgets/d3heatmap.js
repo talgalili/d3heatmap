@@ -26,13 +26,13 @@ HTMLWidgets.widget({
     
     instance.lastValue = x;
     
-    d3.selectAll(".d3heatmap-tip").remove();
+    d3v3.selectAll(".d3heatmap-tip").remove();
     
     if (instance.lastTheme && instance.lastTheme != x.theme) {
-      d3.select(document.body).classed("theme-" + instance.lastTheme, false);
+      d3v3.select(document.body).classed("theme-" + instance.lastTheme, false);
     }
     if (x.theme) {
-      d3.select(document.body).classed("theme-" + x.theme, true);
+      d3v3.select(document.body).classed("theme-" + x.theme, true);
     }
 
     el.innerHTML = "";
