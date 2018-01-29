@@ -1200,9 +1200,9 @@ function heatmap(selector, data, options) {
 		var colnames = options.csc_colnames;
 		var colors = {};
 		colors.color = !options.csc_cols ? null : 
-									options.csc_cols.filter(onlyUnique) : 
+									options.csc_cols.filter(onlyUnique);
 		colors.label = !options.csc_labs ? null : 
-									options.csc_labs.filter(onlyUnique) : null;
+									options.csc_labs.filter(onlyUnique);
 
 		// populate array of named lists for fill and label	
 		var scols = [];

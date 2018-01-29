@@ -5,6 +5,8 @@ NULL
 setOldClass('d3heatmap')
 setClass('d3heatmapGadget', 
   representation(x = 'data.frame'
+    , RowSideColors = 'data.frame'
+    , ColSideColors = 'data.frame'
     , settings = 'list'
     , heatmap = 'd3heatmap'
     , rows = 'character'
@@ -40,9 +42,12 @@ d3heatmapGadget <- function(x, ...) {
     stop("Shiny or miniUI packages not detected, please install first")
  
   params <- as.list(substitute(list(...)))[-1L]
+  params <- lapply(params, eval)
   
   if (class(x) == 'd3heatmapGadget') {
     .x <- x@x
+    .rsc <- x@RowSideColors
+    .csc <- x@ColSideColors
     # object class settings will take precedence over ... params 
 		.settings <- mergeLists(params, x@settings)
 		.heatmap <- x@heatmap
@@ -55,6 +60,8 @@ d3heatmapGadget <- function(x, ...) {
     x <- x[,sapply(x, is.numeric)]
     
 		.x <- x
+		.rsc <- params$RowSideColors
+		.csc <- params$ColSideColors
 		.heatmap <- NULL
   	.settings <- list(
 			# main
@@ -170,7 +177,11 @@ d3heatmapGadget <- function(x, ...) {
     gVals$heatmap <- debounce(reactive({
 			  params <- gVals$settings
 			  params$x <- gVals$x
-        do.call(d3heatmap, args = params)
+			  hm <- tryCatch({
+            do.call(d3heatmap, args = params)
+  			  }, 
+  			  error = function(e) { NULL })
+			  hm
       }), 2000)
     
     observeEvent(input$filter, {
@@ -207,11 +218,13 @@ d3heatmapGadget <- function(x, ...) {
    
     # filter matrix rows / columns 
     observe({ 
-      rowInd <- which(row.names(.x) %in% input$'fitler.rows')
-      colInd <- which(colnames(.x) %in% input$'fitler.cols')
-      
-      if(!is.null(.settings$RowSideColors)) .settings$RowSideColors[rowInd,]
-      if(!is.null(.settings$ColSideColors)) .settings$ColSideColors[,colInd]
+      rowInd <- which(row.names(.x) %in% input$'filter.rows')
+      colInd <- which(colnames(.x) %in% input$'filter.cols')
+
+      if(!is.null(.settings$RowSideColors))
+        .settings$RowSideColors <- .rsc[rowInd,]
+      if(!is.null(.settings$ColSideColors))
+        .settings$ColSideColors <- .csc[,colInd]
       
       gVals$x <- .x[rowInd, colInd]
       
@@ -244,8 +257,9 @@ d3heatmapGadget <- function(x, ...) {
       # print out the error statement if an error, otherwise print heatmap
       heatmap <- tryCatch({ gVals$heatmap() }, 
                           error = function(e) { e })
-      validate(need(!any(class(heatmap) == 'error'), heatmap$message))
+      req(!is.null(heatmap))
       
+      validate(need(any(class(heatmap) == 'd3heatmap'), heatmap$message))
       heatmap
     })
     
@@ -263,6 +277,8 @@ d3heatmapGadget <- function(x, ...) {
       if(is.null( .ls$filter )) .ls$filter <- ""
       out <- new("d3heatmapGadget", 
                  x = .x
+                 # , RowSideColors = .rsc
+                 # , ColSideColors = .csc
                  , settings = .ls$settings
                  , heatmap = .ls$heatmap
                  , rows = .ls$rows
