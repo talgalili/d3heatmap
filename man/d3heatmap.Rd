@@ -22,11 +22,11 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   notecex = 1, cex.note, theme = NULL, col = "RdYlBu", breaks = NULL,
   symbreaks = FALSE, labRow = rownames(x), labCol = colnames(x),
   labColSize = 80, labRowSize = 120, cexCol = NULL, cexRow = NULL,
-  srtCol = 60, sideCol = 3, sideRow = 4, xlab = NULL, ylab = NULL,
-  xaxis_title_font_size = 14, yaxis_title_font_size = 14,
-  ColSideColors = NULL, RowSideColors = NULL, RowColorsPalette = NULL,
-  ColColorsPalette = NULL, RowColorsNames = NULL, ColColorsNames = NULL,
-  ...)
+  srtCol = 60, sideCol = 3, sideRow = 4, xaxis.location, yaxis.location,
+  xlab = NULL, ylab = NULL, xaxis_title_font_size = 14,
+  yaxis_title_font_size = 14, ColSideColors = NULL, RowSideColors = NULL,
+  RowColorsPalette = NULL, ColColorsPalette = NULL, RowColorsNames = NULL,
+  ColColorsNames = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric matrix
@@ -182,11 +182,12 @@ between min(x) and max(x).}
 
 \item{srtCol}{Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.}
 
-\item{sideCol}{3 or 1, for "bottom" or "top", which side column labels 
-display. Defaults to 3 ("bottom").}
+\item{sideCol, xaxis.location}{3 or 1, for "bottom" or "top", which side column labels 
+display. Defaults to 3 ("bottom"). For \code{xaxis.location} use "bottom"
+or "top".}
 
-\item{sideRow}{2 or 4, for "left" or "right", which side row labels 
-display. Defaults to 4 ("right").}
+\item{sideRow, yaxis.location}{2 or 4, for "left" or "right", which side row labels 
+display. Defaults to 4 ("right"). For \code{yaxis.location} use "left" or "right".}
 
 \item{xlab}{Title text of x axis}
 

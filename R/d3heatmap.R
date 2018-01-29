@@ -100,11 +100,12 @@ NULL
 #' 
 #' @param srtCol Angle of axis labels. Defaults to 60. Maximum of 90 (vertical), minimum of 25.
 #' 
-#' @param sideCol 3 or 1, for "bottom" or "top", which side column labels 
-#' display. Defaults to 3 ("bottom").
+#' @param sideCol,xaxis.location 3 or 1, for "bottom" or "top", which side column labels 
+#' display. Defaults to 3 ("bottom"). For \code{xaxis.location} use "bottom"
+#' or "top".
 #' 
-#' @param sideRow 2 or 4, for "left" or "right", which side row labels 
-#' display. Defaults to 4 ("right").
+#' @param sideRow,yaxis.location 2 or 4, for "left" or "right", which side row labels 
+#' display. Defaults to 4 ("right"). For \code{yaxis.location} use "left" or "right".
 #' 
 #' @param xlab Title text of x axis
 #' 
@@ -275,6 +276,8 @@ d3heatmap <- function(x
   , srtCol = 60
   , sideCol = 3
   , sideRow = 4
+	, xaxis.location
+	, yaxis.location
   , xlab = NULL
   , ylab = NULL
   , xaxis_title_font_size = 14
@@ -294,6 +297,8 @@ d3heatmap <- function(x
   
   opts <- list(...)
  
+	axis.locations <- c("top", "left", "bottom", "right")
+	
 	## pre-process paraemters
   ##===========================================================
 	## process the overlap of parameters between the old d3heatmap,
@@ -302,11 +307,14 @@ d3heatmap <- function(x
   if (!missing(kr)) k_row <- kr
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
+	
+	if(!is.null(ColSideColors)) ColSideColors <- as.matrix(ColSideColors)
+	if(!is.null(RowSideColors)) RowSideColors <- as.matrix(RowSideColors)
   
   if (!is.null(opts$ColIndividualColors)) 
-    ColSideColors <- opts$ColIndividualColors
+    ColSideColors <- as.matrix(opts$ColIndividualColors)
   if (!is.null(opts$RowIndividualColors)) 
-    RowSideColors <- opts$RowIndividualColors
+    RowSideColors <- as.matrix(opts$RowIndividualColors)
 
 	if (is.null(RowColorsPalette)) 
 					RowColorsPalette <- c('blue', 'orange', 'black')
@@ -315,12 +323,27 @@ d3heatmap <- function(x
 
 	if (is.null(RowColorsNames)) RowColorsNames <- colnames(RowSideColors)
 	if (is.null(ColColorsNames)) ColColorsNames <- rownames(ColSideColors)
-
+	
 	## additional controls for working with the gadget (shiny inputs)
   ##===========================================================
   if (!is.null(k_row)) if (is.na(k_row)) k_row <- NULL
   if (!is.null(k_col)) if (is.na(k_col)) k_col <- NULL
  
+  if (!is.null(cexCol)) if (is.na(cexCol)) cexCol <- NULL
+  if (!is.null(cexRow)) if (is.na(cexRow)) cexRow <- NULL
+	
+  if(!missing(xaxis.location)) {
+    xaxis.location <- tolower(xaxis.location)
+    if (xaxis.location %in% c('top', 'bottom'))
+      sideCol <- which(axis.locations == xaxis.location)
+  } 
+	
+	if(!missing(yaxis.location)) {
+	  yaxis.location <- tolower(yaxis.location)
+	  if (yaxis.location %in% c('left', 'right'))
+      sideRow <- which(axis.locations == yaxis.location)
+	} 
+    
 	## Save the parameters for later API calls
   ##===========================================================
 	## For the updated API, we need to be able to access stuff passed into
@@ -363,8 +386,8 @@ d3heatmap <- function(x
   
 	## the big call to create the heatmap
   ##==============================
-	## inserting new call to the heatmap function, which does everything up to 
-	## this point that d3heatmap did
+	## inserting new call to the refactored heatmap function, which does everything up to 
+	## this point that the old d3heatmap procedure did
 	hm <- do.call(heatmap, args = params)
 	x <- hm$x
 	

@@ -1,6 +1,12 @@
+#' @import shiny miniUI
+#' @importFrom methods new
+NULL
+
 setOldClass('d3heatmap')
 setClass('d3heatmapGadget', 
   representation(x = 'data.frame'
+    , RowSideColors = 'data.frame'
+    , ColSideColors = 'data.frame'
     , settings = 'list'
     , heatmap = 'd3heatmap'
     , rows = 'character'
@@ -30,17 +36,19 @@ setClass('d3heatmapGadget',
 #' # "d3heatmapGadget"
 #' }
 #' 
-#' @import miniUI
 #' @export
 d3heatmapGadget <- function(x, ...) {
-  if (!require('shiny') | !require('miniUI')) 
+  if (!requireNamespace('shiny') | !requireNamespace('miniUI')) 
     stop("Shiny or miniUI packages not detected, please install first")
  
-  # object class settings will take precence over ... params 
   params <- as.list(substitute(list(...)))[-1L]
+  params <- lapply(params, eval)
   
   if (class(x) == 'd3heatmapGadget') {
     .x <- x@x
+    .rsc <- x@RowSideColors
+    .csc <- x@ColSideColors
+    # object class settings will take precedence over ... params 
 		.settings <- mergeLists(params, x@settings)
 		.heatmap <- x@heatmap
     .rows <- x@rows
@@ -52,6 +60,8 @@ d3heatmapGadget <- function(x, ...) {
     x <- x[,sapply(x, is.numeric)]
     
 		.x <- x
+		.rsc <- params$RowSideColors
+		.csc <- params$ColSideColors
 		.heatmap <- NULL
   	.settings <- list(
 			# main
@@ -61,7 +71,7 @@ d3heatmapGadget <- function(x, ...) {
 			# heatmap
   		, symm = FALSE
 			, scale = 'none'
-			, scale.by.range = TRUE
+			, scale.by.range = FALSE
   		, na.rm = TRUE
   		, na.color = "#777777"
 			#dendrograms
@@ -84,10 +94,14 @@ d3heatmapGadget <- function(x, ...) {
 			, notecol = '#222222'
   		, brush_color = "#0000FF"
 			# axes
-  		, sideCol = 3
-  		, sideRow = 4
+  		, xaxis.location = 'bottom'
+  		, yaxis.location = 'right'
   		, xlab = NULL
   		, ylab = NULL
+			, labColSize = 80
+			, labRowSize = 120
+			, cexCol = NA_integer_
+			, cexRow = NA_integer_
   		, xaxis_title_font_size = 14
   		, yaxis_title_font_size = 14
   		, srtCol = 60
@@ -163,7 +177,11 @@ d3heatmapGadget <- function(x, ...) {
     gVals$heatmap <- debounce(reactive({
 			  params <- gVals$settings
 			  params$x <- gVals$x
-        do.call(d3heatmap, args = params)
+			  hm <- tryCatch({
+            do.call(d3heatmap, args = params)
+  			  }, 
+  			  error = function(e) { NULL })
+			  hm
       }), 2000)
     
     observeEvent(input$filter, {
@@ -200,8 +218,16 @@ d3heatmapGadget <- function(x, ...) {
    
     # filter matrix rows / columns 
     observe({ 
-      gVals$x <- gVals$x[which(row.names(gVals$x) %in% input$'filter.rows'),
-                    which(colnames(gVals$x) %in% input$'filter.cols')] 
+      rowInd <- which(row.names(.x) %in% input$'filter.rows')
+      colInd <- which(colnames(.x) %in% input$'filter.cols')
+
+      if(!is.null(.settings$RowSideColors))
+        .settings$RowSideColors <- .rsc[rowInd,]
+      if(!is.null(.settings$ColSideColors))
+        .settings$ColSideColors <- .csc[,colInd]
+      
+      gVals$x <- .x[rowInd, colInd]
+      
       isolate({
         gVals$rows <- input$'filter.rows'
         gVals$cols <- input$'filter.cols'
@@ -231,8 +257,9 @@ d3heatmapGadget <- function(x, ...) {
       # print out the error statement if an error, otherwise print heatmap
       heatmap <- tryCatch({ gVals$heatmap() }, 
                           error = function(e) { e })
-      validate(need(!any(class(heatmap) == 'error'), heatmap))
+      req(!is.null(heatmap))
       
+      validate(need(any(class(heatmap) == 'd3heatmap'), heatmap$message))
       heatmap
     })
     
@@ -250,6 +277,8 @@ d3heatmapGadget <- function(x, ...) {
       if(is.null( .ls$filter )) .ls$filter <- ""
       out <- new("d3heatmapGadget", 
                  x = .x
+                 # , RowSideColors = .rsc
+                 # , ColSideColors = .csc
                  , settings = .ls$settings
                  , heatmap = .ls$heatmap
                  , rows = .ls$rows
@@ -276,8 +305,8 @@ d3heatmapGadget <- function(x, ...) {
     })
 		
 		output$main.ui <- renderUI({
-				tagList(h5('Main:')
-					, textInput('main', "Main title:", 
+				tagList(h4('Main')
+					, textInput('main', "Main title", 
 						          value = .settings$'main',
 						          placeholder = "(text)",
 						          width = '100%')
@@ -292,10 +321,10 @@ d3heatmapGadget <- function(x, ...) {
 
 		output$heatmap.ui <- renderUI({
 			tagList(h4('Heatmap')
-					, selectInput('scale', label = 'Scale values:', 
-					            choices = c('Row' = 'row',
-                                  'Column' = 'column',
-                                  'None' = 'none'))
+					, selectInput('scale', label = 'Scale values', 
+					            choices = c('None' = 'none',
+                                  'Row' = 'row',
+                                  'Column' = 'column'))
           , checkboxInput('scale.by.range', "Scale by absolute values", 
                           value = .settings$'scale.by.range')
           , checkboxInput('symm', "Symmetrical heatmap", 
@@ -309,25 +338,25 @@ d3heatmapGadget <- function(x, ...) {
 		})
 
 		output$cells.ui <- renderUI({
-				tagList(p(strong('Cell Values'))
-					, numericInput('digits', 'Number of digits:',
+				tagList(h4('Cell Values')
+					, numericInput('digits', 'Number of digits',
 					             value = .settings$'digits', min = 0, step = 1)
-          , checkboxInput('print.values', "Print values in cell:", 
+          , checkboxInput('print.values', "Print values in cell", 
                           value = .settings$'print.values')
-          , checkboxInput('cellnote_scale', "Scale values in cells:", 
+          , checkboxInput('dfjkellnote_scale', "Scale values in cells", 
                           value = .settings$'cellnote_scale')
-					, textInput('cellnote_val', 'Value label:', 
+					, textInput('cellnote_val', 'Value label', 
 											value = .settings$'cellnote_val')
-					, textInput('notecol', 'Value color:', 
+					, textInput('notecol', 'Value color', 
 											value = .settings$'notecol')
-					, textInput('brush_color', 'Popup background color:', 
+					, textInput('brush_color', 'Popup background color', 
 											value = .settings$'brush_color')
 					, hr()
 				)
 		})
 		
 		output$legend.ui <- renderUI({ 
-			tagList(p(strong('Color legend'))
+			tagList(h4('Color legend')
           , checkboxInput('key', "Show color legend", 
                           value = .settings$'key')
 					, numericInput('keysize', 'Legend size (% of default)',
@@ -336,20 +365,21 @@ d3heatmapGadget <- function(x, ...) {
 											value = .settings$'key.title')
 					, selectInput('key.location', label = 'Legend location', 
 					            choices = c('Float' = 'fl', 
-                                  'Bottom-left' = 'row',
-                                  'Bottom-right' = 'row',
-                                  'Top-left' = 'row',
-                                  'Top-right' = 'row'))
+                                  'Bottom-left' = 'bl',
+                                  'Bottom-right' = 'br',
+                                  'Top-left' = 'tl',
+                                  'Top-right' = 'tr'))
 					, selectInput('desntiy.info', label = 'Density info', 
 					            choices = c('Histogram' = 'histogram', 
                                   'None' = 'none'))
 					, textInput('denscol', 'Density color', 
 											value = .settings$'denscol')
+					, hr()
 			)
 		})
 
 		output$dendros.ui <- renderUI({
-				tagList(p(strong('Dendrograms:'))
+				tagList(h4('Dendrograms')
 					, selectInput('dendrogram', label = 'Dendrograms:', 
 					            choices = c('Both' = 'both', 
                                   'Row' = 'row',
@@ -366,19 +396,27 @@ d3heatmapGadget <- function(x, ...) {
 		})
 
 		output$axes.ui <- renderUI({
-				tagList(p(strong('Cell Values:'))
-					, selectInput('sideCol', label = 'X axis location', 
-					            choices = c('Bottom' = 3,
-                                  'Top' = 1))
-					, selectInput('sideRow', label = 'Y axis location', 
-					            choices = c('Right' = 4,
-                                  'Left' = 2))
+				tagList(h4('Axes')
+					, selectInput('xaxis.location', label = 'X axis location',
+					            choices = c('Bottom' = 'bottom',
+                                  'Top' = 'top'))
+					, selectInput('yaxis.location', label = 'Y axis location',
+					            choices = c('Right' = 'right',
+                                  'Left' = 'left'))
 					, textInput('xlab', 'X axis title',
 											value = .settings$'xlab',
 											placeholder = "(text)")
 					, textInput('ylab', 'Y axis title',
 											value = .settings$'ylab',
 											placeholder = "(text)")
+					, numericInput('labColSize', 'X axis (column) size (# pixels)',
+											value = .settings$'labColSize', min = 0, step = 1)
+					, numericInput('labRowSize', 'Y axis (row) size (# pixels)',
+											value = .settings$'labRowSize', min = 0, step = 1)
+					, numericInput('cexCol', 'X axis label font size (# * 12px)',
+											value = .settings$'cexCol', min = 0, step = .1)
+					, numericInput('cexRow', 'Y axis label font size (# * 12px)',
+											value = .settings$'cexRow', min = 0, step = .1)
 					, numericInput('xaxis_title_font_size', 'X axis title font size',
 					             value = .settings$'xaxis_title_font_size', 
 											 min = 0)

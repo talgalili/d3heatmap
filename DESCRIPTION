@@ -1,8 +1,8 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
-Version: 0.8.1
-Date: 2018-01-13
+Version: 0.8.2
+Date: 2018-01-24
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
     person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
@@ -25,10 +25,11 @@ Imports:
     dendextend (>= 0.18.0),
     stats,
     grDevices,
-    magrittr
-Suggests:
+    magrittr,
     shiny,
     miniUI,
+    methods
+Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
