@@ -1,4 +1,4 @@
-#' @import shiny miniUI
+#' @import shiny
 #' @importFrom methods new
 NULL
 
@@ -39,7 +39,7 @@ setClass('d3heatmapGadget',
 #' @export
 d3heatmapGadget <- function(x, ...) {
   if (!requireNamespace('shiny') | !requireNamespace('miniUI')) 
-    stop("Shiny or miniUI packages not detected, please install first")
+    stop("Shiny or miniUI package not detected, please install first")
  
   params <- as.list(substitute(list(...)))[-1L]
   params <- lapply(params, eval)
@@ -114,19 +114,19 @@ d3heatmapGadget <- function(x, ...) {
 	}
 
   ui <- tagList(
-    miniPage(
-      miniTitleBar("d3heatmap Gadget",
-                 left = miniTitleBarButton('cancel', "Cancel", primary = FALSE),
-                 right = miniTitleBarButton('done', "Done", primary = TRUE)
+    miniUI::miniPage(
+      miniUI::miniTitleBar("d3heatmap Gadget",
+                 left = miniUI::miniTitleBarButton('cancel', "Cancel", primary = FALSE),
+                 right = miniUI::miniTitleBarButton('done', "Done", primary = TRUE)
       ),
-      miniTabstripPanel(
-        miniTabPanel("Heatmap", icon = icon("bar-chart"), 
-          miniContentPanel(
+      miniUI::miniTabstripPanel(
+        miniUI::miniTabPanel("Heatmap", icon = icon("bar-chart"), 
+          miniUI::miniContentPanel(
             d3heatmapOutput('heatmap', width = '100%', height = '100%')),
-          miniButtonBlock(
+          miniUI::miniButtonBlock(
 						actionButton('refresh', label = NULL, icon = icon('refresh')))),
-        miniTabPanel("Data", icon = icon("table"), 
-          miniContentPanel(
+        miniUI::miniTabPanel("Data", icon = icon("table"), 
+          miniUI::miniContentPanel(
 						selectInput('filter.rows', "Select Rows:", 
 						            choices = row.names(.x), 
 						            selected = .rows, 
@@ -142,8 +142,8 @@ d3heatmapGadget <- function(x, ...) {
 						          placeholder = "(filter)",
 						          width = '100%'),
             dataTableOutput('table'), scrollable = TRUE)),
-        miniTabPanel("Settings", icon = icon("sliders"), 
-          miniContentPanel(
+        miniUI::miniTabPanel("Settings", icon = icon("sliders"), 
+          miniUI::miniContentPanel(
             uiOutput('settings', width = '100%', 
 										 height = '100%'), scrollable = TRUE))
       )

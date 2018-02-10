@@ -27,11 +27,11 @@ Imports:
     grDevices,
     magrittr,
     shiny,
-    miniUI,
     methods
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    miniUI
 VignetteBuilder: knitr
 URL: https://github.com/rstudio/d3heatmap
 BugReports: https://github.com/rstudio/d3heatmap/issues
@@ -51,3 +51,4 @@ Collate:
     'hmSidecolors.R'
     'utils.R'
 RoxygenNote: 6.0.1
+
