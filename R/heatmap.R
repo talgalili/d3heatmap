@@ -146,17 +146,18 @@ heatmap <- function(
       rsclabs <- unique(as.factor(RowSideColors))  
 			rsccols <- colorRampPalette(misc$RowColorsPalette)(length(rsclabs))
 			RowSideColors[] <- rsccols[as.factor(RowSideColors)]
-      #RowSideColors[] <- colorRampPalette(misc$RowColorsPalette)(
-      #  length(rsclabs))[as.factor(RowSideColors)]  
 
 	  } else {
 			# since we've been passed a color matrix, we won't use these
 			rsclabs <- NULL
 			rsccols <- NULL
 
+			# there have been some problems with alphas, so we'll control for those
+			RowSideColors <- matrix(to.hex(RowSideColors), nrow = nrow(x))
 		}
 
     RowSideColors <- RowSideColors[rowInd, , drop = FALSE]
+    
 	} else {
 		# if RowSideColors is null, then set these to skip JS processing
 		rsclabs <- NULL
@@ -175,14 +176,15 @@ heatmap <- function(
       csclabs <- unique(as.factor(ColSideColors))  
 			csccols <- colorRampPalette(misc$ColColorsPalette)(length(csclabs))
 			ColSideColors[] <- csccols[as.factor(ColSideColors)]
-      # ColSideColors[] <- colorRampPalette(misc$ColColorsPalette)(
-      #   length(csclabs))[as.factor(ColSideColors)]  
 
 	  } else {
 			csclabs <- NULL
 			csccols <- NULL
 
-		}
+			# there have been some problems with alphas, so we'll control for those
+			ColSideColors <- matrix(to.hex(ColSideColors), ncol = ncol(x))
+	  }
+    
     ColSideColors <- ColSideColors[, colInd, drop = FALSE]
 
   } else {
@@ -264,7 +266,7 @@ heatmap <- function(
  
   # Check that cellnote is o.k.:
   if (is.null(dim(cellnote))) {
-    if (length(cellnote) != nr*nc) {
+    if (length(cellnote) != nr * nc) {
       stop("Incorrect number of cellnote values")
     }
     dim(cellnote) <- dim(x)
@@ -298,3 +300,4 @@ heatmap <- function(
 
 	return(heatmap)
 }
+

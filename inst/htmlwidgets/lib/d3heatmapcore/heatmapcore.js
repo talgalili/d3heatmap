@@ -202,6 +202,9 @@ function heatmap(selector, data, options) {
   opts.width = options.width || bbox.width;
   opts.height = options.height || bbox.height;
   opts.link_color = opts.link_color || "#AAA";
+	// for the legend size (key size) calculate the max of the legend size and the axis, then
+				// take the min (so the axis will be at least the size of the key, but the key can
+				// be smaller
   opts.xaxis_height = Math.max((options.xaxis_height || 80), (80 * options.legend_scaler));
   opts.yaxis_width = Math.max((options.yaxis_width || 120), (120 * options.legend_scaler));
   opts.axis_padding = options.axis_padding || 6;
@@ -479,8 +482,11 @@ function heatmap(selector, data, options) {
   
 	var xtitle = !opts.xaxis_title ? null : title(el.select('svg.xtitle'), opts.xaxis_title, false, xtitleBounds);
   var ytitle = !opts.yaxis_title ? null : title(el.select('svg.ytitle'), opts.yaxis_title, true, ytitleBounds);
-	
-	var legend = !opts.show_legend ? null : legend(el.select('svg.legend'), data.matrix, opts, opts.xaxis_height * .9, opts.yaxis_width * .9); 
+
+	// as an extra buffer, we'll multiply the legend size and legend scaler by 0.9	
+	var legend = !opts.show_legend ? null : legend(el.select('svg.legend'), data.matrix, opts, 
+					opts.xaxis_height * options.legend_scaler * 0.9, 
+					opts.yaxis_width * options.legend_scaler * 0.9); 
 
   function colormap(svg, data, width, height, yaxis_height) {
     // Check for no data
@@ -666,15 +672,16 @@ function heatmap(selector, data, options) {
           
           var col = Math.floor(x.invert(offsetX));
           var row = Math.floor(y.invert(offsetY));
-          var label = merged[row*cols + col].label;
+          var label = merged[row * cols + col].label;
          
           var isFirefox = typeof InstallTrigger !== 'undefined';         
           var origin_col = current_origin[0];
           var origin_row = current_origin[1];
-          
+
           if (isFirefox) {
-            row = row - origin_row;
             col = col - origin_col;
+            row = row - origin_row;
+          	label = merged[row * cols + col].label;
           }
           
           tip.show({col: col, row: row, label: label}).style({
@@ -887,6 +894,7 @@ function heatmap(selector, data, options) {
     	  .domain(intervals)
     	  .rangeBands([0, width]);
 
+			// limit the number of ticks if there are too many
 			var divisor = Math.max(1, Math.floor(intervals.length / 5));
 
 	    var xAxis = d3v3.svg.axis()
@@ -894,6 +902,7 @@ function heatmap(selector, data, options) {
 				.tickValues(intervals.filter(function(value, index, Arr) {
 					return (index + 1) % divisor == 0;
 				}))
+				.tickFormat(d3v3.format(".1f"))
 	      .orient("bottom")
 	      .tickSize(10);
 
@@ -908,6 +917,7 @@ function heatmap(selector, data, options) {
 
 	    var xAxis = d3v3.svg.axis()
 	      .ticks(5)
+				.tickFormat(d3v3.format(".1f"))
 	      .scale(legendscale)
 	      .orient("bottom")
 	      .tickSize(10);
@@ -974,7 +984,10 @@ function heatmap(selector, data, options) {
   	  .attr("width", blockwidth)
   	  .attr("fill", function(d) { return(colorscale(d)); });
     
-		legend.call(xAxis);
+		legend.call(xAxis)
+				.selectAll("text")
+					.attr("transform", "rotate(25)")
+					.style("text-anchor", "start");
 	}
   
   function edgeStrokeWidth(node) {

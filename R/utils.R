@@ -1,3 +1,4 @@
+# VERY useful function for combing parameter lists without tediousness
 mergeLists <- function (base_list, overlay_list, recursive = TRUE) {
   if (length(base_list) == 0)
     overlay_list
@@ -20,20 +21,29 @@ mergeLists <- function (base_list, overlay_list, recursive = TRUE) {
   }
 }
 
+# nice is-not-null-binary operator
 `%||%` <- function(a, b) {
-  if (!is.null(a))
-    a
-  else
-    b
+  if (!is.null(a)) return(a)
+  b
 }
 
-#' are_colors   
-#' Helper function to check for valid color strings  
-#' @param x color vector (etc) to test.   
+# are_colors   
+# Helper function to check for valid color strings  
 are.colors <- function(x) {  
   if(is.numeric(x)) return(FALSE)  
-  sapply(x, function(X) {  
+  sapply(x, function(x) {  
     res <- try(col2rgb(x), silent=TRUE)  
     return(!"try-error" %in% class(res))  
   })  
 }  
+
+# some color functions include alphas, but alphas not supported in some
+# browsers (display as black). Helper function to truncate the alphas
+to.hex <- function(x) {
+  sapply(x, function(x) {
+    x <- as.vector(col2rgb(x))
+    out <- substr(rgb(x[1], x[2], x[3], 
+        alpha = 0, maxColorValue=255), 0, 7)
+  })
+}
+

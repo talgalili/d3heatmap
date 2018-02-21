@@ -1,8 +1,16 @@
+d3heatmap 0.8.3 (2018-02-21)
+----------------------------------------
+
+* Print and save methods added for the gadget
+* Updated for CRAN check
+
+
 d3heatmap 0.8.2 (2018-01-24)
 ----------------------------------------
 
 * Updated for CRAN check
 * Added d3heatmapGadget! Gadget takes usual d3heatmap inputs and generates an interactive method to customize the heatmap. Saving the gadget to an object generates an S4 class that can be passed back into the gadget function to restart the gadget at the last point.
+
 
 d3heatmap 0.8 (2018-01-13)
 ----------------------------------------

@@ -1,3 +1,7 @@
+#' @import htmlwidgets
+NULL
+
+
 #' Modify the d3heatmap legend
 #' 
 #' Provides options for modifying the legend for a d3heatmap object
@@ -27,8 +31,6 @@
 #' 
 #' @return Modified d3heatmap object
 #' 
-#' @import htmlwidgets
-#'   
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
 #' 
@@ -36,11 +38,13 @@
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
 #' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) %>% 
 #'   hmLegend(show = TRUE, title = "Title", location = "tl") 
 #'   
+#' }
+#' 
 #' @export
 hmLegend <- function(d3heatmap
   , show = TRUE
@@ -48,13 +52,10 @@ hmLegend <- function(d3heatmap
   , title
   , location = c("fl", "br", "tr", "tl", "bl")
   , density = c('histogram', 'none')
-  , density.fill = NULL
-) {
+  , density.fill = NULL) {
   
-  if (missing(d3heatmap)) {
-		message("hmLegend: no heatmap provided... returning NULL")
-		return(NULL)
-  }
+  if (missing(d3heatmap)) 
+		stop("hmLegend: no d3heatmap provided")
   
   if(missing(size)) size <- d3heatmap$x$options$legend_scaler
   if(missing(title)) title <- d3heatmap$x$options$legend_title
@@ -71,3 +72,4 @@ hmLegend <- function(d3heatmap
   d3heatmap$x$options <- mergeLists(d3heatmap$x$options, opts)
   return(d3heatmap) 
 }
+

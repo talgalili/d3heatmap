@@ -29,8 +29,6 @@
 #'   
 #' @return Modified d3heatmap object
 #' 
-#' @import htmlwidgets
-#'   
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
 #' 
@@ -38,10 +36,12 @@
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
 #' 
 #' d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) %>% 
 #'   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
+#' 
+#' }
 #'   
 #' @export
 hmColors <- function(d3heatmap
@@ -50,14 +50,10 @@ hmColors <- function(d3heatmap
   , range
   , color.bins
   , symmetrical # symbreaks
-  , na.color
-)
-{
+  , na.color) {
   
-	if (missing(d3heatmap)) {
-    message("hmColors: no heatmap provided... returning NULL")
-    return(NULL)
-  }
+  if (missing(d3heatmap)) 
+		stop("hmColors: no d3heatmap provided")
  
 	## grab original and modified parameters to feed the color creation
 	params <- d3heatmap$x$params
@@ -68,8 +64,9 @@ hmColors <- function(d3heatmap
 	if (missing(range)) range <- params$rng
 	if (missing(symmetrical)) symmetrical <- params$symbreaks
 	if (missing(na.color)) na.color <- params$na.color
+	if (missing(color.bins)) color.bins <- NULL
 	
-	if (missing(color.bins) | !is.numeric(color.bins)) {
+	if (is.null(color.bins) | !is.numeric(color.bins)) {
 	  color.bins <- params$breaks
 	} 
   
@@ -129,6 +126,4 @@ hmColors <- function(d3heatmap
 
 	return(d3heatmap)
 }
-
-
 

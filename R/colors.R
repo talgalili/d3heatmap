@@ -13,9 +13,7 @@ heatmapColors <- function(
   , symm
 	
   ## need ability to accept extra args without using them
-	, ...
-) 
-{
+	, ...) {
 
 	## process colors and parameters to create the pallette
   if (is.factor(x)) {
@@ -72,3 +70,4 @@ heatmapColors <- function(
 
 	return(lst)
 }
+

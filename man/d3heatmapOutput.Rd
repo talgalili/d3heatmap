@@ -27,7 +27,7 @@ Use \code{d3heatmapOutput} to create a UI element, and \code{renderD3heatmap}
 to render the heatmap.
 }
 \examples{
-\donttest{
+\dontrun{
 library(d3heatmap)
 library(shiny)
 

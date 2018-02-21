@@ -38,11 +38,13 @@
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
 #' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmOptions(scale.by.range = TRUE, show.grid = FALSE,
 #'	 		animation.duration = 400)
+#' 
+#' }
 #' 
 #' @export
 hmOptions <- function(d3heatmap
@@ -53,13 +55,10 @@ hmOptions <- function(d3heatmap
 	, na.value #na.value
 	, show.grid #show_grid
 	, animation.duration #anim_duration
-	, reverse.columns #revC
-) {
+	, reverse.columns) {
   
-	if (missing(d3heatmap)) {
-		message("hmLegend: no heatmap provided... returning NULL")
-		return(NULL)
-	}
+	if (missing(d3heatmap))
+		message("hmOptions: no d3heatmap provided")
   
 	params <- d3heatmap$x$params
   x <- params$x

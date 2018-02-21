@@ -46,11 +46,13 @@ Modified d3heatmap object
 Change options for a d3heatmap
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmOptions(scale.by.range = TRUE, show.grid = FALSE,
  		animation.duration = 400)
+
+}
 
 }
 \seealso{

@@ -24,8 +24,6 @@
 #'   
 #' @return Modified d3heatmap object
 #' 
-#' @import htmlwidgets
-#'   
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
 #' 
@@ -33,11 +31,13 @@
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
-#' 
+#' \dontrun{
+#'  
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmAxis("x", angle = 30, title = "test", location = 'top', font.size = '24px') %>% 
 #'   hmAxis("y", title = "test", location = 'right')
+#' 
+#' }
 #' 
 #' @export
 hmAxis <- function(d3heatmap
@@ -48,13 +48,10 @@ hmAxis <- function(d3heatmap
   , angle
   , location
   , title
-  , title.font.size
-) {
+  , title.font.size) {
   
-	if (missing(d3heatmap)) {
-		message("hmLegend: no heatmap provided... returning NULL")
-		return(NULL)
-	}
+	if (missing(d3heatmap))
+		stop("hmAxis: no d3heatmap provided")
   
   if (missing(axis)) {
     message("hmAxis: no axis specified... returning original heatmap")
@@ -140,3 +137,4 @@ hmAxis <- function(d3heatmap
 
   return(d3heatmap)  
 }
+

@@ -29,8 +29,8 @@ d3heatmap(x, main = NULL, width = NULL, height = NULL, show_grid = TRUE,
   ColColorsNames = NULL, ...)
 }
 \arguments{
-\item{x}{A numeric matrix
-Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.}
+\item{x}{A numeric matrix or data.frame with numeric columns. All non-numeric columns
+will be filtered out}
 
 \item{main}{\emph{string} Plot title. Defaults to \code{NULL}.}
 
@@ -73,7 +73,7 @@ when Rowv or Colv are not dendrograms. Defaults to hclust.}
 \item{dendrogram}{character string indicating whether to draw 'none', 
 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if 
 Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning 
-is issued and Rowv (or Colv) arguments are honoured.}
+is issued and Rowv (or Colv) arguments are honored.}
 
 \item{reorderfun}{function(d, w) of dendrogram and weights for reordering 
 the row and column dendrograms. The default uses stats{reorder.dendrogram}}
@@ -130,10 +130,10 @@ If missing, it will use \code{x}, after rounding it based on the \code{digits} p
 \item{cellnote_scale}{\emph{logical} (default is FALSE). IF cellnote is missing and x is used, should cellnote be scaled if x is also scaled?}
 
 \item{cellnote_row}{\emph{character} Label to display next to the row value when the user hovers over the cell.
-If not specified, trys to match the \code{xlab}; if no axis title, defaults to "Row".}
+If not specified, tries to match the \code{xlab}; if no axis title, defaults to "Row".}
 
 \item{cellnote_col}{\emph{character} Label to display next to the column value when the user hovers over the cell. 
-If not specified, trys to match the \code{ylab}; if no axis title, defaults to "Col".}
+If not specified, tries to match the \code{ylab}; if no axis title, defaults to "Col".}
 
 \item{cellnote_val}{\emph{character} Label to display next to the cell value when the user hovers over the cell.
 Defaults to "Value".}
@@ -142,7 +142,7 @@ Defaults to "Value".}
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 expected.}
 
-\item{print.values}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
+\item{print.values}{\emph{logical} Show the values inside the cells. Defaults to \code{FALSE}.}
 
 \item{notecol}{\emph{character} name or hex specifying the color of the values printed
 inside the cells}
@@ -216,15 +216,18 @@ annotate the rows of x. \code{RowIndividualColors}, from heatmap.3, can also be 
 with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 rows of x.}
 
-\item{...}{a catch for undocumented features or un-used arguments from heatmap.2
+\item{...}{a catch for undocumented features or unused arguments from heatmap.2
 or heatmap.3, to enable direct use of those formulations in d3heatmap}
 }
 \description{
 Creates a D3.js-based heatmap widget.
 }
 \examples{
-library(d3heatmap)
+\dontrun{
+
 d3heatmap(mtcars, scale = "column", col = "Blues")
+
+}
 
 }
 \seealso{

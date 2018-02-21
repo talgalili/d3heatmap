@@ -18,7 +18,7 @@ hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
 call, among \code{'row', 'col', 'both', 'none'}. Using the \code{'none'}
 value turns off any previous dendrogram settings. If reorder or row.reorder 
 and col.reorder are FALSE or NULL and dendrogram is 'both', then a warning 
-is issued and row.reorder (or col.reorder) arguments are honoured.}
+is issued and row.reorder (or col.reorder) arguments are honored.}
 
 \item{reorder}{a parameter that allows the user to pass in a single 
 reordering value to use on the dendrograms specified in the 
@@ -28,7 +28,7 @@ reordering value to use on the dendrograms specified in the
 should be reordered.    By default, it is TRUE, which implies 
 dendrogram is computed and reordered based on row means. 
 If NULL or FALSE, then no dendrogram is computed and no reordering 
-is done. If a dendrogram, then it is used "as-is", ie without any 
+is done. If a dendrogram, then it is used "as-is", i.e., without any 
 reordering. If a vector of integers, then dendrogram is computed 
 and reordered based on the order of the vector.}
 
@@ -58,10 +58,12 @@ Modified d3heatmap object
 Set and adjust the dendrograms for a d3heatmap object
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmDendrogram(dendrogram = 'row', groups = 3)
+
+}
 
 }
 \seealso{

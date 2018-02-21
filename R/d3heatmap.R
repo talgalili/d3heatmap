@@ -7,8 +7,8 @@ NULL
 #' 
 #' Creates a D3.js-based heatmap widget.
 #' 
-#' @param x A numeric matrix
-#'   Defaults to \code{TRUE} unless \code{x} contains any \code{NA}s.
+#' @param x A numeric matrix or data.frame with numeric columns. All non-numeric columns
+#' will be filtered out
 #' 
 #' @param main \emph{string} Plot title. Defaults to \code{NULL}.
 #' 
@@ -50,7 +50,7 @@ NULL
 #' @param dendrogram character string indicating whether to draw 'none', 
 #' 'row', 'column' or 'both' dendrograms. Defaults to 'both'. However, if 
 #' Rowv (or Colv) is FALSE or NULL and dendrogram is 'both', then a warning 
-#' is issued and Rowv (or Colv) arguments are honoured.
+#' is issued and Rowv (or Colv) arguments are honored.
 #' 
 #' @param reorderfun function(d, w) of dendrogram and weights for reordering 
 #' the row and column dendrograms. The default uses stats{reorder.dendrogram}
@@ -63,7 +63,7 @@ NULL
 #' to color the dendrogram's branches in the columns 
 #' (uses \link[dendextend]{color_branches})
 #' 
-#' @param print.values \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
+#' @param print.values \emph{logical} Show the values inside the cells. Defaults to \code{FALSE}.
 #' 
 #' @param key Show color key and density
 #'    information? \code{TRUE/FALSE}. Defaults to \code{FALSE}
@@ -158,10 +158,10 @@ NULL
 #' inside the cells. If not specified, the minimum font size between the x and y axes.
 #' 
 #' @param cellnote_row \emph{character} Label to display next to the row value when the user hovers over the cell.
-#'  If not specified, trys to match the \code{xlab}; if no axis title, defaults to "Row".
+#'  If not specified, tries to match the \code{xlab}; if no axis title, defaults to "Row".
 #' 
 #' @param cellnote_col \emph{character} Label to display next to the column value when the user hovers over the cell. 
-#' If not specified, trys to match the \code{ylab}; if no axis title, defaults to "Col".
+#' If not specified, tries to match the \code{ylab}; if no axis title, defaults to "Col".
 #' 
 #' @param cellnote_val \emph{character} Label to display next to the cell value when the user hovers over the cell.
 #'  Defaults to "Value".
@@ -194,7 +194,7 @@ NULL
 #' with rows equal to nrow(x), containing the color names for a vertical side bar that may be used to annotate the 
 #' rows of x.
 #' 
-#' @param ... a catch for undocumented features or un-used arguments from heatmap.2
+#' @param ... a catch for undocumented features or unused arguments from heatmap.2
 #' or heatmap.3, to enable direct use of those formulations in d3heatmap
 #'   
 #' @import htmlwidgets
@@ -206,8 +206,11 @@ NULL
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
+#' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues")
+#' 
+#' }
 #' 
 #' @export
 d3heatmap <- function(x
@@ -295,6 +298,16 @@ d3heatmap <- function(x
 
 ) {
   
+  if(class(x) == "matrix" & !is.numeric(x)) {
+    stop("d3heatmap data must be a numeric 
+      matrix or a data.frame with numeric columns")
+  }
+ 
+  # we'll modify this to take any matrix or data.frame, but filter out all
+  # non-numeric columns 
+  if (any(class(x) %in% c("table", "data.frame")))
+    x <- x[, sapply(x, is.numeric)]
+  
   opts <- list(...)
  
 	axis.locations <- c("top", "left", "bottom", "right")
@@ -308,13 +321,17 @@ d3heatmap <- function(x
   if (!missing(kc)) k_col <- kc
   if (!missing(cex.note)) notecex <- cex.note
 	
-	if(!is.null(ColSideColors)) ColSideColors <- as.matrix(ColSideColors)
-	if(!is.null(RowSideColors)) RowSideColors <- as.matrix(RowSideColors)
+	if(!is.null(ColSideColors)) 
+	  ColSideColors <- matrix(ColSideColors, ncol = ncol(x))
+	
+	if(!is.null(RowSideColors)) 
+	  RowSideColors <- matrix(RowSideColors, nrow = nrow(x))
   
   if (!is.null(opts$ColIndividualColors)) 
-    ColSideColors <- as.matrix(opts$ColIndividualColors)
+    ColSideColors <- matrix(opts$ColIndividualColors, ncol = ncol(x))
+	
   if (!is.null(opts$RowIndividualColors)) 
-    RowSideColors <- as.matrix(opts$RowIndividualColors)
+    RowSideColors <- matrix(opts$RowIndividualColors, nrow = nrow(x))
 
 	if (is.null(RowColorsPalette)) 
 					RowColorsPalette <- c('blue', 'orange', 'black')
@@ -411,8 +428,8 @@ d3heatmap <- function(x
 	
 	## font sizes
   ##==============================
-  if (is.null(cexCol)) cexCol <- 0.2 + 1/log10(ncol(x))
-  if (is.null(cexRow)) cexRow <- 0.2 + 1/log10(nrow(x))
+  if (is.null(cexCol)) cexCol <- 0.2 + 1 / log10(ncol(x))
+  if (is.null(cexRow)) cexRow <- 0.2 + 1 / log10(nrow(x))
 
 	## bundling the options
   ##==============================================
@@ -526,7 +543,7 @@ encodeAsPNG <- function(x, colors) {
 #'   is useful if you want to save an expression in a variable.
 #'
 #' @examples 
-#' \donttest{
+#' \dontrun{
 #' library(d3heatmap)
 #' library(shiny)
 #' 

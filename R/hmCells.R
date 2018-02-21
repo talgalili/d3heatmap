@@ -12,15 +12,15 @@
 #' @param scale \emph{logical} (default is FALSE). If cellnote is missing and x is used, should cellnotes be scaled if x is also scaled?
 #' 
 #' @param row.label \emph{character} (Optional) Label to display next to the row value when the user hovers over the cell.
-#'  If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".
+#'  If not specified, tries to match the \code{xaxis_title}; if no axis title, defaults to "Row".
 #' 
 #' @param col.label \emph{character} (Optional) Label to display next to the column value when the user hovers over the cell
-#'  If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".
+#'  If not specified, tries to match the \code{yaxis_title}; if no axis title, defaults to "Col".
 #' 
 #' @param value.label \emph{character} (Optional) Label to display next to the cell value when the user hovers over the cell.
 #'  Defaults to "Value".
 #' 
-#' @param print \emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.
+#' @param print \emph{logical} Show the values inside the cells. Defaults to \code{FALSE}.
 #' 
 #' @param color \emph{character} name or hex specifying the color of the values printed
 #' inside the cells
@@ -33,19 +33,19 @@
 #' 
 #' @return Modified d3heatmap object
 #' 
-#' @import htmlwidgets
-#'   
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
 #' 
 #' @seealso 
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
-#' @examples 
-#' library(d3heatmap)
+#' @examples
+#' \dontrun{
 #' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmCells(digits = 0L, print = TRUE)
+#' 
+#' }
 #' 
 #' @export
 hmCells <- function(d3heatmap
@@ -58,13 +58,10 @@ hmCells <- function(d3heatmap
   , col.label # cellnote_col
   , value.label # cellnote_val
   , brush.color # brush_color
-  , print # print.values
-) {
+  , print) {
 
-  if (missing(d3heatmap)) {
-		message("hmLegend: no heatmap provided... returning NULL")
-		return(NULL)
-	}
+  if (missing(d3heatmap)) 
+		stop("hmCells: no d3heatmap provided")
   
 	# grab the input parameters for generating the heatmap
 	params <- d3heatmap$x$params
@@ -117,3 +114,4 @@ hmCells <- function(d3heatmap
 
   return(d3heatmap)  
 }
+

@@ -43,10 +43,12 @@ Modified d3heatmap object
 Set and adjust the colors and color options for the d3heatmap
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', xaxis_angle = 30) \%>\% 
   hmColors(colors = 'RdYlGn', color.bins = 12, symmetrical = TRUE)
+
+}
   
 }
 \seealso{

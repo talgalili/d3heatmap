@@ -41,11 +41,13 @@ Modified d3heatmap object
 Provides options for modifying the legend for a d3heatmap object
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 d3heatmap(mtcars, dendrogram = 'none', scale = 'column', srtCol = 30) \%>\% 
   hmLegend(show = TRUE, title = "Title", location = "tl") 
   
+}
+
 }
 \seealso{
 \link{heatmap}, \link[gplots]{heatmap.2}

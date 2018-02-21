@@ -26,10 +26,10 @@ inside the cells}
 \item{scale}{\emph{logical} (default is FALSE). If cellnote is missing and x is used, should cellnotes be scaled if x is also scaled?}
 
 \item{row.label}{\emph{character} (Optional) Label to display next to the row value when the user hovers over the cell.
-If not specified, trys to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
+If not specified, tries to match the \code{xaxis_title}; if no axis title, defaults to "Row".}
 
 \item{col.label}{\emph{character} (Optional) Label to display next to the column value when the user hovers over the cell
-If not specified, trys to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
+If not specified, tries to match the \code{yaxis_title}; if no axis title, defaults to "Col".}
 
 \item{value.label}{\emph{character} (Optional) Label to display next to the cell value when the user hovers over the cell.
 Defaults to "Value".}
@@ -38,7 +38,7 @@ Defaults to "Value".}
 filled with a low-opacity version of this color. \code{"#RRGGBB"} format 
 expected.}
 
-\item{print}{\emph{logical} Show the values inside the cells. Defatuls to \code{FALSE}.}
+\item{print}{\emph{logical} Show the values inside the cells. Defaults to \code{FALSE}.}
 }
 \value{
 Modified d3heatmap object
@@ -47,10 +47,12 @@ Modified d3heatmap object
 Provides options for modifying the cells and the display of their values
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 d3heatmap(mtcars, scale = "column", col = "Blues") \%>\%
   hmCells(digits = 0L, print = TRUE)
+
+}
 
 }
 \seealso{

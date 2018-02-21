@@ -7,6 +7,27 @@
 #### In the future I hope to offer an updated version back to Rstudio for pulling into the main repo, and then hopefully an udpated CRAN submission.
 ___
 
+### __2018-02-24 Gadget
+
+
+An shiny gadget coupled with an `S4` class that provides `print()` and 
+`save()` methods. Gadget takes normal `d3heatmap` inputs and allows for 
+interactive adjustment of the heatmap. Gadget allows for filtering rows 
+and columns, and also a dynamic filter to interatively subset the entire 
+underlying data set. Saving the gadget to an object generates the `S4` class 
+that contains the heatmap, data, filter, and settings.  Passing the gadget 
+back into the function `d3heatmapGadget(gadget)` starts the user at the last 
+state of the gadget.
+
+```r
+gadget <- d3heatmapGadget(mtcars, col = 'blues')
+print(gadget)
+save(gadget, file = "heatmap.html")
+gadget <- d3heatmapGadget(gadget)
+    
+```
+
+
 ### __2018-01-13__ Side colors
 
 Based on example contributions and forks from several people, the side colors components of heatmap.2 and heatmap.3 have been added! Functionality includes color labels, axis labels for the color sections, and hover info. Further alignment of the old API parameters to heatmap.2 and heatmap.3, plus heatmap.2/3 and the modern API were implemented for side colors. the Readme, package news and examples were also updated.

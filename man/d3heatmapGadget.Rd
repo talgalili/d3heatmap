@@ -22,11 +22,13 @@ either a d3heatmap-compatible matrix or data.frame, or a list of class
 \emph{d3heatmapGadget} to start from the gadget's last saved settings
 }
 \examples{
-\donttest{
+\dontrun{
+
 hmg <- d3heatmapGadget(mtcars)
 
 class(hmg)
 # "d3heatmapGadget"
+
 }
 
 }

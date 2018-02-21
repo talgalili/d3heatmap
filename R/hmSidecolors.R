@@ -17,7 +17,7 @@
 #' @param names the names of the variables for the side colors.
 #'   
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
 #' 
 #' rsc <- matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 #' rsccols <- c('red', 'white', 'blue')
@@ -33,6 +33,7 @@
 #'   hmSideColors(axis = 'y', side.colors = rsc,
 #'     palette = rsccols, names = rscnames)
 #' 
+#' }
 #' 
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
@@ -45,13 +46,10 @@ hmSideColors <- function(d3heatmap
   , axis = c("x", "y", "row", "column")
 	, side.colors
   , palette
-  , names
-){
+  , names) {
   
-	if (missing(d3heatmap)) {
-		message("hmLegend: no heatmap provided... returning NULL")
-		return(NULL)
-	}
+	if (missing(d3heatmap))
+		message("hmSideColors: no d3heatmap provided")
   
   if (missing(axis)) {
     message("hmSideColors: no axis specified... returning original heatmap")
@@ -105,3 +103,4 @@ hmSideColors <- function(d3heatmap
 
   return(d3heatmap)  
 }
+

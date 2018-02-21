@@ -1,3 +1,8 @@
+#' @import htmlwidgets
+NULL
+
+
+#'   
 #' Set d3heatmap dendrograms
 #' 
 #' Set and adjust the dendrograms for a d3heatmap object
@@ -8,7 +13,7 @@
 #' call, among \code{'row', 'col', 'both', 'none'}. Using the \code{'none'}
 #' value turns off any previous dendrogram settings. If reorder or row.reorder 
 #' and col.reorder are FALSE or NULL and dendrogram is 'both', then a warning 
-#' is issued and row.reorder (or col.reorder) arguments are honoured.
+#' is issued and row.reorder (or col.reorder) arguments are honored.
 #' 
 #' @param reorder a parameter that allows the user to pass in a single 
 #' reordering value to use on the dendrograms specified in the 
@@ -18,7 +23,7 @@
 #' should be reordered.	By default, it is TRUE, which implies 
 #' dendrogram is computed and reordered based on row means. 
 #' If NULL or FALSE, then no dendrogram is computed and no reordering 
-#' is done. If a dendrogram, then it is used "as-is", ie without any 
+#' is done. If a dendrogram, then it is used "as-is", i.e., without any 
 #' reordering. If a vector of integers, then dendrogram is computed 
 #' and reordered based on the order of the vector.
 #' 
@@ -43,8 +48,6 @@
 #'   
 #' @return Modified d3heatmap object
 #' 
-#' @import htmlwidgets
-#'   
 #' @source 
 #' The interface was inspired by \cite{dygraphs}
 #' 
@@ -52,10 +55,12 @@
 #' \link{heatmap}, \link[gplots]{heatmap.2}
 #' 
 #' @examples 
-#' library(d3heatmap)
+#' \dontrun{
 #' 
 #' d3heatmap(mtcars, scale = "column", col = "Blues") %>%
 #'   hmDendrogram(dendrogram = 'row', groups = 3)
+#' 
+#' }
 #' 
 #' @export
 hmDendrogram <- function(d3heatmap
@@ -68,16 +73,12 @@ hmDendrogram <- function(d3heatmap
   , clustering.function #hclustfun
   , reorder.function #reorder
   , groups 
-  , symmetrical #symmetrical
-)
-{
+  , symmetrical) {
 
 	# perform critical argument checks
   ##==============================================
-	if(missing(d3heatmap)) {
-		message('hmDendrogram: no heatmap provided, returning NULL')
-		return(NULL)
-	}
+	if(missing(d3heatmap)) 
+		stop('hmDendrogram: no d3heatmap provided')
 
 	if(missing(dendrogram)) {
 		message('hmDendrogram: no dendrogram specified... returning original 

@@ -29,7 +29,7 @@ non-color matrix}
 Provides options for modifying the x and y axes of a D3 Heatmap widget
 }
 \examples{
-library(d3heatmap)
+\dontrun{
 
 rsc <- matrix(rep_len(c('good', 'bad', 'ugly'), length.out = 64), ncol = 2)
 rsccols <- c('red', 'white', 'blue')
@@ -45,6 +45,7 @@ d3heatmap(mtcars, key = TRUE, scale = 'column') \%>\%
   hmSideColors(axis = 'y', side.colors = rsc,
     palette = rsccols, names = rscnames)
 
+}
 
 }
 \seealso{
