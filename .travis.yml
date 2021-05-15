@@ -1,0 +1,11 @@
+language: R
+cache: packages
+sudo: false
+
+warnings_are_errors: true
+
+after_success:
+- Rscript -e 'covr::codecov()'
+
+r_github_packages:
+  - hadley/testthat # for skip_if_not_installed

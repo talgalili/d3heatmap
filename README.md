@@ -17,7 +17,7 @@ To install:
 
 ```r
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("rstudio/d3heatmap")
+devtools::install_github("talgalili/d3heatmap")
 ```
 
 ### Usage

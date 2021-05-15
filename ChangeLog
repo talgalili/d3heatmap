@@ -1,0 +1,1303 @@
+* 2021-05-15(Tal Galili) Update to 0.9.0 - with some doc updates and the likes. |c762d74| 
+|  DESCRIPTION         | 18 +++++------
+|  NEWS                |  8 +++++
+|  README.md           | 73 ++++++++++++++++++++----------------------
+|  man/d3heatmap.Rd    | 89 +++++++++++++++++++++++++++++++++++++++------------
+|  man/hmAxis.Rd       | 13 ++++++--
+|  man/hmCells.Rd      | 15 +++++++--
+|  man/hmColors.Rd     | 11 +++++--
+|  man/hmDendrogram.Rd | 15 +++++++--
+|  man/hmLegend.Rd     | 11 +++++--
+|  man/hmOptions.Rd    | 14 ++++++--
+|  man/hmSideColors.Rd |  9 ++++--
+|  11 files changed, 193 insertions(+), 83 deletions(-)
+
+*   2021-05-15(Tal Galili) Merge pull request #86 from klaukh/master |64ac004
+|\  
+| * 2018-02-20(klauk) Consolidated PR; CRAN check |3aced16| | 
+| |  DESCRIPTION                                      |   4 +-
+| |  NAMESPACE                                        |   6 +-
+| |  NEWS                                             |   8 +
+| |  R/colors.R                                       |   5 +-
+| |  R/d3heatmap.R                                    |  47 +++--
+| |  R/exports.R                                      |   1 +
+| |  R/gadget.R                                       | 194 ++++++++++++++-----
+| |  R/heatmap.R                                      |  15 +-
+| |  R/hmAxis.R                                       |  18 +-
+| |  R/hmCells.R                                      |  24 ++-
+| |  R/hmColors.R                                     |  21 +-
+| |  R/hmDendrogram.R                                 |  25 +--
+| |  R/hmLegend.R                                     |  20 +-
+| |  R/hmOptions.R                                    |  13 +-
+| |  R/hmSidecolors.R                                 |  13 +-
+| |  R/utils.R                                        |  26 ++-
+| |  README.md                                        |  21 ++
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js |  25 ++-
+| |  man/are.colors.Rd                                |  16 --
+| |  man/d3heatmap.Rd                                 |  19 +-
+| |  man/d3heatmapGadget-class.Rd                     |  35 ++++
+| |  man/d3heatmapGadget.Rd                           |   4 +-
+| |  man/d3heatmapOutput.Rd                           |   2 +-
+| |  man/hmAxis.Rd                                    |   6 +-
+| |  man/hmCells.Rd                                   |  10 +-
+| |  man/hmColors.Rd                                  |   4 +-
+| |  man/hmDendrogram.Rd                              |   8 +-
+| |  man/hmLegend.Rd                                  |   4 +-
+| |  man/hmOptions.Rd                                 |   4 +-
+| |  man/hmSideColors.Rd                              |   3 +-
+| |  man/print-methods.Rd                             |  30 +++
+| |  man/save-methods.Rd                              |  33 ++++
+| |  template.html                                    |  23 ---
+| |  33 files changed, 466 insertions(+), 221 deletions(-)
+
+| *   2018-02-10(klauk) Merge branch 'master' of rstudio/d3heatmap" |c269923
+| |\  
+| |/  
+|/|   
+* | 2018-01-19(Joe Cheng) Remove tests |5092396| | 
+| |  DESCRIPTION               |    2 +-
+| |  tests/smoketest.R         |  122 -
+| |  tests/smoketest.Rout.save | 6588 -----------------------------------------
+| |  3 files changed, 1 insertion(+), 6711 deletions(-)
+
+* | 2018-01-11(Joe Cheng) Add rmarkdown to Suggests to avoid CRAN warning |a7f1059| | 
+| |  DESCRIPTION | 6 +++---
+| |  1 file changed, 3 insertions(+), 3 deletions(-)
+
+* | 2017-12-14(Joe Cheng) Fix self.getId bug |9550979| | 
+| |  inst/htmlwidgets/d3heatmap.js | 2 +-
+| |  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* | 2017-06-12(Joe Cheng) Note about heatmaply |361a7fb| | 
+| |  README.md | 2 +-
+| |  1 file changed, 1 insertion(+), 1 deletion(-)
+
+| * 2018-01-29(klauk) Change to d3v3 to avoid conflicts; CRAN check |f1d0f30| | 
+| |  inst/htmlwidgets/d3heatmap.js                    |    6 +-
+| |  inst/htmlwidgets/d3heatmap.yaml                  |    6 +-
+| |  inst/htmlwidgets/lib/d3-tip/index.js             |   48 +-
+| |  inst/htmlwidgets/lib/d3/.bower.json              |    8 +-
+| |  inst/htmlwidgets/lib/d3/bower.json               |    6 +-
+| |  inst/htmlwidgets/lib/d3/{d3.js => d3v3.js}       | 4596 +++++++++---------
+| |  .../lib/d3/{d3.min.js => d3v3.min.js}            |    2 +-
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js |  130 +-
+| |  inst/www/heatmap.js                              |   44 +-
+| |  9 files changed, 2424 insertions(+), 2422 deletions(-)
+
+| *   2018-01-28(klauk) Merge branch 'gadgetTest' |5684a16
+| |\  
+| | * 2018-01-28(klauk) Fix side color implementation in gadget |26aa88a| | | 
+| | |  R/gadget.R                                      | 30 ++++++++++++++-----
+| | |  .../lib/d3heatmapcore/heatmapcore.js            |  4 +--
+| | |  2 files changed, 25 insertions(+), 9 deletions(-)
+
+| | *   2018-01-28(klauk) Merge branch 'sidecolors' into gadgetTest |c712a06
+| | |\  
+| | * | 2018-01-25(klauk) Side colors in gadget |28e86b0| | | | 
+| | | |  R/d3heatmap.R |  7 +++++--
+| | | |  R/gadget.R    | 12 +++++++++---
+| | | |  2 files changed, 14 insertions(+), 5 deletions(-)
+
+| | * | 2018-01-24(klauk) CRAN check |125ffeb| | | | 
+| | | |  DESCRIPTION      |  9 +++++----
+| | | |  NAMESPACE        |  2 ++
+| | | |  NEWS             |  7 +++----
+| | | |  R/d3heatmap.R    | 14 ++++++++------
+| | | |  R/gadget.R       | 15 +++++++++------
+| | | |  man/d3heatmap.Rd | 10 +++++-----
+| | | |  6 files changed, 32 insertions(+), 25 deletions(-)
+
+| | * | 2018-01-23(klauk) More gadget settings |0427e8a| | | | 
+| | | |  NEWS             |  5 +---
+| | | |  R/d3heatmap.R    | 32 +++++++++++++++-----
+| | | |  R/gadget.R       | 77 ++++++++++++++++++++++++++++--------------------
+| | | |  R/heatmap.R      |  3 +-
+| | | |  man/d3heatmap.Rd |  9 +++---
+| | | |  5 files changed, 77 insertions(+), 49 deletions(-)
+
+| * | |   2018-01-28(klauk) Merge branch 'sidecolors' |3f8daaa
+| |\ \ \  
+| | |_|/  
+| |/| |   
+| | * |   2018-01-27(klauk) Merge branch 'master' into sidecolors |f963582
+| | |\ \  
+| | | |/  
+| * | |   2018-01-27(klauk) Merge branch 'master' into sidecolors |7bb8c4d
+| |\ \ \  
+| | |/ /  
+| |/| /   
+| | |/    
+| | * 2018-01-21(klauk) Initial d3heatmapGadget with S4 class |a1f4691| | | 
+| | |  DESCRIPTION            |   4 +-
+| | |  NAMESPACE              |   2 +
+| | |  NEWS                   |   9 +
+| | |  R/d3heatmap.R          |  27 ++-
+| | |  R/gadget.R             | 397 +++++++++++++++++++++++++++++++++++++++++++
+| | |  R/heatmap.R            |   4 +-
+| | |  man/d3heatmap.Rd       |   4 +-
+| | |  man/d3heatmapGadget.Rd |  32 ++++
+| | |  8 files changed, 460 insertions(+), 19 deletions(-)
+
+| | * 2018-01-16(klauk) Legend support for manual breaks; bug fixes |02df3ca| | | 
+| | |  R/d3heatmap.R                                   | 18 ++--
+| | |  R/heatmap.R                                     |  2 +-
+| | |  R/hmColors.R                                    | 10 +--
+| | |  .../lib/d3heatmapcore/heatmapcore.js            | 84 ++++++++++++-------
+| | |  man/d3heatmap.Rd                                |  2 +-
+| | |  5 files changed, 66 insertions(+), 50 deletions(-)
+
+| | * 2018-01-15(klauk) hmOptions, exports, CRAN Check |7d14c9d| | | 
+| | |  DESCRIPTION              |  10 ++--
+| | |  NAMESPACE                |   3 ++
+| | |  R/exports.R              |  15 ++++++
+| | |  R/hmAxis.R               |   4 +-
+| | |  R/hmCells.R              |   1 -
+| | |  R/hmColors.R             |   7 ---
+| | |  R/hmDendrogram.R         |  17 +++---
+| | |  R/hmLegend.R             |   1 -
+| | |  R/hmOptions.R            | 118 +++++++++++++++++++++++++++++++++++++++++
+| | |  R/hmSidecolors.R         |   4 +-
+| | |  man/d3heatmap-exports.Rd |  17 ++++++
+| | |  man/hmAxis.Rd            |   3 +-
+| | |  man/hmCells.Rd           |   1 -
+| | |  man/hmColors.Rd          |   1 -
+| | |  man/hmDendrogram.Rd      |   7 +--
+| | |  man/hmLegend.Rd          |   1 -
+| | |  man/hmOptions.Rd         |  58 ++++++++++++++++++++
+| | |  man/hmSideColors.Rd      |   4 +-
+| | |  vignettes/Introduction.R |  51 ++++++++++++++++++
+| | |  19 files changed, 281 insertions(+), 42 deletions(-)
+
+| | * 2018-01-14(klauk) Added absolute scaling |e7ffdf4| | | 
+| | |  R/d3heatmap.R                                   |  6 +++
+| | |  R/heatmap.R                                     | 48 +++++++++++++------
+| | |  .../lib/d3heatmapcore/heatmapcore.css           |  2 +-
+| | |  man/d3heatmap.Rd                                | 26 +++++-----
+| | |  4 files changed, 55 insertions(+), 27 deletions(-)
+
+| | * 2018-01-14(klauk) R CMD check for CRAN |cbaa329| | | 
+| | |  DESCRIPTION         |  3 ++-
+| | |  R/d3heatmap.R       | 12 +++++++-----
+| | |  R/hmAxis.R          |  2 +-
+| | |  R/hmCells.R         |  6 +++---
+| | |  R/hmColors.R        |  6 +++---
+| | |  R/hmDendrogram.R    |  8 +++++---
+| | |  R/hmLegend.R        | 15 +++++++--------
+| | |  R/hmSidecolors.R    | 10 +++++-----
+| | |  man/d3heatmap.Rd    | 12 +++++++-----
+| | |  man/hmAxis.Rd       |  2 +-
+| | |  man/hmCells.Rd      | 10 +++++-----
+| | |  man/hmColors.Rd     |  4 ++--
+| | |  man/hmDendrogram.Rd |  6 ++++--
+| | |  man/hmLegend.Rd     |  4 ++--
+| | |  man/hmSideColors.Rd |  6 +++---
+| | |  15 files changed, 57 insertions(+), 49 deletions(-)
+
+| | * 2018-01-13(klauk) Add rmarkdown to Suggests to avoid CRAN warning |f02ca33| | | 
+| | |  DESCRIPTION | 3 ++-
+| | |  1 file changed, 2 insertions(+), 1 deletion(-)
+
+| | * 2018-01-13(klauk) Fixed hmDendrogram issue |58b5ae1| | | 
+| | |  R/hmDendrogram.R | 40 ++++++++++++++++++++++++++++++++++------
+| | |  1 file changed, 34 insertions(+), 6 deletions(-)
+
+| | * 2018-01-13(klauk) Updated documentation |bc28414| | | 
+| | |  NAMESPACE           |  1 +
+| | |  R/d3heatmap.R       |  5 ++-
+| | |  R/hmCells.R         |  4 +++
+| | |  R/hmColors.R        |  2 +-
+| | |  R/hmDendrogram.R    |  4 ---
+| | |  R/hmLegend.R        |  6 ++--
+| | |  apiTests.R          | 92 -----------------------------------------------
+| | |  man/d3heatmap.Rd    |  3 ++
+| | |  man/hmAxis.Rd       |  3 +-
+| | |  man/hmCells.Rd      |  7 +++-
+| | |  man/hmColors.Rd     | 15 ++++----
+| | |  man/hmDendrogram.Rd |  7 ++--
+| | |  man/hmLegend.Rd     |  7 ++--
+| | |  13 files changed, 40 insertions(+), 116 deletions(-)
+
+| | * 2018-01-13(klauk) Update README and Examples |6187647| | | 
+| | |  R/hmAxis.R       |  3 ++-
+| | |  R/hmCells.R      |  3 ++-
+| | |  R/hmColors.R     |  3 ++-
+| | |  R/hmDendrogram.R |  3 ++-
+| | |  R/hmLegend.R     |  3 ++-
+| | |  README.md        | 68 ++++++++++++++++++++++++++++++++++++++++++++++++--
+| | |  6 files changed, 76 insertions(+), 7 deletions(-)
+
+| * | 2018-01-27(klauk) Fixed with pure sidecolors w/o labels |6cabd31
+| |/  | |   
+| |    .../lib/d3heatmapcore/heatmapcore.js            | 48 ++++++++++++-------
+| |    1 file changed, 30 insertions(+), 18 deletions(-)
+
+| * 2018-01-13(klauk) Updated documentation |38e4cb8| | 
+| |  .gitignore          |  1 -
+| |  man/are.colors.Rd   | 16 +++++++++++++++
+| |  man/hmSideColors.Rd | 54 +++++++++++++++++++++++++++++++++++++++++++++++++
+| |  3 files changed, 70 insertions(+), 1 deletion(-)
+
+| * 2018-01-12(klauk) New API for SideColors; minor fixes |7e8ce04| | 
+| |  DESCRIPTION      |   5 ++-
+| |  NAMESPACE        |   1 +
+| |  NEWS             |   7 +++-
+| |  R/d3heatmap.R    |  10 ++++-
+| |  R/hmAxis.R       |   7 +++-
+| |  R/hmSidecolors.R | 109 +++++++++++++++++++++++++++++++++++++++++++++++++++
+| |  apiTests.R       |  22 +++++++----
+| |  man/d3heatmap.Rd |  21 +++++++++-
+| |  man/hmAxis.Rd    |   4 +-
+| |  9 files changed, 170 insertions(+), 16 deletions(-)
+
+| * 2018-01-10(klauk) Added SC axes, labels, and tooltip |8cdfba3| | 
+| |  .gitignore                                       |   2 +
+| |  R/d3heatmap.R                                    |   9 +
+| |  apiTests.R                                       |   8 +-
+| |  .../lib/d3heatmapcore/heatmapcore.css            |   8 +-
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 321 ++++++++++++++++---
+| |  5 files changed, 290 insertions(+), 58 deletions(-)
+
+| * 2018-01-01(klauk) Added side color legends |921bede| | 
+| |  R/d3heatmap.R                                    |  20 +-
+| |  R/heatmap.R                                      |  62 ++++--
+| |  apiTests.R                                       |  17 +-
+| |  .../lib/d3heatmapcore/heatmapcore.css            |  41 +++-
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 187 +++++++++++++++----
+| |  5 files changed, 268 insertions(+), 59 deletions(-)
+
+| * 2017-12-31(klauk) Allow for non-color side color inputs |f1d5eea| | 
+| |  R/d3heatmap.R |  1 +
+| |  R/heatmap.R   | 17 ++++++++++++++++-
+| |  R/utils.R     | 10 ++++++++++
+| |  3 files changed, 27 insertions(+), 1 deletion(-)
+
+| * 2017-12-30(klauk) Initial implementation |165a0dc| | 
+| |  R/d3heatmap.R                                    |  28 ++-
+| |  R/heatmap.R                                      |   4 +-
+| |  apiTests.R                                       |  15 +-
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 201 +++++++++++++++----
+| |  4 files changed, 200 insertions(+), 48 deletions(-)
+
+| * 2017-12-29(klauk) Mod'ed R wrappers |7aba2aa| | 
+| |  R/d3heatmap.R | 15 +++++++++++++++
+| |  R/heatmap.R   | 24 ++++++++++++++++++++++--
+| |  2 files changed, 37 insertions(+), 2 deletions(-)
+
+| * 2017-12-27(klauk) Fix self.getId bug |418c670| | 
+| |  inst/htmlwidgets/d3heatmap.js                     | 2 +-
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 4 ++--
+| |  2 files changed, 3 insertions(+), 3 deletions(-)
+
+| * 2017-12-17(klauk) Resync main API with heatmap.2 .3; minor bug fixes |8c84542| | 
+| |  R/colors.R                                       |  56 +++--
+| |  R/d3heatmap.R                                    | 229 +++++++++++++------
+| |  R/heatmap.R                                      |  48 ++--
+| |  R/hmAxis.R                                       |  65 ++++--
+| |  R/hmCells.R                                      |  37 ++-
+| |  R/hmColors.R                                     |  48 ++--
+| |  R/hmDendrogram.R                                 |   2 +-
+| |  R/hmLegend.R                                     |  35 ++-
+| |  apiTests.R                                       |  59 +++--
+| |  .../lib/d3heatmapcore/heatmapcore.css            |   3 +-
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 137 +++++------
+| |  man/d3heatmap.Rd                                 | 100 ++++----
+| |  man/d3heatmapOutput.Rd                           |   2 +-
+| |  man/hmAxis.Rd                                    |  10 +-
+| |  man/hmCells.Rd                                   |  11 +-
+| |  man/hmColors.Rd                                  |  10 +-
+| |  man/hmDendrogram.Rd                              |   2 +-
+| |  man/hmLegend.Rd                                  |  20 +-
+| |  18 files changed, 542 insertions(+), 332 deletions(-)
+
+| * 2017-12-17(klauk) Updated REANDME |2792691| | 
+| |  README.md | 14 ++++++++------
+| |  1 file changed, 8 insertions(+), 6 deletions(-)
+
+| *   2017-12-17(klauk) Merge branch 'API' |1f1de23
+| |\  
+| | * 2017-12-17(klauk) Updated package documentation |4f5e101| | | 
+| | |  DESCRIPTION         | 11 ++++++-----
+| | |  NEWS                |  7 +++++++
+| | |  R/d3heatmap.R       |  3 +--
+| | |  R/hmAxis.R          | 17 +++++++++++++++++
+| | |  R/hmCells.R         | 16 ++++++++++++++++
+| | |  R/hmColors.R        | 13 ++++++++++++-
+| | |  R/hmDendrogram.R    |  5 +++++
+| | |  R/hmLegend.R        | 17 +++++++++++++++++
+| | |  apiTests.R          |  8 +++-----
+| | |  man/d3heatmap.Rd    |  1 -
+| | |  man/hmAxis.Rd       | 17 +++++++++++++++++
+| | |  man/hmCells.Rd      | 16 ++++++++++++++++
+| | |  man/hmColors.Rd     | 13 +++++++++++++
+| | |  man/hmDendrogram.Rd |  6 ++++++
+| | |  man/hmLegend.Rd     | 13 +++++++++++++
+| | |  15 files changed, 149 insertions(+), 14 deletions(-)
+
+| | * 2017-12-17(klauk) Local testing complete for new API |e8b5ce1| | | 
+| | |  R/d3heatmap.R                                   |   4 +-
+| | |  R/heatmap.R                                     |   9 +-
+| | |  R/hmAxis.R                                      |   9 +-
+| | |  R/hmCells.R                                     |  38 +++---
+| | |  R/hmColors.R                                    |  18 +--
+| | |  R/hmDendrogram.R                                | 108 ++++++++++--------
+| | |  apiTests.R                                      |  37 ++++--
+| | |  .../lib/d3heatmapcore/heatmapcore.js            |   3 +-
+| | |  man/d3heatmap.Rd                                |   3 +-
+| | |  man/hmCells.Rd                                  |   4 +-
+| | |  man/hmColors.Rd                                 |   4 +-
+| | |  man/hmDendrogram.Rd                             |  45 ++++----
+| | |  12 files changed, 163 insertions(+), 119 deletions(-)
+
+| | * 2017-12-16(klauk) Post hmAxis testing |acdbab4| | | 
+| | |  DESCRIPTION         |  8 +++---
+| | |  NAMESPACE           |  2 ++
+| | |  R/colors.R          | 22 ++++++++++++----
+| | |  R/d3heatmap.R       | 14 +++++-----
+| | |  R/heatmap.R         | 11 +++++---
+| | |  R/hmAxis.R          | 66 ++++++++++++++++++++++++-----------------------
+| | |  R/hmCells.R         |  6 ++---
+| | |  R/hmColors.R        |  3 +--
+| | |  R/hmDendrogram.R    |  8 +++---
+| | |  R/hmLegend.R        |  4 +--
+| | |  apiTests.R          |  6 +++--
+| | |  d3heatmap.Rproj     |  1 +
+| | |  man/d3heatmap.Rd    | 34 +++++++++++++++---------
+| | |  man/hmAxis.Rd       | 12 ++++-----
+| | |  man/hmCells.Rd      | 10 +++----
+| | |  man/hmColors.Rd     | 41 +++++++++++++++++++++++++++++
+| | |  man/hmDendrogram.Rd | 66 +++++++++++++++++++++++++++++++++++++++++++++++
+| | |  man/hmLegend.Rd     | 12 +++++----
+| | |  18 files changed, 231 insertions(+), 95 deletions(-)
+
+| | * 2017-12-16(klauk) Added hmColors and central heatmapColors function |37011a3| | | 
+| | |  R/colors.R    |  43 +++++++++++++++++-
+| | |  R/d3heatmap.R |  64 ++++++++++++---------------
+| | |  R/hmCells.R   |  56 ++++++++++++++++++------
+| | |  R/hmColors.R  | 122 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+| | |  4 files changed, 235 insertions(+), 50 deletions(-)
+
+| | * 2017-12-16(klauk) Added dendrogram API, adjusted file names |39aac7c| | | 
+| | |  .gitignore                  |   2 +
+| | |  R/d3heatmap.R               | 188 +++++++++++++++++++-------------------
+| | |  R/heatmap.R                 |  36 +++++---
+| | |  R/{axis.R => hmAxis.R}      |  33 ++++---
+| | |  R/{cellnote.R => hmCells.R} |   5 +-
+| | |  R/hmDendrogram.R            | 162 ++++++++++++++++++++++++++++++++
+| | |  R/{legend.R => hmLegend.R}  |  30 +++---
+| | |  apiTests.R                  |  21 ++++-
+| | |  8 files changed, 340 insertions(+), 137 deletions(-)
+
+| | * 2017-12-04(klauk) Added hmCells for new cell note API |829b7cc| | | 
+| | |  .gitignore   |  2 +-
+| | |  R/axis.R     | 19 +++++++++----------
+| | |  R/cellnote.R |  2 +-
+| | |  3 files changed, 11 insertions(+), 12 deletions(-)
+
+| | * 2017-10-05(klauk) Extracted main heatmap creator to aid in new API |ae5b6b9| | | 
+| | |  DESCRIPTION      |   1 +
+| | |  NAMESPACE        |   1 +
+| | |  R/cellnote.R     |  41 ++++++
+| | |  R/colors.R       |   1 +
+| | |  R/d3heatmap.R    | 380 ++++++++++++++++---------------------------------
+| | |  R/heatmap.R      | 214 ++++++++++++++++++++++++++++
+| | |  R/utils.R        |   8 ++
+| | |  apiTests.R       |  15 ++
+| | |  man/d3heatmap.Rd |  26 ++--
+| | |  man/hmCells.Rd   |  33 +++++
+| | |  10 files changed, 447 insertions(+), 273 deletions(-)
+
+| | *   2017-09-30(klauk) Merge branch 'rebuild' into API |e578d2f
+| | |\  
+| | | * 2017-09-29(klauk) New APIs for axis and legend options |209af84| | | | 
+| | | |  DESCRIPTION                                   |  5 +
+| | | |  NAMESPACE                                     |  2 +
+| | | |  R/axis.R                                      | 97 +++++++++++++++++++
+| | | |  R/d3heatmap.R                                 | 54 +++++++----
+| | | |  R/legend.R                                    | 34 +++++++
+| | | |  R/utils.R                                     | 21 ++++
+| | | |  .../lib/d3heatmapcore/heatmapcore.js          | 40 ++++++--
+| | | |  man/d3heatmap.Rd                              | 87 +++++++++--------
+| | | |  man/hmAxis.Rd                                 | 33 +++++++
+| | | |  man/hmLegend.Rd                               | 25 +++++
+| | | |  10 files changed, 328 insertions(+), 70 deletions(-)
+
+| * | | 2017-11-12(klauk) Cell value font size calculation now includes x axis font size |7e1451e
+| |/ /  | | |   
+| | |    .gitignore                                        | 3 ++-
+| | |    inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 7 +++++--
+| | |    2 files changed, 7 insertions(+), 3 deletions(-)
+
+| * |   2017-09-05(klauk) Merge branch 'rebuild' |012508b
+| |\ \  
+| | |/  
+| | * 2017-09-02(klauk) Completed axis and dendrogram locations; update docs |e99ced7| | | 
+| | |  R/d3heatmap.R                                   |   2 -
+| | |  .../lib/d3heatmapcore/heatmapcore.css           |   3 +-
+| | |  .../lib/d3heatmapcore/heatmapcore.js            | 125 ++++++++----------
+| | |  man/d3heatmap.Rd                                |  72 ++++++----
+| | |  4 files changed, 99 insertions(+), 103 deletions(-)
+
+| | * 2017-08-31(klauk) Option to print values in cells |9b1a48b| | | 
+| | |  R/d3heatmap.R                                   |  3 ++
+| | |  .../lib/d3heatmapcore/heatmapcore.js            | 50 +++++++++++++++++--
+| | |  2 files changed, 50 insertions(+), 3 deletions(-)
+
+| | * 2017-08-30(klauk) Legend |dc5650e| | | 
+| | |  R/d3heatmap.R                                   |  16 ++-
+| | |  .../lib/d3heatmapcore/heatmapcore.css           |  36 ++++-
+| | |  .../lib/d3heatmapcore/heatmapcore.js            | 131 ++++++++++++++++--
+| | |  3 files changed, 169 insertions(+), 14 deletions(-)
+
+| | * 2017-08-30(klauk) Color bins |cc807cc| | | 
+| | |  R/d3heatmap.R | 44 ++++++++++++++++++++++++++++++--------------
+| | |  1 file changed, 30 insertions(+), 14 deletions(-)
+
+| | * 2017-08-26(klauk) Plot title |6b64e6c| | | 
+| | |  R/d3heatmap.R                                   |  12 ++-
+| | |  inst/htmlwidgets/d3heatmap.js                   |   2 +
+| | |  .../lib/d3heatmapcore/heatmapcore.css           |  24 ++++-
+| | |  .../lib/d3heatmapcore/heatmapcore.js            | 102 +++++++++++++-----
+| | |  4 files changed, 103 insertions(+), 37 deletions(-)
+
+| | * 2017-08-26(klauk) Adjustment xaxis label padding calcs |52d42ce| | | 
+| | |  R/d3heatmap.R                                     |  4 +++-
+| | |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 15 +++++++++++----
+| | |  2 files changed, 14 insertions(+), 5 deletions(-)
+
+| | * 2017-08-15(klauk) Updated cellnote labels |1820e38| | | 
+| | |  R/d3heatmap.R | 21 +++++++++++----------
+| | |  1 file changed, 11 insertions(+), 10 deletions(-)
+
+| | * 2017-08-15(klauk) Updated na_color |784827a| | | 
+| | |  R/d3heatmap.R | 24 ++++++++++++++++++++----
+| | |  1 file changed, 20 insertions(+), 4 deletions(-)
+
+| * | 2017-08-28(klauk) Repo note on purpose of this fork |332e6dd
+| |/  | |   
+| |    README.md | 11 +++++++++--
+| |    1 file changed, 9 insertions(+), 2 deletions(-)
+
+| * 2017-06-12(klauk) Fix Firefox cellnote mislabel when zoomed; closes #63 and #43 |b3d161e| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 14 ++++++++++++++
+| |  1 file changed, 14 insertions(+)
+
+| * 2017-06-12(klauk) Fixes #52, the inversion of cexCol and cexRow |52ba827| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 9 +++------
+| |  1 file changed, 3 insertions(+), 6 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 6ea74b6 from pooranis, with mods |ee182db| | 
+| |  R/d3heatmap.R    | 15 +++++++++++----
+| |  man/d3heatmap.Rd | 26 ++++++++++++++------------
+| |  2 files changed, 25 insertions(+), 16 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 2893bc9, 0ab1122 from pooranis |ef8fcc8| | 
+| |  R/d3heatmap.R                                     | 5 ++++-
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 7 ++++---
+| |  man/d3heatmap.Rd                                  | 4 +++-
+| |  3 files changed, 11 insertions(+), 5 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 103fc25, 62c98fe, 5b19ace from xtmwang, with mods |90cb6fa| | 
+| |  R/d3heatmap.R                                    |  33 +++-
+| |  .../lib/d3heatmapcore/heatmapcore.css            |  10 ++
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 176 ++++++++++++++++---
+| |  man/d3heatmap.Rd                                 |  36 +++-
+| |  4 files changed, 218 insertions(+), 37 deletions(-)
+
+| * 2017-06-11(klauk) Incorp df7be695, b421a04, 83a55cf from Alanocallaghan |9aa4013| | 
+| |  R/d3heatmap.R                                     | 6 +++++-
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 3 ++-
+| |  2 files changed, 7 insertions(+), 2 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 64e8ac5 from pooranis |2c6fa06| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 8 +++++---
+| |  1 file changed, 5 insertions(+), 3 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 31bc66v from pooranis |7521839| | 
+| |  R/d3heatmap.R                                     | 12 +++++++++---
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmapcore.js | 10 ++++++----
+| |  man/d3heatmap.Rd                                  | 17 +++++++++++------
+| |  3 files changed, 26 insertions(+), 13 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of 3f4303b from pooranis; update docs |d890d3c| | 
+| |  DESCRIPTION                                      |  1 +
+| |  NAMESPACE                                        |  2 +-
+| |  R/d3heatmap.R                                    |  3 ++
+| |  .../htmlwidgets/lib/d3heatmapcore/heatmapcore.js |  4 ++-
+| |  man/d3heatmap.Rd                                 | 35 ++++++++++++--------
+| |  man/d3heatmapOutput.Rd                           |  8 ++---
+| |  6 files changed, 34 insertions(+), 19 deletions(-)
+
+| * 2017-06-11(klauk) Incorp of b6521ba from mkuhn |98a60be
+|/  |   
+|    .gitignore    |  1 +
+|    R/d3heatmap.R | 15 +++++++++++----
+|    2 files changed, 12 insertions(+), 4 deletions(-)
+
+*   2017-04-26(Joe Cheng) Merge pull request #79 from rstudio/barbara/fix-css |1c16ebc
+|\  
+| * 2017-04-26(Barbara Borges Ribeiro) Fix rstudio/shinydashboard#75: make the css rules in heatmap.css a bit more specific, so there's no name conflicts with other packages/code. |25033d5
+|/  |   
+|    NEWS                 |  2 ++
+|    inst/www/heatmap.css | 17 ++++++++++++-----
+|    2 files changed, 14 insertions(+), 5 deletions(-)
+
+*   2016-05-25(Joe Cheng) Merge pull request #66 from csgillespie/patch-1 |5babdac
+|\  
+| * 2016-05-25(Colin Gillespie) One character typo |56dcbbc
+|/  |   
+|    vignettes/Introduction.Rmd | 2 +-
+|    1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2016-02-23(Joe Cheng) More reliable smoke tests |57d9756| 
+|  DESCRIPTION               |     4 +-
+|  NEWS                      |     6 +
+|  tests/smoketest.R         |     2 +-
+|  tests/smoketest.Rout.save | 12685 +++++++++++++++++++-----------------------
+|  4 files changed, 5747 insertions(+), 6950 deletions(-)
+
+* 2015-11-02(Joe Cheng) Rename heatmap.js to avoid false positives from ad blocker |3145f89| 
+|  inst/htmlwidgets/d3heatmap.yaml                                     | 4 ++--
+|  inst/htmlwidgets/lib/d3heatmapcore/{heatmap.css => heatmapcore.css} | 0
+|  inst/htmlwidgets/lib/d3heatmapcore/{heatmap.js => heatmapcore.js}   | 0
+|  3 files changed, 2 insertions(+), 2 deletions(-)
+
+* 2015-08-13(Joe Cheng) Use more flexible logic for laying out areas |3b9c3fc| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 131 +++++++++++++++++-------
+|  1 file changed, 94 insertions(+), 37 deletions(-)
+
+* 2015-08-13(Joe Cheng) Fix test harness |dd1e586| 
+|  inst/htmlwidgets/d3heatmap.js         |    3 +-
+|  inst/htmlwidgets/lib/testharness.html | 2280 ++++++++++++++++++++++++++-----
+|  2 files changed, 1973 insertions(+), 310 deletions(-)
+
+* 2015-07-26(Joe Cheng) Add imports; needed to pass R-devel check |c18377d| 
+|  DESCRIPTION   |  4 +++-
+|  NAMESPACE     | 10 ++++++++++
+|  R/d3heatmap.R |  2 ++
+|  3 files changed, 15 insertions(+), 1 deletion(-)
+
+* 2015-07-26(Joe Cheng) Use lower precision in tests |3b93b45| 
+|  tests/smoketest.R         |   4 +-
+|  tests/smoketest.Rout.save | 572 ++++++++++++++++++++++----------------------
+|  2 files changed, 288 insertions(+), 288 deletions(-)
+
+* 2015-07-26(Joe Cheng) Update metadata, fix test |7679fd0| 
+|  DESCRIPTION               |   4 +-
+|  NEWS                      |   7 +++
+|  tests/smoketest.Rout.save | 116 ++++++++++++++++++++++----------------------
+|  3 files changed, 67 insertions(+), 60 deletions(-)
+
+*   2015-07-17(Joe Cheng) Merge pull request #25 from talgalili/patch-3 |edbf61e
+|\  
+| * 2015-07-17(Tal Galili) Wrong warning massage for Colv |9eba1fa
+|/  |   
+|    R/d3heatmap.R | 2 +-
+|    1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-07-02(Joe Cheng) Reorder cellnote |0780d2d| 
+|  R/d3heatmap.R | 2 ++
+|  1 file changed, 2 insertions(+)
+
+* 2015-06-26(Joe Cheng) Fix #5: tooltips don't work on Firefox |9a0bced| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 15 +++++++++++++--
+|  1 file changed, 13 insertions(+), 2 deletions(-)
+
+* 2015-06-23(Joe Cheng) Use better example |667ce65| 
+|  README.md | 12 ++++++------
+|  1 file changed, 6 insertions(+), 6 deletions(-)
+
+* 2015-06-23(Joe Cheng) Clean up DESCRIPTION |3e6d941| 
+|  DESCRIPTION | 8 +++++---
+|  1 file changed, 5 insertions(+), 3 deletions(-)
+
+* 2015-06-23(Joe Cheng) Project settings |ceb046f| 
+|  d3heatmap.Rproj | 1 +
+|  1 file changed, 1 insertion(+)
+
+* 2015-06-23(Joe Cheng) Fix a couple of issues found during Shiny testing |2eec9da| 
+|  inst/htmlwidgets/d3heatmap.js | 25 ++++++++++++++++++-------
+|  1 file changed, 18 insertions(+), 7 deletions(-)
+
+* 2015-06-23(Joe Cheng) Add k_row/k_col to smoketest |f2716fa| 
+|  tests/smoketest.R         |   4 +
+|  tests/smoketest.Rout.save | 175 +++++++++++++++++++++++++++++++++++++++++++-
+|  2 files changed, 178 insertions(+), 1 deletion(-)
+
+* 2015-06-23(Tal Galili) bugfix: make k_col work when dendextend is not in the seach path. |61947c1| 
+|  R/d3heatmap.R | 5 +++++
+|  1 file changed, 5 insertions(+)
+
+* 2015-06-22(Joe Cheng) Move test code into smoketest |acf2ff9| 
+|  R/d3heatmap.R             |  119 -
+|  tests/smoketest.R         |  118 +
+|  tests/smoketest.Rout.save | 7624 +++++++++++++++++++++++++++++++++++++++++++
+|  3 files changed, 7742 insertions(+), 119 deletions(-)
+
+* 2015-06-22(Joe Cheng) roxygenize |0720bb7| 
+|  man/d3heatmap.Rd | 11 +++--------
+|  1 file changed, 3 insertions(+), 8 deletions(-)
+
+* 2015-06-22(Joe Cheng) Make clustering results match heatmap/d3heatmap again |de6b265| 
+|  R/d3heatmap.R | 84 +++++++++++++++++++++++++++------------------------------
+|  1 file changed, 40 insertions(+), 44 deletions(-)
+
+* 2015-06-22(Joe Cheng) Simplify labRow/labCol handling |380af3a| 
+|  R/d3heatmap.R | 20 ++++++--------------
+|  1 file changed, 6 insertions(+), 14 deletions(-)
+
+* 2015-06-22(Tal Galili) fix a line which was accidantily removed. |53289a0| 
+|  R/d3heatmap.R | 11 ++++++++---
+|  1 file changed, 8 insertions(+), 3 deletions(-)
+
+*   2015-06-22(Tal Galili) Merge branch 'master' of https://github.com/rstudio/d3heatmap.git |bd8d436
+|\  
+| * 2015-06-22(Joe Cheng) Do run example |98c4d39| | 
+| |  R/d3heatmap.R   | 4 ----
+| |  d3heatmap.Rproj | 6 +++---
+| |  2 files changed, 3 insertions(+), 7 deletions(-)
+
+* | 2015-06-22(Tal Galili) simplify and some bug fixes |8a15163| | 
+| |  R/d3heatmap.R | 19 +++++++++----------
+| |  1 file changed, 9 insertions(+), 10 deletions(-)
+
+* |   2015-06-22(Tal Galili) Merge branch 'master' of https://github.com/rstudio/d3heatmap.git |c10d045
+|\ \  
+| |/  
+| * 2015-06-22(Joe Cheng) R CMD check fix |a0b0469| | 
+| |  .Rbuildignore | 3 ++-
+| |  DESCRIPTION   | 2 +-
+| |  2 files changed, 3 insertions(+), 2 deletions(-)
+
+| * 2015-06-22(Joe Cheng) Update NEWS |bebd38d| | 
+| |  NEWS | 4 +++-
+| |  1 file changed, 3 insertions(+), 1 deletion(-)
+
+| * 2015-06-22(Joe Cheng) Rebuild docs |b9ce122| | 
+| |  man/d3heatmap.Rd | 2 +-
+| |  1 file changed, 1 insertion(+), 1 deletion(-)
+
+| * 2015-06-22(Joe Cheng) If scaling, move color range so it is centered at 0 |a276160| | 
+| |  R/d3heatmap.R | 11 +++++++----
+| |  1 file changed, 7 insertions(+), 4 deletions(-)
+
+* | 2015-06-22(Tal Galili) fix "NOTE": Missing or unexported object: 'dendextend::labels' |172af7e| | 
+| |  R/d3heatmap.R | 4 ++--
+| |  1 file changed, 2 insertions(+), 2 deletions(-)
+
+* | 2015-06-22(Tal Galili) Change cellnote_scale default to FALSE |601027c| | 
+| |  R/d3heatmap.R    | 4 ++--
+| |  man/d3heatmap.Rd | 4 ++--
+| |  2 files changed, 4 insertions(+), 4 deletions(-)
+
+* | 2015-06-22(Tal Galili) Updated vignette to use k_row/k_col |cafb1c8| | 
+| |  vignettes/Introduction.Rmd | 32 ++++++++++++++++++--------------
+| |  1 file changed, 18 insertions(+), 14 deletions(-)
+
+* | 2015-06-22(Tal Galili) k_row/k_col parameters added - for coloring the branches of the dendrograms |60f43d0| | 
+| |  NEWS             |  2 +-
+| |  R/d3heatmap.R    | 17 ++++++++++++++++-
+| |  man/d3heatmap.Rd |  6 +++++-
+| |  3 files changed, 22 insertions(+), 3 deletions(-)
+
+* | 2015-06-22(Tal Galili) Added the "cellnote_scale" parameter |02e17a8| | 
+| |  NEWS             |  2 ++
+| |  R/d3heatmap.R    | 46 ++++++++++++++++++++++++----------------------
+| |  man/d3heatmap.Rd | 25 ++++++++++++-------------
+| |  3 files changed, 38 insertions(+), 35 deletions(-)
+
+* | 2015-06-22(Tal Galili) re-arranging the code and adding hearders in the comments (this should not cause a change in the functionallity) |43c5dec| | 
+| |  R/d3heatmap.R | 94 +++++++++++++++++++++++++++++++++----------------------
+| |  1 file changed, 57 insertions(+), 37 deletions(-)
+
+* | 2015-06-22(Tal Galili) Bug fix: scale is now set to "none" by default instead of "row" |0b03227| | 
+| |  R/d3heatmap.R | 4 ++--
+| |  1 file changed, 2 insertions(+), 2 deletions(-)
+
+* | 2015-06-22(Tal Galili) if we use dendextend::labels<- then it needs to be "imports", not just "suggests" |ddda0b4| | 
+| |  DESCRIPTION | 6 +++---
+| |  1 file changed, 3 insertions(+), 3 deletions(-)
+
+* |   2015-06-22(Tal Galili) Merge branch 'master' of https://github.com/rstudio/d3heatmap.git |7b85071
+|\ \  
+| |/  
+| * 2015-06-22(Joe Cheng) Tweak default x-axis height |837adb3| | 
+| |  R/d3heatmap.R                                 | 2 +-
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 2 +-
+| |  2 files changed, 2 insertions(+), 2 deletions(-)
+
+| * 2015-06-22(Joe Cheng) Various fixes |bf339cf| | 
+| |  R/d3heatmap.R                                  | 66 ++++++++++------------
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  8 ++-
+| |  vignettes/Introduction.Rmd                     |  5 +-
+| |  3 files changed, 39 insertions(+), 40 deletions(-)
+
+* | 2015-06-22(Tal Galili) vignette - updated the iris example |1aacb61| | 
+| |  vignettes/Introduction.Rmd | 11 +++++++----
+| |  1 file changed, 7 insertions(+), 4 deletions(-)
+
+* | 2015-06-22(Tal Galili) vignette - Added an example for a correlation matrix. |5341907| | 
+| |  DESCRIPTION                |  2 +-
+| |  NEWS                       |  2 +-
+| |  vignettes/Introduction.Rmd | 20 +++++++++++++++++++-
+| |  3 files changed, 21 insertions(+), 3 deletions(-)
+
+* | 2015-06-22(Tal Galili) fix bug in scale (it didn't work with the cellnote), and some updated to doc. |f25ecad
+|/  |   
+|    R/d3heatmap.R    | 54 ++++++++++++++++++++++++++++++----------------------
+|    man/d3heatmap.Rd | 25 ++++++++++++++----------
+|    2 files changed, 46 insertions(+), 33 deletions(-)
+
+* 2015-06-21(Tal Galili) when symm==TRUE so will revC <- TRUE |14a96bc| 
+|  R/d3heatmap.R    | 8 ++++----
+|  man/d3heatmap.Rd | 7 +++----
+|  2 files changed, 7 insertions(+), 8 deletions(-)
+
+* 2015-06-21(Tal Galili) added  revC |a56551d| 
+|  NEWS             |  1 +
+|  R/d3heatmap.R    | 49 ++++++++++++++++++++++++++++++++++++++++++-------
+|  man/d3heatmap.Rd |  9 +++++++--
+|  3 files changed, 50 insertions(+), 9 deletions(-)
+
+* 2015-06-21(Tal Galili) added ... (for forward compatibility) |108c167| 
+|  R/d3heatmap.R    | 6 +++++-
+|  man/d3heatmap.Rd | 4 +++-
+|  2 files changed, 8 insertions(+), 2 deletions(-)
+
+* 2015-06-21(Tal Galili) rename "label" to "cellnote" |355232f| 
+|  R/d3heatmap.R    | 18 +++++++++---------
+|  man/d3heatmap.Rd | 14 +++++++-------
+|  2 files changed, 16 insertions(+), 16 deletions(-)
+
+* 2015-06-21(Tal Galili) fix Collate |9a13c11| 
+|  DESCRIPTION | 2 +-
+|  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-06-21(Tal Galili) labRow and labCol now works also when the heatmap has a dendrogram |6df3ee8| 
+|  R/d3heatmap.R    | 70 +++++++++++++++++++++++++++++++++++-------------------
+|  man/d3heatmap.Rd |  4 ++--
+|  2 files changed, 47 insertions(+), 27 deletions(-)
+
+* 2015-06-21(Tal Galili) Added internal function `labels<-.dendrogram` |72a0f09| 
+|  R/dendrogram.R | 44 ++++++++++++++++++++++++++++++++++++++++++++
+|  1 file changed, 44 insertions(+)
+
+* 2015-06-21(Tal Galili) rename heatmap.R to dendrogram.R |3112c9a| 
+|  R/{heatmap.R => dendrogram.R} | 0
+|  1 file changed, 0 insertions(+), 0 deletions(-)
+
+* 2015-06-21(Tal Galili) updated NEWS and DESC |2257795| 
+|  DESCRIPTION |  4 ++--
+|  NEWS        | 13 +++++++++++++
+|  2 files changed, 15 insertions(+), 2 deletions(-)
+
+* 2015-06-21(Tal Galili) Added 4 new parameters to d3heatmap: |9c9a10d| 
+|  R/d3heatmap.R    | 54 +++++++++++++++++++++++++++++++++++++++++++++++++-----
+|  man/d3heatmap.Rd | 18 ++++++++++++++----
+|  2 files changed, 63 insertions(+), 9 deletions(-)
+
+* 2015-06-21(Tal Galili) new parameter "digits" for controling the resolution of the value presented in the hover tooltip |4696a75| 
+|  R/d3heatmap.R    | 30 +++++++++++++++++++++++++-----
+|  man/d3heatmap.Rd | 11 +++++++----
+|  2 files changed, 32 insertions(+), 9 deletions(-)
+
+* 2015-06-21(Tal Galili) dendToTree cleans NA values so to avoid:  Error in if (length(nms) != n || any(nms == "")) stop("'options' must be a fully named list, or have no names (NULL)") :   missing value where TRUE/FALSE needed |ce91d38| 
+|  R/heatmap.R | 6 ++++++
+|  1 file changed, 6 insertions(+)
+
+* 2015-06-21(Tal Galili) Fix bug - dendrogram = "col" now works again |4222bb6| 
+|  R/d3heatmap.R | 2 +-
+|  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-06-20(Joe Cheng) Better example |1ad9fdf| 
+|  README.md | 2 +-
+|  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-06-20(Joe Cheng) Pass R CMD check |866e710| 
+|  DESCRIPTION   | 5 +++--
+|  NAMESPACE     | 2 ++
+|  R/d3heatmap.R | 1 +
+|  3 files changed, 6 insertions(+), 2 deletions(-)
+
+* 2015-06-20(Joe Cheng) Remove heatmap_options parameter, it isn't needed |bc94a86| 
+|  R/d3heatmap.R    | 7 +------
+|  man/d3heatmap.Rd | 8 ++------
+|  2 files changed, 3 insertions(+), 12 deletions(-)
+
+* 2015-06-20(Joe Cheng) Remove invert_colors param, it no longer works |069d4b5| 
+|  R/d3heatmap.R    |  3 ---
+|  man/d3heatmap.Rd | 10 +++-------
+|  2 files changed, 3 insertions(+), 10 deletions(-)
+
+* 2015-06-20(Joe Cheng) Fix error in coloring code; accept palette integers |2a66051| 
+|  R/d3heatmap.R | 15 +++++++--------
+|  R/heatmap.R   | 16 +++++++++++++---
+|  2 files changed, 20 insertions(+), 11 deletions(-)
+
+* 2015-06-20(Joe Cheng) Better tooltips |a52e677| 
+|  R/d3heatmap.R                                 | 55 ++++++++++++-----
+|  R/heatmap.R                                   |  2 +-
+|  inst/htmlwidgets/d3heatmap.js                 | 81 ++++++++++++++++++++-----
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 27 +++++----
+|  man/d3heatmap.Rd                              | 13 ++--
+|  man/d3heatmapOutput.Rd                        |  2 +-
+|  6 files changed, 128 insertions(+), 52 deletions(-)
+
+* 2015-06-20(Joe Cheng) Remove gplot::heatmap.2 code |216e995| 
+|  R/d3heatmap.R | 375 +++++++++++++-------------------------------------------
+|  1 file changed, 87 insertions(+), 288 deletions(-)
+
+* 2015-06-20(Tal Galili) date update, and update the NEWS |843e07e| 
+|  DESCRIPTION | 2 +-
+|  NEWS        | 4 ++--
+|  2 files changed, 3 insertions(+), 3 deletions(-)
+
+* 2015-06-20(Tal Galili) Fixes a bug (if branch color wasn't defined in the dend - d3heatmap would fail) |adc7d95| 
+|  R/heatmap.R | 5 +++++
+|  1 file changed, 5 insertions(+)
+
+* 2015-06-18(Tal Galili) misc |4c4fb94| 
+|  NEWS          | 2 +-
+|  R/d3heatmap.R | 1 +
+|  2 files changed, 2 insertions(+), 1 deletion(-)
+
+*   2015-06-18(Tal Galili) Merge branch 'joe/feature/custom-lines' of https://github.com/rstudio/d3heatmap.git |adb394a
+|\  
+| * 2015-06-12(Joe Cheng) Respect dendrogram line width, line type |9489ec5| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  2 -
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 55 ++++++++++++++++++++--
+| |  2 files changed, 52 insertions(+), 5 deletions(-)
+
+* | 2015-06-13(Tal Galili) Added a basic Vignette |fb42808| | 
+| |  DESCRIPTION                |  6 ++--
+| |  NEWS                       |  4 ++-
+| |  vignettes/.gitignore       |  3 ++
+| |  vignettes/Introduction.Rmd | 65 ++++++++++++++++++++++++++++++++++++++++++
+| |  4 files changed, 75 insertions(+), 3 deletions(-)
+
+* | 2015-06-13(Tal Galili) gplots is not gplots2 (or ggplot2)... |659dad9
+|/  |   
+|    R/d3heatmap.R    | 6 +++---
+|    man/d3heatmap.Rd | 4 ++--
+|    2 files changed, 5 insertions(+), 5 deletions(-)
+
+* 2015-06-12(Tal Galili) Added some examples of how to use this new d3heatmap code. This should later be removed or moved to examples. |07bb8f6| 
+|  NEWS          |  3 +++
+|  R/d3heatmap.R | 84 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  2 files changed, 87 insertions(+)
+
+* 2015-06-12(Tal Galili) Changing old d3heatmap code to work with the new added code from gplots::heatmap.2 |68596a6| 
+|  R/d3heatmap.R | 32 ++++++++++++++++++--------------
+|  1 file changed, 18 insertions(+), 14 deletions(-)
+
+* 2015-06-12(Tal Galili) Added new (tweaked) code from gplots::heatmap.2 |115f769| 
+|  R/d3heatmap.R | 250 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  1 file changed, 250 insertions(+)
+
+* 2015-06-12(Tal Galili) d3heatmap - added parameters and doc |7aa2c14| 
+|  R/d3heatmap.R    | 57 ++++++++++++++++++++++++++++++++++++++++++++++++++----
+|  man/d3heatmap.Rd | 48 +++++++++++++++++++++++++++++++++++++++++----
+|  2 files changed, 97 insertions(+), 8 deletions(-)
+
+* 2015-06-12(Tal Galili) dendToTree - now cleans NA inside the nodePar/edgePar sub items in the list. |8bd5dee| 
+|  DESCRIPTION |  4 ++--
+|  NEWS        |  4 ++++
+|  R/heatmap.R | 10 +++++++++-
+|  3 files changed, 15 insertions(+), 3 deletions(-)
+
+*   2015-06-12(Tal Galili) Merge branch 'master' of https://github.com/rstudio/d3heatmap.git |7d9d2ce
+|\  
+| * 2015-06-12(Joe Cheng) Add invert_colors parameter |d998c6a| | 
+| |  R/d3heatmap.R    |  7 ++++++-
+| |  man/d3heatmap.Rd | 10 +++++++---
+| |  2 files changed, 13 insertions(+), 4 deletions(-)
+
+| * 2015-06-12(Joe Cheng) Drop empty Depends |655406e| | 
+| |  DESCRIPTION | 1 -
+| |  1 file changed, 1 deletion(-)
+
+| * 2015-06-12(Joe Cheng) Add JS support for link colors (needs R support) |983bf52| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  2 --
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 13 +++++++++++--
+| |  2 files changed, 11 insertions(+), 4 deletions(-)
+
+| * 2015-06-12(Joe Cheng) Fix padding |a1a64fb| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 8 ++++----
+| |  1 file changed, 4 insertions(+), 4 deletions(-)
+
+| * 2015-06-12(Joe Cheng) Respect dendrogram heights |fee26ea| | 
+| |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js |   10 +-
+| |  inst/htmlwidgets/lib/testharness.html         | 1092 ++++++++++++++++++++-
+| |  2 files changed, 1096 insertions(+), 6 deletions(-)
+
+* |   2015-06-12(Tal Galili) Merge branch 'master' of https://github.com/rstudio/d3heatmap.git |afaed17
+|\ \  
+| |/  
+| * 2015-06-11(Joe Cheng) Fix formatting |50e71e5| | 
+| |  README.md | 6 ++++--
+| |  1 file changed, 4 insertions(+), 2 deletions(-)
+
+| * 2015-06-11(Joe Cheng) Use rev.dendrogram to reverse dendrogram |60305bd| | 
+| |  R/d3heatmap.R | 6 +++---
+| |  R/heatmap.R   | 7 ++-----
+| |  2 files changed, 5 insertions(+), 8 deletions(-)
+
+| * 2015-06-11(Joe Cheng) Update NEWS |73c5923| | 
+| |  DESCRIPTION |  2 +-
+| |  NEWS        | 15 +++++++++------
+| |  README.md   |  2 ++
+| |  3 files changed, 12 insertions(+), 7 deletions(-)
+
+| *   2015-06-11(Joe Cheng) Merge pull request #7 from rstudio/dendrogram |5fe7620
+| |\  
+| | * 2015-06-11(Joe Cheng) Remove Leaflet dependency; take scales dependency |d95fd80| | | 
+| | |  DESCRIPTION   | 2 +-
+| | |  R/d3heatmap.R | 2 +-
+| | |  README.md     | 2 +-
+| | |  3 files changed, 3 insertions(+), 3 deletions(-)
+
+| | * 2015-06-11(Joe Cheng) Simplify dendrogram serialization; reverse rows to match stats::heatmap |bc39a7f| | | 
+| | |  R/d3heatmap.R                                 |  16 +--
+| | |  R/heatmap.R                                   | 121 +++++---------------
+| | |  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js |   2 +-
+| | |  3 files changed, 36 insertions(+), 103 deletions(-)
+
+| * |   2015-05-17(Joe Cheng) Merge pull request #1 from talgalili/patch-1 |3e73557
+| |\ \  
+* | | | 2015-06-12(Tal Galili) color branches for example |37a67b6
+| |_|/  
+|/| |   | | |   
+| | |    R/heatmap.R | 5 ++---
+| | |    1 file changed, 2 insertions(+), 3 deletions(-)
+
+* | | 2015-06-11(Tal Galili) d3heatmap - now uses dendToTree instead of hclustToTree (it, of course, doesn't work - since other pieces of the code still needs to be fixed) |f47b739| | | 
+| | |  NEWS          | 2 +-
+| | |  R/d3heatmap.R | 8 +++++---
+| | |  2 files changed, 6 insertions(+), 4 deletions(-)
+
+* | | 2015-06-11(Tal Galili) dendToTree - internal function for create a parseable tree from a dendrogram (intended to replace hclustToTree) |140aa1e| | | 
+| | |  NEWS        |  8 ++++++
+| | |  R/heatmap.R | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+| | |  2 files changed, 83 insertions(+)
+
+* | | 2015-06-11(Tal Galili) update description |b31d89c
+| |/  
+|/|   | |   
+| |    DESCRIPTION | 14 ++++++++------
+| |    1 file changed, 8 insertions(+), 6 deletions(-)
+
+* | 2015-05-08(Tal Galili) Fix installation instructions. |8bae0bc
+|/  |   
+|    README.md | 7 +++----
+|    1 file changed, 3 insertions(+), 4 deletions(-)
+
+* 2015-05-01(Joe Cheng) Fix hover events |095519a| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 16 +++++++++-------
+|  1 file changed, 9 insertions(+), 7 deletions(-)
+
+* 2015-05-01(Joe Cheng) Proper description |be30447| 
+|  DESCRIPTION | 3 ++-
+|  1 file changed, 2 insertions(+), 1 deletion(-)
+
+* 2015-05-01(Joe Cheng) Show value tooltip on hover |c824788| 
+|  DESCRIPTION                                    |   9 +-
+|  LICENSE                                        |  52 ++++
+|  NAMESPACE                                      |   2 +-
+|  inst/htmlwidgets/d3heatmap.yaml                |   5 +-
+|  inst/htmlwidgets/lib/d3-tip/.bower.json        |  28 +++
+|  inst/htmlwidgets/lib/d3-tip/LICENSE            |   8 +
+|  inst/htmlwidgets/lib/d3-tip/README.md          |  43 ++++
+|  inst/htmlwidgets/lib/d3-tip/bower.json         |  17 ++
+|  inst/htmlwidgets/lib/d3-tip/index.js           | 299 +++++++++++++++++++++++
+|  inst/htmlwidgets/lib/d3-tip/package.json       |  28 +++
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  15 +-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  |  32 ++-
+|  inst/htmlwidgets/lib/testharness.html          |   1 +
+|  man/d3heatmap.Rd                               |   2 +-
+|  man/d3heatmapOutput.Rd                         |   2 +-
+|  15 files changed, 534 insertions(+), 9 deletions(-)
+
+* 2015-05-01(Joe Cheng) Update README.md |31568e4| 
+|  README.md | 4 ++--
+|  1 file changed, 2 insertions(+), 2 deletions(-)
+
+* 2015-05-01(Joe Cheng) Cleanup, documentation, example |d5853bc| 
+|  .Rbuildignore                       |  2 +
+|  DESCRIPTION                         |  6 +--
+|  NAMESPACE                           |  3 --
+|  R/d3heatmap.R                       | 48 +++++++++++++++++--
+|  R/heatmap.R                         | 84 ---------------------------------
+|  biodata.R                           | 23 ---------
+|  d3-heatmap.Rproj => d3heatmap.Rproj |  0
+|  demo/build.R                        | 21 ---------
+|  demo/d3heatmap.R                    | 48 -------------------
+|  hclust.R                            | 87 -----------------------------------
+|  man/d3heatmapOutput.Rd              | 46 +++++++++++++++++-
+|  man/renderD3heatmap.Rd              | 12 -----
+|  12 files changed, 91 insertions(+), 289 deletions(-)
+
+* 2015-05-01(Joe Cheng) Tweak README formatting |bca708d| 
+|  README.md | 2 +-
+|  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-05-01(Joe Cheng) Docs, stats::heatmap options |6dc5a55| 
+|  DESCRIPTION      |  8 +++----
+|  R/d3heatmap.R    | 65 ++++++++++++++++++++++++++++++++++++++++--------------
+|  README.md        | 36 ++++++++++++++++++++++++++++--
+|  man/d3heatmap.Rd | 44 ++++++++++++++++++++++++++++++++++--
+|  4 files changed, 128 insertions(+), 25 deletions(-)
+
+* 2015-04-30(Joe Cheng) Add option to control animation duration |041b2e9| 
+|  R/d3heatmap.R                                 |  8 ++++++--
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 12 ++++++++----
+|  2 files changed, 14 insertions(+), 6 deletions(-)
+
+* 2015-04-29(Joe Cheng) Allow simultaneous row and column highlighting |b799698| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  3 +++
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 12 +++++++-----
+|  2 files changed, 10 insertions(+), 5 deletions(-)
+
+* 2015-04-27(Joe Cheng) Fix show_grid = FALSE |d70ab82| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 7 ++++++-
+|  1 file changed, 6 insertions(+), 1 deletion(-)
+
+* 2015-04-26(Joe Cheng) Update demo script |27903ee| 
+|  demo/build.R | 6 ++----
+|  1 file changed, 2 insertions(+), 4 deletions(-)
+
+* 2015-04-26(Joe Cheng) IE11 visual fixes |9c9a334| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 6 ++++++
+|  1 file changed, 6 insertions(+)
+
+* 2015-04-26(Joe Cheng) Hardcode demo parameters |429e217| 
+|  demo/build.R | 3 ++-
+|  1 file changed, 2 insertions(+), 1 deletion(-)
+
+* 2015-04-26(Joe Cheng) Allow deselecting of highlight with click |88b1b8b| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 13 ++++++++-----
+|  1 file changed, 8 insertions(+), 5 deletions(-)
+
+* 2015-04-26(Joe Cheng) Add appearance options; fix jumpy x-axis in RStudio Viewer |f0d265d| 
+|  R/d3heatmap.R                                  | 17 ++++++++++++++++-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  2 --
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 14 +++++++++++---
+|  3 files changed, 27 insertions(+), 6 deletions(-)
+
+* 2015-04-26(Joe Cheng) Improved colormap and brush zooming appearance; optional gridlines |9405fb4| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  1 -
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 62 ++++++++++++++++--------
+|  2 files changed, 42 insertions(+), 21 deletions(-)
+
+* 2015-04-26(Joe Cheng) Remove spurious R dependency; use new build demo file |dd41d52| 
+|  DESCRIPTION  | 1 -
+|  demo/build.R | 2 +-
+|  2 files changed, 1 insertion(+), 2 deletions(-)
+
+* 2015-04-26(Joe Cheng) Much more attractive dendrogram zooming |b2a2766| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 44 +++++++++++--------------
+|  1 file changed, 20 insertions(+), 24 deletions(-)
+
+* 2015-04-26(Joe Cheng) Re-implement dendrogram zooming |bb3b0af| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 64 +++++++++----------------
+|  1 file changed, 22 insertions(+), 42 deletions(-)
+
+* 2015-04-26(Joe Cheng) Improve axis label scaling |3c7b21e| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 89 ++++++++++++++++++-------
+|  1 file changed, 64 insertions(+), 25 deletions(-)
+
+* 2015-04-25(Joe Cheng) wip |e2fa5d3| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |   9 +-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 172 ++++++++++++-----------
+|  inst/htmlwidgets/lib/testzoom.html             |  52 +++++++
+|  3 files changed, 149 insertions(+), 84 deletions(-)
+
+* 2015-04-18(Joe Cheng) Fix JS lint |d1df6b9| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 11 ++++++-----
+|  1 file changed, 6 insertions(+), 5 deletions(-)
+
+* 2015-04-17(Joe Cheng) Fix demo encoding |1d0b050| 
+|  demo/build.R | 3 ++-
+|  1 file changed, 2 insertions(+), 1 deletion(-)
+
+* 2015-04-17(Joe Cheng) Remove dead code; cleaner value <title> |5d94e08| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 49 ++-----------------------
+|  1 file changed, 4 insertions(+), 45 deletions(-)
+
+* 2015-04-17(Joe Cheng) Refactor highlighting code |f88abb8| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 21 ++--------
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 51 +++++++++++-------------
+|  2 files changed, 27 insertions(+), 45 deletions(-)
+
+* 2015-04-17(Joe Cheng) Keep opposing axes highlighted |e6f00ec| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 13 ++++++++++---
+|  1 file changed, 10 insertions(+), 3 deletions(-)
+
+* 2015-04-17(Joe Cheng) Fade out axes labels that are not selected |9e6b50a| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 7 +++++++
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 8 ++++++++
+|  2 files changed, 15 insertions(+)
+
+* 2015-04-17(Joe Cheng) Remove red again |f4ad2a4| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 3 +--
+|  1 file changed, 1 insertion(+), 2 deletions(-)
+
+* 2015-04-17(Joe Cheng) Way better label hit detection |47584ba| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 14 ++++++++------
+|  inst/htmlwidgets/lib/testharness.html         |  2 +-
+|  2 files changed, 9 insertions(+), 7 deletions(-)
+
+* 2015-04-17(Joe Cheng) Remove debugging code; update build color palette |81ee30c| 
+|  demo/build.R                                  | 3 ++-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 5 ++---
+|  2 files changed, 4 insertions(+), 4 deletions(-)
+
+* 2015-04-17(Joe Cheng) Rotated labels; adaptive axes label sizing |6f67fbb| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  4 +--
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 40 +++++++++++++++---------
+|  2 files changed, 27 insertions(+), 17 deletions(-)
+
+* 2015-04-17(Joe Cheng) Aesthetic tweaks |5cfce8b| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 2 +-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 4 +---
+|  2 files changed, 2 insertions(+), 4 deletions(-)
+
+* 2015-04-17(Joe Cheng) Whoops, colors were reversed |b662aaf| 
+|  R/d3heatmap.R | 2 +-
+|  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* 2015-04-17(Joe Cheng) Highlight row/col on click, not hover |1a1613b| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 10 ++++++----
+|  1 file changed, 6 insertions(+), 4 deletions(-)
+
+* 2015-04-17(Joe Cheng) Take custom color palette |b97a251| 
+|  DESCRIPTION      | 6 +++---
+|  R/d3heatmap.R    | 5 +++--
+|  man/d3heatmap.Rd | 3 ++-
+|  3 files changed, 8 insertions(+), 6 deletions(-)
+
+* 2015-04-17(Joe Cheng) Fix positioning in IE |e879ae5| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 22 ++++++++++++++++------
+|  1 file changed, 16 insertions(+), 6 deletions(-)
+
+* 2015-04-17(Joe Cheng) Temporarily remove broken colormap hover/click |c3a6eff| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 26 ++++++++++++-------------
+|  1 file changed, 13 insertions(+), 13 deletions(-)
+
+* 2015-04-17(Joe Cheng) Much larger hover targets for labels |35452fe| 
+|  inst/htmlwidgets/d3heatmap.yaml               |  2 +-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 58 +++++++++++++++++++------
+|  2 files changed, 45 insertions(+), 15 deletions(-)
+
+* 2015-04-17(Joe Cheng) add build demo script |030428b| 
+|  demo/build.R | 20 ++++++++++++++++++++
+|  1 file changed, 20 insertions(+)
+
+* 2015-04-17(Joe Cheng) Introduce dedicated controller object |99377f7| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 60 ++++++++++++++++++++-----
+|  inst/htmlwidgets/lib/testharness.html         |  2 +-
+|  2 files changed, 49 insertions(+), 13 deletions(-)
+
+* 2015-04-17(Joe Cheng) Fill browser |c348beb| 
+|  R/d3heatmap.R                                 |  3 ++-
+|  inst/htmlwidgets/d3heatmap.js                 |  9 +++++++--
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js | 18 +++++++++---------
+|  3 files changed, 18 insertions(+), 12 deletions(-)
+
+* 2015-04-17(Joe Cheng) Default to container size; rotate x axis labels; show holes |cea26d1| 
+|  R/d3heatmap.R                                  |  4 ++--
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 20 +++++---------------
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 23 +++++++++++++++++++----
+|  inst/htmlwidgets/lib/testharness.html          |  2 +-
+|  4 files changed, 27 insertions(+), 22 deletions(-)
+
+* 2015-04-17(Joe Cheng) wip |7924c4d| 
+|  R/d3heatmap.R                                  |  59 +++++++----
+|  inst/htmlwidgets/d3heatmap.js                  |   2 +-
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |  29 +++---
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 120 ++++++++++++++++++++---
+|  inst/htmlwidgets/lib/testharness.html          |  16 +++
+|  5 files changed, 173 insertions(+), 53 deletions(-)
+
+* 2015-04-16(Joe Cheng) Add theme support |df15599| 
+|  R/d3heatmap.R                                  |  4 ++--
+|  inst/htmlwidgets/d3heatmap.js                  |  8 ++++++++
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 16 +++++++++++++++-
+|  3 files changed, 25 insertions(+), 3 deletions(-)
+
+* 2015-04-16(Joe Cheng) Force default cursor over labels |ce0619a| 
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css | 3 +++
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  | 4 ++--
+|  2 files changed, 5 insertions(+), 2 deletions(-)
+
+* 2015-04-16(Joe Cheng) Make htmlwidget package, add hovering behavior to labels |b286345| 
+|  .bowerrc                                       |    1 +
+|  DESCRIPTION                                    |    1 +
+|  NAMESPACE                                      |    8 +-
+|  R/d3heatmap.R                                  |   69 +
+|  d3-heatmap.Rproj                               |    1 +
+|  inst/htmlwidgets/d3heatmap.js                  |   41 +
+|  inst/htmlwidgets/d3heatmap.yaml                |   11 +
+|  inst/htmlwidgets/lib/d3/.bower.json            |   37 +
+|  inst/htmlwidgets/lib/d3/CONTRIBUTING.md        |   25 +
+|  inst/htmlwidgets/lib/d3/LICENSE                |   26 +
+|  inst/htmlwidgets/lib/d3/README.md              |    9 +
+|  inst/htmlwidgets/lib/d3/bower.json             |   26 +
+|  inst/htmlwidgets/lib/d3/d3.js                  | 9466 ++++++++++++++++++++++
+|  inst/htmlwidgets/lib/d3/d3.min.js              |    5 +
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.css |   72 +
+|  inst/htmlwidgets/lib/d3heatmapcore/heatmap.js  |  262 +
+|  man/d3heatmap.Rd                               |   12 +
+|  man/d3heatmapOutput.Rd                         |   12 +
+|  man/renderD3heatmap.Rd                         |   12 +
+|  19 files changed, 10094 insertions(+), 2 deletions(-)
+
+* 2013-07-26(Joe Cheng) Clear out old HTML on render |84dea2c| 
+|  inst/www/binding.js | 1 +
+|  1 file changed, 1 insertion(+)
+
+* 2013-07-19(Joe Cheng) basic interactivity |48bf31f| 
+|  demo/d3heatmap.R     | 35 ++++++++++++++++++++++-------------
+|  inst/www/binding.js  | 17 ++++++++++++++++-
+|  inst/www/heatmap.css |  2 +-
+|  inst/www/heatmap.js  | 23 +++++++++++++++++++----
+|  4 files changed, 58 insertions(+), 19 deletions(-)
+
+* 2013-07-17(Joe Cheng) Package-ify |10d1092| 
+|  .Rbuildignore        |   2 +
+|  DESCRIPTION          |  23 ++++
+|  NAMESPACE            |   5 +
+|  R/heatmap.R          | 124 +++++++++++++++++++++
+|  d3-heatmap.Rproj     |   3 +
+|  demo/d3heatmap.R     |  39 +++++++
+|  hclust.R             |   2 +-
+|  inst/www/binding.js  |  10 ++
+|  inst/www/heatmap.css |  66 +++++++++++
+|  inst/www/heatmap.js  | 212 +++++++++++++++++++++++++++++++++++
+|  template.html        | 294 +------------------------------------------------
+|  11 files changed, 487 insertions(+), 293 deletions(-)
+
+* 2013-07-17(Joe Cheng) Improve modularity, use R topo colors |03eec91| 
+|  biodata.R     |   2 +-
+|  hclust.R      |  14 ++
+|  template.html | 408 +++++++++++++++++++++++++++++---------------------------
+|  3 files changed, 228 insertions(+), 196 deletions(-)
+
+* 2013-07-17(Joe Cheng) Better mouseover behavior; aesthetic improvements |83b12b2| 
+|  template.html | 111 +++++++++++++++++++++++++++++++++++++++++++-------------
+|  1 file changed, 86 insertions(+), 25 deletions(-)
+
+* 2013-07-15(Joe Cheng) Heatmap impl |8cff3dc| 
+|  .gitignore    |   3 +
+|  biodata.R     |  23 +++++
+|  hclust.R      |  31 ++++++-
+|  template.html | 255 +++++++++++++++++++++++++++++++++++++++++++-------------
+|  4 files changed, 248 insertions(+), 64 deletions(-)
+
+* 2013-07-15(Joe Cheng) Prototypes |8aea1d6| 
+|  d3-heatmap.Rproj | 13 +++++++
+|  hclust.R         | 50 +++++++++++++++++++++++++++
+|  template.html    | 99 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  3 files changed, 162 insertions(+)
+
+* 2013-07-15(Joe Cheng) Initial commit |665ca89  
+   README.md | 2 ++
+   1 file changed, 2 insertions(+)

@@ -7,7 +7,6 @@ d3heatmap 0.9.0 (2021-05-15)
 * Update README.md
 * add .travis.yml
 * add zzz.R file
-* add a pkgdown website
 
 d3heatmap 0.8.3 (2018-02-21)
 ----------------------------------------

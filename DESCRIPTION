@@ -36,19 +36,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/talgalili/d3heatmap
 BugReports: https://github.com/talgalili/d3heatmap/issues
-Collate:
-    'colors.R'
-    'd3heatmap.R'
-    'dendrogram.R'
-    'exports.R'
-    'gadget.R'
-    'heatmap.R'
-    'hmAxis.R'
-    'hmCells.R'
-    'hmColors.R'
-    'hmDendrogram.R'
-    'hmLegend.R'
-    'hmOptions.R'
-    'hmSidecolors.R'
-    'utils.R'
 RoxygenNote: 7.0.1
