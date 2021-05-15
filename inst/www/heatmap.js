@@ -1,5 +1,5 @@
 function heatmap(selector, data) {
-  var el = d3.select(selector);
+  var el = d3v3.select(selector);
   
   (function() {
     var inner = el.append("div").classed("inner", true);
@@ -9,11 +9,11 @@ function heatmap(selector, data) {
     var colmap = inner.append("svg").classed("colormap", true);
   })();
   
-  var xZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
-  var yZoomBehavior = d3.behavior.zoom().scaleExtent([1, Infinity]);
+  var xZoomBehavior = d3v3.behavior.zoom().scaleExtent([1, Infinity]);
+  var yZoomBehavior = d3v3.behavior.zoom().scaleExtent([1, Infinity]);
   var colormapZooms = [
-    d3.behavior.zoom().scaleExtent([1, Infinity]),
-    d3.behavior.zoom().scaleExtent([1, Infinity])
+    d3v3.behavior.zoom().scaleExtent([1, Infinity]),
+    d3v3.behavior.zoom().scaleExtent([1, Infinity])
     ];
   
   el.select('.colDend').call(xZoomBehavior);
@@ -52,9 +52,9 @@ function heatmap(selector, data) {
     
     var merged = data.data;
     
-    var x = d3.scale.linear().domain([0, cols]).range([0, width]);
-    var y = d3.scale.linear().domain([0, rows]).range([0, height]);
-    var color = d3.scale.linear()
+    var x = d3v3.scale.linear().domain([0, cols]).range([0, width]);
+    var y = d3v3.scale.linear().domain([0, rows]).range([0, height]);
+    var color = d3v3.scale.linear()
     .domain(data.domain)
     .range(data.colors);
     
@@ -98,12 +98,12 @@ function heatmap(selector, data) {
   
   function dendrogram(svg, data, rotated, width, height, zoomBehavior) {
     
-    var x = d3.scale.linear();
-    var y = d3.scale.linear()
+    var x = d3v3.scale.linear();
+    var y = d3v3.scale.linear()
     .domain([0, height])
     .range([0, height]);
     
-    var cluster = d3.layout.cluster()
+    var cluster = d3v3.layout.cluster()
     .separation(function(a, b) { return 1; })
     .size([rotated ? width : height, (rotated ? height : width) - 160]);
     
@@ -131,9 +131,9 @@ function heatmap(selector, data) {
     
     function draw() {
       // Constrain translation to extent
-      if (d3.event) {
-        var t = d3.event.translate;
-        var s = d3.event.scale;
+      if (d3v3.event) {
+        var t = d3v3.event.translate;
+        var s = d3v3.event.scale;
         if (rotated)
           t[0] = Math.max(-width * (s - 1), Math.min(0, t[0]));
         else
@@ -179,12 +179,12 @@ function heatmap(selector, data) {
     };
   }
   
-  var dispatcher = d3.dispatch('hover', 'click');
+  var dispatcher = d3v3.dispatch('hover', 'click');
   
   $('.datapt').on('mouseover', function() {
     $('.info').text($(this).children('title').text());
-    d3.select(row.leaves[this.rowIndex]).classed('active', true);
-    d3.select(col.leaves[this.colIndex]).classed('active', true);
+    d3v3.select(row.leaves[this.rowIndex]).classed('active', true);
+    d3v3.select(col.leaves[this.colIndex]).classed('active', true);
     dispatcher.hover({
       data: {
         value: +$(this).children('title').text(),
@@ -195,9 +195,9 @@ function heatmap(selector, data) {
   });
   $('.datapt').on('click', function() {
     $('.info').text($(this).children('title').text());
-    d3.selectAll('.datapt.clicked').classed('clicked', false);
-    d3.select(row.leaves[this.rowIndex]).classed('clicked', true);
-    d3.select(this).classed('clicked', true);
+    d3v3.selectAll('.datapt.clicked').classed('clicked', false);
+    d3v3.select(row.leaves[this.rowIndex]).classed('clicked', true);
+    d3v3.select(this).classed('clicked', true);
     dispatcher.click({
       data: {
         value: +$(this).children('title').text(),
@@ -208,8 +208,8 @@ function heatmap(selector, data) {
   });
   $('.datapt').mouseleave(function() {
     $('.info').text('');
-    d3.select(row.leaves[this.rowIndex]).classed('active', false);
-    d3.select(col.leaves[this.colIndex]).classed('active', false);
+    d3v3.select(row.leaves[this.rowIndex]).classed('active', false);
+    d3v3.select(col.leaves[this.colIndex]).classed('active', false);
   });
   $('.colormap').mouseover(function() {
     el.classed('highlighting', true);

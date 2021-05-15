@@ -1,3 +1,7 @@
+.gitignore
 .Rproj.user
 .Rhistory
 .RData
+*.swp
+apiTests.R
+

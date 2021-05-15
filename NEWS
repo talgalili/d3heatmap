@@ -1,4 +1,29 @@
-* Fix [rstudio/shinydashboard#75](https://github.com/rstudio/shinydashboard/issues/75): make the css rules in heatmap.css a bit more specific, so there's no name conflicts with other packages/code.
+d3heatmap 0.8.3 (2018-02-21)
+----------------------------------------
+
+* Print and save methods added for the gadget
+* Updated for CRAN check
+
+
+d3heatmap 0.8.2 (2018-01-24)
+----------------------------------------
+
+* Updated for CRAN check
+* Added d3heatmapGadget! Gadget takes usual d3heatmap inputs and generates an interactive method to customize the heatmap. Saving the gadget to an object generates an S4 class that can be passed back into the gadget function to restart the gadget at the last point.
+
+
+d3heatmap 0.8 (2018-01-13)
+----------------------------------------
+
+* Additional features: side color sections (ala heatmap.2 and heatmap.3) with labels, zooming, and hover notes
+* Refactored parameter names and processing to sync with heatmap.2 and heatmap.3
+
+d3heatmap 0.7 (2017-12-17)
+----------------------------------------
+
+* Significant updates to code styling
+* Several additional features: axis positioning, color legends and histogram, plot title, color and value settings for NA values, printing values inside cells, among others
+* Added new, modern API inspired from the \emph{dygraphs} package
 
 d3heatmap 0.6.1.1 (2015-02-23)
 ----------------------------------------
