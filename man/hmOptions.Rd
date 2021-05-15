@@ -7,9 +7,17 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmOptions(d3heatmap, title, scale = c("none", "row", "column"),
-  scale.by.range, na.rm, na.value, show.grid, animation.duration,
-  reverse.columns)
+hmOptions(
+  d3heatmap,
+  title,
+  scale = c("none", "row", "column"),
+  scale.by.range,
+  na.rm,
+  na.value,
+  show.grid,
+  animation.duration,
+  reverse.columns
+)
 }
 \arguments{
 \item{d3heatmap}{a d3heatmap object created from the d3heatmap()}

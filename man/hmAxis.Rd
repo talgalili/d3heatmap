@@ -7,8 +7,17 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmAxis(d3heatmap, axis = c("x", "y", "row", "column"), size, labels,
-  font.size, angle, location, title, title.font.size)
+hmAxis(
+  d3heatmap,
+  axis = c("x", "y", "row", "column"),
+  size,
+  labels,
+  font.size,
+  angle,
+  location,
+  title,
+  title.font.size
+)
 }
 \arguments{
 \item{d3heatmap}{a d3heatmap object created from the d3heatmap()}

@@ -7,8 +7,15 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmColors(d3heatmap, theme = c("", "dark"), colors, range, color.bins,
-  symmetrical, na.color)
+hmColors(
+  d3heatmap,
+  theme = c("", "dark"),
+  colors,
+  range,
+  color.bins,
+  symmetrical,
+  na.color
+)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}

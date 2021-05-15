@@ -7,8 +7,13 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmSideColors(d3heatmap, axis = c("x", "y", "row", "column"), side.colors,
-  palette, names)
+hmSideColors(
+  d3heatmap,
+  axis = c("x", "y", "row", "column"),
+  side.colors,
+  palette,
+  names
+)
 }
 \arguments{
 \item{d3heatmap}{a d3heatmap object created from the d3heatmap()}

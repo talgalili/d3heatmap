@@ -7,9 +7,18 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmDendrogram(d3heatmap, dendrogram = c("row", "column", "both", "none"),
-  reorder, row.reorder, column.reorder, distance.function, clustering.function,
-  reorder.function, groups, symmetrical)
+hmDendrogram(
+  d3heatmap,
+  dendrogram = c("row", "column", "both", "none"),
+  reorder,
+  row.reorder,
+  column.reorder,
+  distance.function,
+  clustering.function,
+  reorder.function,
+  groups,
+  symmetrical
+)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}

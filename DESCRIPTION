@@ -1,15 +1,16 @@
 Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
-Version: 0.8.3
-Date: 2018-03-03
+Version: 0.9.0
+Date: 2021-05-15
 Authors@R: c(
-    person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
-    person("Tal", "Galili", role = c("aut"), email = "tal.galili@gmail.com"),
+    person("Tal", "Galili", role = c("aut", "cre"), email = "tal.galili@gmail.com"),
+    person("Joe", "Cheng", role = c("aut"), email = "joe@rstudio.com"),
     person("RStudio, Inc.", role = c("cph")),
     person("Michael", "Bostock", role = c("ctb", "cph"), comment = "D3.js library"),
     person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library"),
-    person("Kent", "Laukhuf", role = c("ctb"), email = "laukhuf@gmail.com")
+    person("Kent", "Laukhuf", role = c("ctb"), email = "laukhuf@gmail.com"),
+    person("klaukh", role = c("ctb"), comment = "https://github.com/klaukh")
     )
 Maintainer: Joe Cheng <joe@rstudio.com>
 Description: Create interactive heat maps that are usable from the R console, in the
@@ -33,8 +34,8 @@ Suggests:
     rmarkdown,
     miniUI
 VignetteBuilder: knitr
-URL: https://github.com/rstudio/d3heatmap
-BugReports: https://github.com/rstudio/d3heatmap/issues
+URL: https://github.com/talgalili/d3heatmap
+BugReports: https://github.com/talgalili/d3heatmap/issues
 Collate:
     'colors.R'
     'd3heatmap.R'
@@ -50,5 +51,4 @@ Collate:
     'hmOptions.R'
     'hmSidecolors.R'
     'utils.R'
-RoxygenNote: 6.0.1
-
+RoxygenNote: 7.0.1

@@ -1,3 +1,11 @@
+d3heatmap 0.9.0 (2021-05-15)
+----------------------------------------
+
+* Merge major commits (https://github.com/talgalili/d3heatmap/pull/86)
+* Change maintainer to Tal Galili
+* update roxygen to 7.0.1
+* Update README.md
+
 d3heatmap 0.8.3 (2018-02-21)
 ----------------------------------------
 

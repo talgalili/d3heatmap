@@ -7,8 +7,15 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmLegend(d3heatmap, show = TRUE, size, title, location = c("fl", "br", "tr",
-  "tl", "bl"), density = c("histogram", "none"), density.fill = NULL)
+hmLegend(
+  d3heatmap,
+  show = TRUE,
+  size,
+  title,
+  location = c("fl", "br", "tr", "tl", "bl"),
+  density = c("histogram", "none"),
+  density.fill = NULL
+)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}

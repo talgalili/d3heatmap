@@ -7,8 +7,19 @@
 The interface was inspired by \cite{dygraphs}
 }
 \usage{
-hmCells(d3heatmap, digits, cellnotes, font.size, color, scale, row.label,
-  col.label, value.label, brush.color, print)
+hmCells(
+  d3heatmap,
+  digits,
+  cellnotes,
+  font.size,
+  color,
+  scale,
+  row.label,
+  col.label,
+  value.label,
+  brush.color,
+  print
+)
 }
 \arguments{
 \item{d3heatmap}{\emph{Required} A valid \emph{d3heatmap} object}
