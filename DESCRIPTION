@@ -4,15 +4,15 @@ Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
 Version: 0.9.0
 Date: 2021-05-15
 Authors@R: c(
-    person("Tal", "Galili", role = c("aut", "cre"), email = "tal.galili@gmail.com"),
     person("Joe", "Cheng", role = c("aut"), email = "joe@rstudio.com"),
+    person("Tal", "Galili", role = c("aut", "cre"), email = "tal.galili@gmail.com"),
     person("RStudio, Inc.", role = c("cph")),
     person("Michael", "Bostock", role = c("ctb", "cph"), comment = "D3.js library"),
     person("Justin", "Palmer", role = c("ctb", "cph"), comment = "d3.tip library"),
     person("Kent", "Laukhuf", role = c("ctb"), email = "laukhuf@gmail.com"),
     person("klaukh", role = c("ctb"), comment = "https://github.com/klaukh")
     )
-Maintainer: Joe Cheng <joe@rstudio.com>
+Maintainer: Tal Galili <tal.galili@gmail.com>
 Description: Create interactive heat maps that are usable from the R console, in the
     'RStudio' viewer pane, in 'R Markdown' documents, and in 'Shiny' apps. Hover the
     mouse pointer over a cell to show details, drag a rectangle to zoom, and click
