@@ -10,7 +10,7 @@
 
 # D3 Heatmap for R
 
-This is an R package that implements a heatmap [htmlwidget](http://htmlwidgets.org). It has the following features:
+This is an R package that implements a heatmap [htmlwidget](https://www.htmlwidgets.org/). It has the following features:
 
 * Highlight rows/columns by clicking axis labels
 * Click and drag over colormap to zoom in (click on colormap to zoom out)
