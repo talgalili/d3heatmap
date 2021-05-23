@@ -6,6 +6,8 @@ output:
   html_document:
     self_contained: yes
     toc: true    
+editor_options: 
+  chunk_output_type: console
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
@@ -24,7 +26,7 @@ mtcars
 -------
 
 ```{r}
-x <- mtcars # [c(2:4,7),1:4]
+x <- as.matrix(mtcars) # [c(2:4,7),1:4]
 
 d3heatmap(x, k_row = 4, k_col = 2)
 d3heatmap(x, k_row = 4, k_col = 2, scale = "column") # a more appropriate scalling

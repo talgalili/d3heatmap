@@ -1,13 +1,14 @@
-d3heatmap 0.9.0 (2021-05-15)
+d3heatmap 0.9.0 (2021-05-23)
 ----------------------------------------
 
 * Merge major commits (https://github.com/talgalili/d3heatmap/pull/86)
 * Change maintainer to Tal Galili
-* update roxygen to 7.0.1
+* update roxygen to 7.1.1
 * Update README.md
 * add .travis.yml
 * add zzz.R file
 * add a pkgdown website
+* d3heatmap - handle class checks in a more robust way (e.g.: is.matrix instead of class(x)=="matrix")
 
 d3heatmap 0.8.3 (2018-02-21)
 ----------------------------------------

@@ -2,7 +2,7 @@ Package: d3heatmap
 Type: Package
 Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
 Version: 0.9.0
-Date: 2021-05-15
+Date: 2021-05-23
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut"), email = "joe@rstudio.com"),
     person("Tal", "Galili", role = c("aut", "cre"), email = "tal.galili@gmail.com"),
@@ -36,4 +36,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/talgalili/d3heatmap
 BugReports: https://github.com/talgalili/d3heatmap/issues
-RoxygenNote: 7.0.1
+RoxygenNote: 7.1.1

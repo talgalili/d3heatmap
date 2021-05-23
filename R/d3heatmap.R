@@ -1,6 +1,7 @@
 #' @import htmlwidgets
 #' @importFrom grDevices col2rgb rgb colorRampPalette
 #' @importFrom stats as.dendrogram dendrapply dist hclust is.leaf order.dendrogram reorder sd
+#' @importFrom utils capture.output str
 NULL
 
 #' D3 Heatmap widget
@@ -297,15 +298,18 @@ d3heatmap <- function(x
 	, ...
 
 ) {
-  
-  if(class(x) == "matrix" & !is.numeric(x)) {
+  if(length(dim(x)) != 2) {
+    stop(paste("x is not a 2-dimensional object. Here is the str output of x:", capture.output(str(x)), collapse = "\n"))
+  }
+  if(is.matrix(x) && !is.numeric(x)) {
+    warning(paste(capture.output(str(x)), collapse = "\n"))
     stop("d3heatmap data must be a numeric 
       matrix or a data.frame with numeric columns")
   }
  
   # we'll modify this to take any matrix or data.frame, but filter out all
   # non-numeric columns 
-  if (any(class(x) %in% c("table", "data.frame")))
+  if (is.data.frame(x) | is.table(x))
     x <- x[, sapply(x, is.numeric)]
   
   opts <- list(...)
