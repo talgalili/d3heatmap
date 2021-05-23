@@ -25,6 +25,7 @@ Imports:
     base64enc,
     dendextend (>= 0.18.0),
     stats,
+    utils,
     grDevices,
     magrittr,
     shiny,
