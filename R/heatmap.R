@@ -126,9 +126,9 @@ heatmap <- function(
   
   ## reorder x and side color annotations
   ##=======================
-  x <- x[rowInd, colInd]
+  x <- x[rowInd, colInd, drop = FALSE]
   if (!is.null(cellnote))
-    cellnote <- cellnote[rowInd, colInd]
+    cellnote <- cellnote[rowInd, colInd, drop = FALSE]
  
   ## side colors objects
   ##=======================
@@ -278,10 +278,10 @@ heatmap <- function(
   ## Final touches before htmlwidgets
   ##=======================
   mtx <- list(data = as.character(t(cellnote)),
-							x = as.numeric(t(round(x, digits = digits))),
+              x = as.numeric(t(round(x, digits = digits))),
               dim = dim(x),
-              rows = rownames(x),
-              cols = colnames(x))
+              rows = as.list(rownames(x)),
+              cols = as.list(colnames(x)))
   
 	## return package
 	##==============================
